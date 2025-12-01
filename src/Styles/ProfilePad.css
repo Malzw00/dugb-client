@@ -1,0 +1,16 @@
+.interaction-log .projects-tab {
+    border-bottom: 1px solid var(--colorNeutralStroke2);
+}
+
+.profile-details {
+    border: 1px solid var(--colorNeutralStroke2);
+    border-top: none;
+}
+
+.editable-field {cursor: pointer;}
+.editable-field:hover .edit-btn { transition: 300ms ease; opacity: 1 !important; }
+
+.project-card-container {
+    border-radius: 4px;
+    border: 1px solid var(--colorNeutralStroke2);
+}

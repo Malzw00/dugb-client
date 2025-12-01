@@ -1,0 +1,62 @@
+#auth-pad {   
+    display: grid;
+    place-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: var(--colorNeutralBackground3);
+}
+
+#auth-pad .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 13px 5%;
+    gap: 21px;
+    border: none;
+}
+
+.forms-pad {
+    background-color: var(--colorNeutralBackground1);
+    border-radius: 8px;
+    padding: 34px;
+    width: 377px;
+    height: max-content;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.form-head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-logo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: right;
+    justify-content: right;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.form-head > .logo-img {
+    width: 30px;
+    height: 38px;
+}
+
+.form-center {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 13px;
+    padding: 21px 0;
+}
+
+.non-padding-btn { padding: 0 !important; }

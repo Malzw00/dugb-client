@@ -1,0 +1,67 @@
+.control-pad .sidebar {
+
+    display: flex;
+    flex-direction: column;
+    gap: 21px;
+    border-left: 1px solid var(--colorNeutralStroke2);
+    background-color: var(--colorNeutralBackground3);
+    padding: 21px;
+    width: 20%;
+}
+
+.control-pad .sidebar .tab-list {
+    flex-grow: 1 !important;
+}
+
+.control-pad .content-area {
+
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.control-pad .content-area .tool-bar, 
+.control-pad .content-area .filter-box {
+    display: flex;
+    gap: 5px;
+    width: 100% !important;
+    padding: 5px 8px;
+    min-height: 0;
+    background-color: var(--colorNeutralBackground3);
+    border-bottom: 1px solid var(--colorNeutralStroke2);
+    flex-wrap: wrap;
+}
+
+.control-pad .content-area .filter-box {
+    border: none;
+}
+
+.control-pad .content-area .filter-box > .search-input, 
+.control-pad .content-area .filter-box > .filter-input {
+    height: 32px !important;
+}
+
+.control-pad .content-area .tool-bar .button {
+    padding: 5px 13px !important;
+    width: fit-content !important;
+    min-width: 0;
+}
+
+.control-pad .content-area .table-container {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    min-height: 0;
+    padding: 5px;
+}
+
+.control-pad .content-area .table {
+    border: 1px solid var(--colorNeutralStroke2);
+}
+
+.control-pad .content-area .table .table-header {
+    background-color: var(--colorNeutralBackground2);
+    border-bottom: 1px solid var(--colorNeutralStroke2);
+}
