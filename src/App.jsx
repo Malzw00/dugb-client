@@ -5,10 +5,10 @@ import {
 } from 'react-router-dom';
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { createContext, useState } from 'react';
-import AuthPad from './Components/AuthPad';
-import HomePad from './Components/HomePad/HomePad';
-import IntroRedirector from './Components/IntroRedirector';
-import SmartStart from './Components/SmartStart';
+import AuthPad from './components/AuthPad';
+import HomePad from './components/HomePad/HomePad';
+import IntroRedirector from './components/IntroRedirector';
+import SmartStart from './components/SmartStart';
 import './Styles/App.css';
 
 

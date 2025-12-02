@@ -4,11 +4,11 @@
     "paths": {
       "@root/*": ["./*"],
       "@src/*": ["./src/*"],
-      "@Components/*": ["src/Components*"],
-      "@Styles/*": ["src/Styles/*"],
-      "@resources/*": ["src/resources/*"],
+      "@Components/*": ["src/components*"],
       "@config/*": ["src/config/*"],
-      "@services/*": ["src/services/*"]
+      "@resources/*": ["src/resources/*"],
+      "@services/*": ["src/services/*"],
+      "@Styles/*": ["src/styles/*"]
     }
   }
 }
