@@ -22,11 +22,15 @@ export default defineConfig(({ mode }) => {
         },
         resolve: {
             alias: {
-                '@root': path.resolve(__dirname, '.'),
+                '@root': path.resolve(__dirname, './'),
                 '@src': path.resolve(__dirname, './src'),
-                '@renderer': path.resolve(__dirname, './src/renderer'),
-                '@main': path.resolve(__dirname, './src/main'),
-                '@assets': path.resolve(__dirname, './src/assets'),
+                '@components': path.resolve(__dirname, './src/components'),
+                '@config': path.resolve(__dirname, './src/config'),
+                '@resources': path.resolve(__dirname, './src/resources'),
+                '@services': path.resolve(__dirname, './src/services'),
+                '@styles': path.resolve(__dirname, './src/styles'),
+                '@store': path.resolve(__dirname, './src/store'),
+                '@slices': path.resolve(__dirname, './src/store/slices'),
             },
         },
     }

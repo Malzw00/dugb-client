@@ -1,12 +1,11 @@
 import { Tab, TabList } from "@fluentui/react-components";
-import { useContext } from "react";
-import ProjectCard from "../PreMadeComponents/ProjectCard";
-import {HomePadContext} from './HomePad';
+import ProjectCard from "@components/PreMadeComponents/ProjectCard";
+import { useSelector } from "react-redux";
 
 
 export default function ProjectsArea() {
 
-    const homePadContext = useContext(HomePadContext);
+    const projects = useSelector(state => state.projects.value);
 
     return <div className='projects-area min-height-0'>
         
@@ -18,7 +17,7 @@ export default function ProjectsArea() {
         </TabList>
 
         <div className="projects-list height-full overflowY-auto min-height-0">
-            {homePadContext.projects.map((project, index) => (
+            {projects.map((project, index) => (
                 <ProjectCard key={project.id} {...project} projectID={index}/>
             ))}
         </div>

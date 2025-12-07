@@ -4,11 +4,13 @@
     "paths": {
       "@root/*": ["./*"],
       "@src/*": ["./src/*"],
-      "@Components/*": ["src/components*"],
-      "@config/*": ["src/config/*"],
-      "@resources/*": ["src/resources/*"],
-      "@services/*": ["src/services/*"],
-      "@Styles/*": ["src/styles/*"]
+      "@components/*": ["./src/components/*"],
+      "@config/*": ["./src/config/*"],
+      "@resources/*": ["./src/resources/*"],
+      "@services/*": ["./src/services/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@store/*": ["./src/store/*"],
+      "@slices/*": ["./src/store/slices/*"]
     }
   }
 }

@@ -1,50 +1,51 @@
 import { Label } from "@fluentui/react-components";
 import { useNavigate } from 'react-router-dom';
+import projectImg from '@resources/book.png'
 
 
 
-export default function ProjectCard({ title, description, developers = [], categories = [], 
-        keywords = [], projImgPath, supervisor, projectID, style}) 
+export default function ProjectCard({ project_title, project_description, developers = [], categories = [], 
+        keywords = [], cover_image_id, supervisor, project_id, style}) 
     {
 
     const navigate = useNavigate();
 
     return (
-        <div 
+        <a
             className='project-card flex-row padding-13px gap-13px'
             onClick={() => {
-                navigate(`/home/project/${projectID}`);
+                navigate(`/home/project/${project_id}`);
             }}
             style={style?? {}}
         >
             <img 
                 className="project-card-cover border-radius-4px" 
-                src={projImgPath} 
+                src={projectImg} 
                 alt="Project Cover" 
                 style={{background: 'rgba(0, 0, 0, 0.2)', height: '260px', width: '188px'}}
             />
 
             <div className="project-details-div flex-col gap-8px">
                 
-                <h2>{title}</h2>
+                <h2>{project_title}</h2>
                 
-                <p>{description}</p>
+                <p>{project_description}</p>
 
-                <span className="flex-col gap-5px"> 
+                {/* <span className="flex-col gap-5px"> 
                     <h4>إعداد الطلبة</h4> 
                     <div className='flex-row flex-wrap gap-5px'>
                         {developers.map(dever => <Label>{dever}</Label>)}
                     </div>
-                </span>
+                </span> */}
 
-                <span className="flex-col gap-5px"> 
+                {/* <span className="flex-col gap-5px"> 
                     <h4>تحت إشراف</h4> 
                     <div className='flex-row flex-wrap gap-5px'>
                         <Label>{supervisor}</Label>
                     </div>
-                </span>
+                </span> */}
                 
-                <div className="categories-section flex-row gap-8px">
+                {/* <div className="categories-section flex-row gap-8px">
                     <h5 style={{color: 'rgba(0, 0, 0, 0.8)'}}>الفئات</h5>
                     <div className="flex-row gap-3px">
                         {categories.map((category) => <span className='proj-category-span'>{category}</span>)}
@@ -56,8 +57,8 @@ export default function ProjectCard({ title, description, developers = [], categ
                     <div className="flex-row gap-3px">
                         {keywords.map((keyword) => <span className='proj-keyword-span'>{keyword}</span>)}
                     </div>
-                </div>
+                </div> */}
             </div>
-        </div>
+        </a>
     );
 };

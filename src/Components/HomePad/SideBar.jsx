@@ -5,9 +5,10 @@ import {
     Tab,
 } from '@fluentui/react-components';
 import { Search20Regular } from '@fluentui/react-icons';
-import LogoImg from '../PreMadeComponents/LogoImg';
-import logo from '../../resources/logo.png';
+import LogoImg from '@components/PreMadeComponents/LogoImg';
+import logo from '@resources/logo.png';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 
@@ -15,16 +16,12 @@ export default function SideBar() {
 
     const navigate = useNavigate();
     
-    const [tabs, setTabs] = React.useState([]);
+    const collages = useSelector(state => state.collages.value);
+
     
-    React.useEffect(() => {
-        
-        setTabs([
-            { id: 1, name: 'كلية الهندسة' },
-            { id: 2, name: 'كلية الطب' },
-            { id: 3, name: 'كلية العلوم' },
-        ]);
-    }, []);
+    // React.useEffect(() => {
+    //     // load and set Collages
+    // }, []);
 
     return (
         <div className = 'sidebar'>
@@ -37,8 +34,8 @@ export default function SideBar() {
             <Input contentBefore={<Search20Regular/>} placeholder="بحث عن كلية" />
       
             <TabList vertical defaultSelectedValue={1}>
-                {tabs.map(tab => (
-                    <Tab key={tab.id} value={tab.id}>{tab.name}</Tab>
+                {collages.map(collage => (
+                    <Tab key={collage.id} value={collage.collage_id}>{collage.collage_name}</Tab>
                 ))}
             </TabList>
           </div>
