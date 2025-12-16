@@ -3,24 +3,21 @@ import {
     Input,
     Dropdown,
     Option,
-    Avatar,
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    MenuPopover,
-    MenuTrigger,
     Button,
-    Image,
 } from '@fluentui/react-components';
-import { SignOut20Regular, Person20Regular, Search20Regular, Settings20Regular, CalendarNote20Regular } from '@fluentui/react-icons';
+import { Dismiss16Regular, Search20Regular, } from '@fluentui/react-icons';
 import ProjectsArea from '@components/HomePad/ProjectsArea';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCategories } from '@root/src/store/slices/selectedCategories.slice';
-import { setSearchText } from '@root/src/store/slices/searchProject.slice';
-import { selectDepartment } from '@root/src/store/slices/selectedDepartment.slice';
-import {  } from '@services/category';
+import { selectCategory } from '@root/src/store/slices/selectedCategory.slice';
+import { setSearchText } from '@slices/searchProject.slice';
+import { selectDepartment } from '@slices/selectedDepartment.slice';
+import { getCategories } from '@services/category';
+import { setCategories } from '@slices/categories.slice';
+import { getDepartments } from '@services/collage';
+import { setDepartments } from '@slices/departments.slice';
+import { UserBtn } from '@components/HomePad/UserBtn';
+import { setFrom, setTo } from '@root/src/store/slices/dateFilter.slice';
+import { setSemester } from '@root/src/store/slices/semester.slice';
 
 
 
@@ -28,86 +25,104 @@ export default function ContentArea() {
 
     const dispatch = useDispatch();
 
-    const user = useSelector(state => state.user.value);
     const searchProject = useSelector(state => state.searchProject.value);
-    const categories = useSelector(state => state.categories.value);
-    const selectedCategories = useSelector(state => state.selectedCategories.value);
     const departments = useSelector(state => state.departments.value);
-    const selectedDepartments = useSelector(state => state.selectedDepartment.value);
-
-    const handleCategoriesSelect = (_, data) => {
-        dispatch(selectCategories(data.selectedOptions)); 
-    }
+    const semester = useSelector(state => state.semester.value);
+    const selectedCollage = useSelector(state => state.selectedCollage.value);
+    const selectedDepartment = useSelector(state => state.selectedDepartment.value);
 
     const handleSearchInput = function (event) {
         dispatch(setSearchText(event.target.value));
     }
 
-    const handleDepartmentSelect = function (event) {
-        dispatch(selectDepartment(event.target.value));
+    const handleDepartmentSelect = function (_, data) {
+        dispatch(selectDepartment(data.selectedOptions));
+    }
+
+    const handleSemesterSelect = function (event, data) {
+        dispatch(setSemester(data.selectedOptions[0]));
+    }
+    
+    const handleUnSelectSemester = function (_) {
+        dispatch(setSemester(null));
+    }
+
+    const handleUnSelectDepartment = function (_) {
+        dispatch(selectDepartment([]));
     }
 
     React.useEffect(() => {
+
         // load and set categories
+        getCategories({ collageId: selectedCollage }).then(res => {
+          
+            const categories = res?.data?.result?? [];
+            
+            dispatch(setCategories(categories));
+            
+            dispatch(selectCategory(categories?.[0].category_id?? 0));
         
+        }).catch(err => {
+          
+            if(err.status === 404 || err.status === 400)
+                dispatch(setCategories(0));
+        });
 
         // load and set departments
-        // load and set user data
-    }, []);
+        getDepartments(selectedCollage).then(res => {
 
-    const navigate = useNavigate();
+            dispatch(setDepartments(res?.data?.result ?? []));
+            
+            dispatch(selectDepartment([]));
+
+        }).catch(err => {
+          
+            if(err.status === 404 || err.status === 400)
+                dispatch(setDepartments([]));
+        });
+
+    }, [selectedCollage]);
 
     return (
         <div className="content-area">
             
-            <div className="items-start filter-bar">
-               
-               <div className='flex-row flex-wrap gap-5px'>
+            <div className="flex-row justify-between">
+                <div className="filter-div" style={{width: '60%', padding: '2px', height: 'fit-content'}}>
                     <Input 
                         className="search-input" 
                         contentBefore={<Search20Regular/>}
                         placeholder="بحث عن مشروع" 
                         value={searchProject}
+                        style={{ flex: '1' }}
                         onChange={handleSearchInput}
                     />
+                    <Button icon={<Dismiss16Regular/>} onClick={() => dispatch(setSearchText(''))}/>
+                </div>
+                {/* user button */}
+                <UserBtn />
+            </div>
 
-                    <CategoriesDropdown
-                        categories={categories}
-                        selectedCategories={selectedCategories}
-                        onCategorySelect={handleCategoriesSelect}
-                    />
+            <div className='flex-row flex-wrap items-center gap-5px'>
 
-                    <DepartmentsDropdown
-                        departments={departments}
-                        selectedDepartments={selectedDepartments}
-                        onDepartmentSelect={handleDepartmentSelect}
-                    />
-                    
-                    <Dropdown placeholder="الفصل" multiselect className="dropdown filter-input">
+                <DepartmentsDropdown
+                    departments={departments}
+                    selectedDepartment={selectedDepartment}
+                    onDepartmentSelect={handleDepartmentSelect}
+                    handleUnSelect={handleUnSelectDepartment}
+                />
+                
+                <div className="filter-div">
+                    <Dropdown  
+                        selectedOptions={semester? [semester]: []}
+                        onOptionSelect={handleSemesterSelect}
+                        placeholder="الفصل" 
+                        className="dropdown filter-input">
+
                         <Option value='spring'>الربيع</Option>
                         <Option value='autumn'>الخريف</Option>
                     </Dropdown>
-                    
-                    <Input type="text" placeholder='السنة' contentBefore={<CalendarNote20Regular/>}/>
-               </div>
-
-                {
-                    // globalContext.globalState.user? 
-                    user.accountId?
-                    <UserBtn 
-                        username={`${user.fstName} ${user.lstName}`} 
-                        isAdmin={user.role === 'admin' || user.role === 'manager'}
-                        img={user.image}
-                    />
-                    :
-                    <Button
-                        appearance='primary'
-                        onClick={() => {
-                            navigate('/Auth');
-                        }}
-                        style={{marginInlineStart: 'auto'}}
-                    >تسجيل الدخول</Button>
-                }
+                    <Button icon={<Dismiss16Regular/>} onClick={handleUnSelectSemester}/>
+                </div>
             </div>
             
             {/* Projects Area */}
@@ -116,70 +131,78 @@ export default function ContentArea() {
     );
 }
 
+function CategoriesDropdown({ categories, selectedCategories, onCategorySelect, handleUnSelect }) {
 
+    return <div className='filter-div'>
+        <Dropdown 
+            multiselect
+            className="dropdown filter-input"
+            placeholder="تحديد الفئات"
+            selectedOptions={selectedCategories} 
+            onOptionSelect={onCategorySelect}>
 
-function UserBtn({username, isAdmin, img}) {
-
-    const navigate = useNavigate();
-
-    return <Menu className='user-menu' positioning={{ autoSize: true, }}>
-        <MenuTrigger disableButtonEnhancement>
-            <MenuButton className='user-menu-btn' appearance="transparent">
-                <div className='user-menu-btn-content'>
-                    {/* <Avatar className='user-menu-avatar' /> */}
-                    <Image src={img} width={34} style={{borderRadius: '50em'}} height={34}></Image>
-                    <div className='user-menu-name'>{username}</div>
-                </div>
-            </MenuButton>
-        </MenuTrigger>
-        <MenuPopover>
-            <MenuList>
-                <MenuItem icon={<Person20Regular />} onClick={() => navigate('profile/user')}>
-                    عرض الملف الشخصي
-                </MenuItem>
-                {
-                    isAdmin &&
-                    <MenuItem icon={<Settings20Regular />} onClick={() => navigate('/home/control')}>
-                        لوحة التحكم
-                    </MenuItem>
-                }
-                <MenuItem style={{ color: 'red' }} icon={<SignOut20Regular />}>تسجيل الخروج</MenuItem>
-            </MenuList>
-        </MenuPopover>
-    </Menu>;
+            {categories?.map?.((category, index) => {
+                return <Option key={index} value={category.category_id}>
+                    {category.category_name}
+                </Option>
+            })}
+        </Dropdown>
+        <Button icon={<Dismiss16Regular/>} onClick={handleUnSelect}/>
+    </div>
 }
 
-function CategoriesDropdown({ categories, selectedCategories, onCategorySelect }) {
+function DepartmentsDropdown({ departments, selectedDepartment, onDepartmentSelect, handleUnSelect }) {
 
-    return <Dropdown 
-        multiselect
-        className="dropdown filter-input"
-        placeholder="تحديد الفئات" 
-        selectedOptions={selectedCategories} 
-        onOptionSelect={onCategorySelect}>
+    return <div className='filter-div'>
+        <Dropdown 
+            className="dropdown filter-input"
+            placeholder="تحديد القسم" 
+            selectedOptions={selectedDepartment}
+            onOptionSelect={onDepartmentSelect}>
 
-        <Option key={0} value={0}>كل الفئات</Option>
-        {categories.map(category => {
-            return <Option key={category.category_id} value={category.category_id}>
-                {category.category_name}
-            </Option>
-        })}
-    </Dropdown>
+            {departments.map((department, index) => {
+                return <Option key={index} value={department.department_id}>
+                    {department.department_name}
+                </Option>
+            })}
+        </Dropdown>
+        <Button icon={<Dismiss16Regular/>} onClick={handleUnSelect}/>
+    </div>
 }
 
-function DepartmentsDropdown({ departments, selectedDepartment, onDepartmentSelect }) {
 
-    return <Dropdown 
-        className="dropdown filter-input"
-        placeholder="تحديد القسم" 
-        selectedOptions={selectedDepartment}
-        onOptionSelect={onDepartmentSelect}>
+function DateFilter () {
 
-        <Option key={0} value={0}>كل الأقسام</Option>
-        {departments.map(department => {
-            return <Option key={department.department_id} value={department.department_id}>
-                {department.department_name}
-            </Option>
-        })}
-    </Dropdown>
+    const dispatch = useDispatch();
+    
+    const dateFilter = useSelector(state => state.dateFilter.value);
+
+    const handleFromDateChange = (event) => {
+        dispatch(setFrom(event.target.value));
+    };
+
+    const handleToDateChange = (event) => {
+        dispatch(setTo(event.target.value));
+    };
+
+    return <div className="filter-div">
+        
+        <span style={{ fontSize: '14px', padding: '0 8px' }}>التاريخ من:</span>
+        
+        <Input 
+            className='date-box' 
+            type="date" 
+            value={dateFilter.from}
+            onChange={handleFromDateChange}
+        />
+        
+        <span style={{ fontSize: '14px', padding: '0 8px' }}>إلى:</span>
+
+        <Input 
+            className='date-box' 
+            type="date" 
+            value={dateFilter.to} 
+            onChange={handleToDateChange}
+        />
+    </div>
 }

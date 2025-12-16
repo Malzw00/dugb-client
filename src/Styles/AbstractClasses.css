@@ -28,8 +28,10 @@
 .width-90 { width: 90%; }
 .width-95 { width: 95%; }
 .width-100 { width: 100%; }
+.width-auto { width: auto; }
 
 /* Height classes */
+.height-auto { height: auto; }
 .height-0 { height: 0%; }
 .height-5 { height: 5%; }
 .height-10 { height: 10%; }
@@ -171,6 +173,8 @@
 
 /* Padding all sides */
 .padding-0px   { padding: 0px; }
+.padding-1px   { padding: 1px; }
+.padding-2px   { padding: 2px; }
 .padding-3px   { padding: 3px; }
 .padding-5px   { padding: 5px; }
 .padding-8px   { padding: 8px; }

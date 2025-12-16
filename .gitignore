@@ -26,3 +26,5 @@ dist-ssr
 .gitignore
 
 out/
+
+fluent-ui-color.css

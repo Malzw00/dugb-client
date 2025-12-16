@@ -1,17 +1,28 @@
-import { Label } from "@fluentui/react-components";
 import { useNavigate } from 'react-router-dom';
-import projectImg from '@resources/book.png'
+import projectIcon from '@resources/book.svg'
+import { Chat16Regular, Heart16Regular, Star16Regular } from '@fluentui/react-icons';
 
 
+const reactionDivStyle = (`
+    flex-row 
+    bg-3 
+    paddingY-2px
+    paddingX-5px
+    justify-center
+    items-center 
+    text-center 
+    border-radius-5px
+    gap-13px`
+);
 
-export default function ProjectCard({ project_title, project_description, developers = [], categories = [], 
-        keywords = [], cover_image_id, supervisor, project_id, style}) 
+export default function ProjectCard({ project_id, project_title, project_description, stats, style}) 
     {
 
     const navigate = useNavigate();
 
     return (
         <a
+            key={project_id}
             className='project-card flex-row padding-13px gap-13px'
             onClick={() => {
                 navigate(`/home/project/${project_id}`);
@@ -20,44 +31,28 @@ export default function ProjectCard({ project_title, project_description, develo
         >
             <img 
                 className="project-card-cover border-radius-4px" 
-                src={projectImg} 
+                src={projectIcon} 
                 alt="Project Cover" 
-                style={{background: 'rgba(0, 0, 0, 0.2)', height: '260px', width: '188px'}}
+                style={{ width: '100px' }}
             />
 
             <div className="project-details-div flex-col gap-8px">
                 
-                <h2>{project_title}</h2>
+                <h2 className='project-title-h2'>{project_title}</h2>
                 
                 <p>{project_description}</p>
 
-                {/* <span className="flex-col gap-5px"> 
-                    <h4>إعداد الطلبة</h4> 
-                    <div className='flex-row flex-wrap gap-5px'>
-                        {developers.map(dever => <Label>{dever}</Label>)}
+                {stats && <div className='flex-row gap-5px'>
+                    <div className={reactionDivStyle} style={{ border: '1px solid silver' }}>
+                        <Heart16Regular/>{stats?.likes?? '0'}
                     </div>
-                </span> */}
-
-                {/* <span className="flex-col gap-5px"> 
-                    <h4>تحت إشراف</h4> 
-                    <div className='flex-row flex-wrap gap-5px'>
-                        <Label>{supervisor}</Label>
+                    <div className={reactionDivStyle} style={{ border: '1px solid silver' }}>
+                        <Chat16Regular/>{stats?.comments?? '0'}
                     </div>
-                </span> */}
-                
-                {/* <div className="categories-section flex-row gap-8px">
-                    <h5 style={{color: 'rgba(0, 0, 0, 0.8)'}}>الفئات</h5>
-                    <div className="flex-row gap-3px">
-                        {categories.map((category) => <span className='proj-category-span'>{category}</span>)}
+                    <div className={reactionDivStyle} style={{ border: '1px solid silver' }}>
+                        <Star16Regular/>{stats?.rating?? '0'}
                     </div>
-                </div>
-                
-                <div className="keywords-section flex-row gap-8px">
-                    <h5 style={{color: 'rgba(0, 0, 0, 0.8)'}}>الكلمات المفتاحية</h5>
-                    <div className="flex-row gap-3px">
-                        {keywords.map((keyword) => <span className='proj-keyword-span'>{keyword}</span>)}
-                    </div>
-                </div> */}
+                </div>}
             </div>
         </a>
     );

@@ -5,82 +5,106 @@ import {
     MenuButton,
     MenuPopover,
     MenuList,
-    MenuItem, Slider 
+    MenuItem, Slider, 
+    Tooltip
 } from "@fluentui/react-components";
-import { ArrowDown20Regular, ArrowRight20Regular, Attach20Regular, Book20Regular, Chat20Regular, Heart20Regular, Library20Regular, List20Regular, Person20Regular, TextDescription20Regular } from "@fluentui/react-icons";
-import Header from "./PreMadeComponents/Header";
-import { useContext, useState } from "react";
-import { HomePadContext } from "./HomePad/HomePad";
-import { useNavigate, useParams } from "react-router-dom";
-import '../Styles/ProjectPad.css'
-import PlatformHeader from "./PreMadeComponents/PlatformHeader";
+import { 
+    ArrowDown20Regular, 
+    Attach20Regular, 
+    Chat20Regular, 
+    Heart20Regular, 
+    List20Regular, 
+    Person20Regular, 
+    TextDescription20Regular 
+} from "@fluentui/react-icons";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import '@styles/ProjectPad.css'
+import PlatformHeader from "@components/PreMadeComponents/PlatformHeader";
+import { getProjectById } from "../services/project/project";
+import bookImg from '@resources/book.svg'
 
 
 
-
-
-// Component: Project Pad (Main Function)
 export default function ProjectPad() {
 
     const { projectId } = useParams();
+    const [project, setProject] = useState(null);
 
-    const homePadContext = useContext(HomePadContext);
+    React.useEffect(() => {
+
+        getProjectById(projectId).then(res => {
+
+            if(res?.data?.success){
+                const resProject = res?.data?.result;
+
+                if(resProject)
+                setProject(resProject);
+            }
+
+        }).catch(err => {
+            setProject(null);
+        })
+
+    }, [])
     
-    const project = homePadContext.projects[parseInt(projectId, 10)];
-
-
     return ( 
-        <div 
-            className="project-float-pad flex-col height-full width-full" 
+        project
+        ? <div 
+            className="flex-col project-float-pad height-full width-full" 
             style={{background: 'white'}}
         >
             {/* Platform Header */}
             <PlatformHeader/>
 
             {/* project Content Area */}
-            <div className='project-content-area flex-row flex-grow overflow-auto min-height-0'>
+            <div className='flex-row flex-grow overflow-auto project-content-area min-height-0'>
 
                 {/** cover side */}
-                <CoverSide projImgPath={project.projImgPath}/>
+                <CoverSide projImgPath={bookImg}/>
 
                 {/** project details section */}
-                <div className='project-details-section bg-1 flex-grow flex-col gap-13px padding-34px overflow-auto'>
+                <div className='flex-col flex-grow overflow-auto project-details-section bg-1 gap-13px padding-34px'>
 
                     {/* Title Description Section */}
-                    <TitleDescriptionSection title={project.title} description={project.description}/>
+                    <TitleDescriptionSection 
+                        title={project.project_title} 
+                        description={project.project_description}
+                    />
 
                     {/** separator */}
                     <div style={{height: '13px'}}/>
 
                     {/* Details Section */}
-                    <DetailsSection  {...project}/>
+                    <DetailsSection project={project}/>
                     
                     {/** separator */}
                     <div style={{height: '13px'}}/>
 
                     {/* Developers Section */}
-                    <DevelopersSection developers={project.developers}/>
+                    <StudentsSection students={project.Students}/>
 
                     {/* Supervisor Section */}
-                    <SupervisorSection supervisor={project.supervisor}/>
+                    <SupervisorSection supervisor={project.Supervisor}/>
 
                     {/* Float Action Buttons */}
                     <div 
-                        className='float-action-btns pos-fixed gap-8px flex-row' 
+                        className='flex-row float-action-btns pos-fixed gap-8px' 
                         style={{bottom: '34px', left: '34px'}}
                     >
-                        <CircleButton>
+                        <CircleButton tiptext={`التعليقات`}>
                             <Chat20Regular/>
                         </CircleButton>
-                        <CircleButton>
+                        <CircleButton tiptext={`إعجاب`}>
                             <Heart20Regular/>
                         </CircleButton>
-                        <ProjectOptionsMenu/>
+                        <ProjectOptionsMenu tiptext={`خيارات أخرى`}/>
                     </div>
                     
                 </div>
             </div>
         </div>
+        : <div className="not-found-div">404 Not Found</div>
     );
 }
 
@@ -90,9 +114,9 @@ export default function ProjectPad() {
 // -----------------------------------------------------------------------------
 // Component: CoverSide
 function CoverSide({projImgPath}) {
-    return <div className='cover-side height-full block padding-13px'>
+    return <div className='block cover-side height-full padding-13px'>
         <img
-            className="bg-2 height-full width-auto block border-radius-8px"
+            className="block border-radius-8px"
             src={projImgPath}
             alt="project cover" 
         />
@@ -117,23 +141,35 @@ function TitleDescriptionSection({title, description}) {
 
     const [rate, setRate] = useState(0);
 
-    return <div className="gap-13px flex-col">
-        <div className="flex-row gap-8px items-center justify-between">
+    return <div style={{maxWidth: '80%'}} className="flex-col gap-13px">
+        
+        <div className="flex-row items-center justify-between gap-8px">
             <h1>{title}</h1>
-            <div className="flex-col gap-0px items-center">
-                <div className='flex-row justify-between width-full'>
-                    <span>تقييم المشروع</span>
-                    <span>5/{rate}</span>
-                </div>
-                <Slider 
-                    max={5}  
-                    value={rate}
-                    style={{width: '100%', padding: '0'}}
-                    onChange={(ev)=>setRate(ev.target.value)}
-                />
-            </div>
         </div>
+        
         <div><p>{description}</p></div>
+
+        <div className={`
+                flex-row 
+                gap-0px 
+                width-100 
+                items-center 
+                bg-3 
+                border-radius-5px 
+                padding-5px
+                paddingX-21px
+            `}
+            style={{ border: '1px solid silver'}}>
+
+            <span>تقييم المشروع</span>
+            <Slider 
+                max={5}  
+                value={rate}
+                style={{width: '100px', padding: '0'}}
+                onChange={(ev)=>setRate(ev.target.value)}
+            />
+            <span>5/{rate}</span>
+        </div>
     </div>;
 }
 
@@ -141,33 +177,33 @@ function TitleDescriptionSection({title, description}) {
 
 // -----------------------------------------------------------------------------
 // Component: DetailsSection
-function DetailsSection({keywords, categories, major, collage, semester, academicYear}) {
+function DetailsSection({ project }) {
 
-    return <div className='details-section flex-col gap-13px'>
+    return <div className='flex-col details-section gap-13px'>
 
-        <div className="detail-section collage-section flex-row gap-13px">
+        <div className="flex-row detail-section collage-section gap-13px">
             <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>الكلية</h3>
-            <p>{collage}</p>
+            <p>{project.Department.Collage.collage_name}</p>
         </div>
 
-        <div className="detail-section major-section flex-row gap-13px">
+        <div className="flex-row detail-section major-section gap-13px">
             <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>الفصل الدراسي</h3>
-            <p>{semester}</p>
+            <p>{project.project_semester}</p>
         </div>
 
-        <div className="detail-section major-section flex-row gap-13px">
-            <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>التخصص</h3>
-            <p>{major}</p>
+        <div className="flex-row detail-section major-section gap-13px">
+            <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>القسم</h3>
+            <p>{project.Department.department_name}</p>
         </div>
 
-        <div className="detail-section major-section flex-row gap-13px">
-            <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>السنة الدراسية</h3>
-            <p>{academicYear}</p>
+        <div className="flex-row detail-section major-section gap-13px">
+            <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>تاريخ المشروع</h3>
+            <p>{new Date(project.project_date).toISOString().slice(0, 10)}</p>
         </div>
 
-        <CategoriesSection categories={categories}/>
+        {/* <CategoriesSection categories={categories}/> */}
 
-        <KeywordsSection keywords={keywords}/>
+        {/* <KeywordsSection keywords={keywords}/> */}
 
     </div>
 }
@@ -177,7 +213,7 @@ function DetailsSection({keywords, categories, major, collage, semester, academi
 // Component: KeywordsSection
 function KeywordsSection({keywords}) {    
 
-    return <div className="detail-section keywords-section flex-row gap-13px">
+    return <div className="flex-row detail-section keywords-section gap-13px">
         <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>الكلمات المفتاحية</h3>
         <div className="flex-row gap-3px">
             {keywords.map((keyword, index) => {
@@ -191,10 +227,10 @@ function KeywordsSection({keywords}) {
 // Component: CategoriesSection
 function CategoriesSection({categories}) {
 
-    return <div className="detail-section categories-section flex-row gap-13px">
+    return <div className="flex-row detail-section categories-section gap-13px">
         <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>الفئات</h3>
         <div className="flex-row gap-3px">{categories.map((category) => {
-            return <span className='proj-category-span cursor-pointer'>{category}</span>;
+            return <span className='cursor-pointer proj-category-span'>{category}</span>;
         })}</div>
     </div>;
 }
@@ -203,10 +239,10 @@ function CategoriesSection({categories}) {
 
 // -----------------------------------------------------------------------------
 // Component: DevelopersSection
-function DevelopersSection({developers}) {
-    return <span className="data-section developers-section flex-col gap-13px">
+function StudentsSection({ students }) {
+    return students?.length && <span className="flex-col data-section developers-section gap-13px">
         <h3>إعداد الطلبة</h3>
-        <div className='flex-row flex-wrap gap-8px'>{developers.map((dever, index) => {
+        <div className='flex-row flex-wrap gap-8px'>{students.map((student, index) => {
             return <Button 
                 key={index}
                 appearance="primary"
@@ -218,7 +254,7 @@ function DevelopersSection({developers}) {
                     gap: '8px',
                 }}
             >
-                <Person20Regular /> {dever}
+                <Person20Regular /> {student.student_name}
             </Button>;
         })}</div>
     </span>;
@@ -226,8 +262,9 @@ function DevelopersSection({developers}) {
 
 // -----------------------------------------------------------------------------
 // Component: SupervisorSection
-function SupervisorSection({supervisor}) {
-    return <span className="data-section developers-section flex-col gap-13px">
+function SupervisorSection({ supervisor }) {
+
+    return supervisor && <span className="flex-col data-section developers-section gap-13px">
         <h3>تحت إشراف</h3>
         <Button
             appearance="primary"
@@ -239,7 +276,7 @@ function SupervisorSection({supervisor}) {
                 gap: '8px',
             }}
         >
-            <Person20Regular /> {supervisor}
+            <Person20Regular /> {supervisor.supervisor_name}
         </Button>
     </span>;
 }
@@ -248,22 +285,26 @@ function SupervisorSection({supervisor}) {
 // Component: CircleButton
 function CircleButton (props) {
 
-    return <Button appearance="primary" style={{ 
-        display: 'flex',
-        gap: '8px', borderRadius: '50em', 
-        minHeight: '40px', padding: '0',
-        minWidth: '40px'
-    }} {...props}>
-        {props.children?? ''}
-    </Button>
+    return (
+        <Tooltip content={props.tiptext} children={
+            <Button appearance="primary" style={{ 
+                display: 'flex',
+                gap: '8px', borderRadius: '50em', 
+                minHeight: '40px', padding: '0',
+                minWidth: '40px'
+            }} {...props}>
+                {props.children?? ''}
+            </Button>
+        }/>
+    )
 }
 
 
 // -----------------------------------------------------------------------------
 // Component: ProjectOptionsMenu
-function ProjectOptionsMenu() {
+function ProjectOptionsMenu({ tiptext }) {
     return (
-        <Menu className='project-options-menu'>
+        <Menu title={tiptext} className='project-options-menu'>
             <MenuTrigger disableButtonEnhancement>
                 <MenuButton 
                     className='project-options-menu-btn' 

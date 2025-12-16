@@ -2,6 +2,7 @@
     direction: rtl;
     user-select: none;
     text-align: right;
+    transition: 200ms;
 }
   
   

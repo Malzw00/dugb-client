@@ -15,30 +15,32 @@ import api from "@services/api";
  * @param {number} [options.offset=0] - Pagination offset.
  * @param {number} [options.limit=20] - Pagination limit.
  * @param {Array<number>} [options.categories=[]] - Category IDs.
- * @param {Array<number>} [options.departments=[]] - Department IDs.
- * @param {Array<number>} [options.collages=[]] - Collage IDs.
- * @param {"date"|"rating"|"likes"|"grade"} [options.orderBy="date"] - Sorting field.
- * @param {"ASC"|"DESC"} [options.orderDir="DESC"] - Sorting direction.
+ * @param {Array<number>} [options.departmentId] - Department ID.
+ * @param {Array<number>} [options.collageId] - Collage ID.
+ * @param {"date"|"rating"|"likes"|"grade"} [options.sortBy="date"] - Sorting field.
+ * @param {"ASC"|"DESC"} [options.order="DESC"] - Sorting direction.
  * @returns {Promise<AxiosResponse>} Axios full response.
  */
 export async function getProjects({
     offset = 0,
     limit = 20,
     categories = [],
-    departments = [],
-    collages = [],
-    orderBy = "date",
-    orderDir = "DESC",
+    departmentId,
+    collageId,
+    semester,
+    sortBy = "date",
+    order = "DESC",
 } = {}) {
     return api.get("/projects", {
         params: {
             offset,
             limit,
             categories,
-            departments,
-            collages,
-            orderBy,
-            orderDir,
+            departmentId,
+            collageId,
+            sortBy,
+            order,
+            semester,
         },
     });
 }

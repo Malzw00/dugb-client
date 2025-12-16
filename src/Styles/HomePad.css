@@ -11,9 +11,9 @@
     display: flex;
     flex-direction: column;
     gap: 13px;
+    min-height: 0;
     background-color: var(--colorNeutralBackground2);
 }
-
 .sidebar .logo-caption-div {
     display: flex;
     gap: 13px;
@@ -22,6 +22,14 @@
 .logo-caption-div .logo-img {
     height: 40px;
     width: 34px;
+}
+.collages-tablist {
+    min-height: 0;
+    flex: 1;
+    overflow: auto;
+}
+.collages-tablist > .collage-tab:hover {
+    background-color: rgba(0, 0, 0, 0.03) !important;
 }
 
 
@@ -53,7 +61,6 @@
     background-color: var(--colorNeutralBackground3);
     height: 100%;
     padding: 13px;
-    padding-bottom: 0;
     gap: 13px;
 }
   
@@ -86,12 +93,11 @@
     background-color: white;
     border: 1px solid var(--colorNeutralStroke2);
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.06);
-    border-bottom: none;
     flex: 1;
     /* gap: 5px; */
     border-radius: 5px;
-    border-end-end-radius: 0;
-    border-end-start-radius: 0;
+    /* border-end-end-radius: 0;
+    border-end-start-radius: 0; */
 }
 
 .projects-area .ranks-bar {
@@ -124,6 +130,9 @@
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.015);
 }
+.project-card:hover .project-title-h2 {
+    color: rgb(0, 67, 190);
+}
 .project-card:active {
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.03);
@@ -137,4 +146,27 @@
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     font-size: 12px;
+}
+
+
+
+.filter-div {
+    display: flex;
+    padding: 2px;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    gap: 1px;
+    align-items: center;
+}
+.filter-div > .date-box {
+    width: 150px !important;
+}
+
+
+.cc-btn.selected {
+    transition: 200ms ease;
+    background-color: var(--colorBrandBackground);
+    color: white;
+    font-weight: bold;
 }

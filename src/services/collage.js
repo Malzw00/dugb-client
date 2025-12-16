@@ -103,7 +103,7 @@ export function deleteCollage(collageId) {
  * @param {number|string} collageId
  * @param {Object} [params]
  * @param {number} [params.offset]
- * @param{number} [params.limit]
+ * @param {number} [params.limit]
  * @returns {Promise<AxiosResponse>}
  */
 export function getDepartments(collageId, params = {}) {
