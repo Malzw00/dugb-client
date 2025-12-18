@@ -1,6 +1,5 @@
 import { useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom"
-import { GlobalContext } from "../App";
+import { useParams } from "react-router-dom";
 import PlatformHeader from "./PreMadeComponents/PlatformHeader";
 import { 
     Avatar, Button, Menu, MenuButton, MenuItem, MenuList, 
@@ -12,9 +11,8 @@ import {
     Person48Regular, 
     SignOut20Regular 
 } from "@fluentui/react-icons";
-import { HomePadContext } from "./HomePad/HomePad";
 import ProjectCard from "./PreMadeComponents/ProjectCard";
-import '../Styles/ProfilePad.css';
+import '@styles/ProfilePad.css';
 
 
 
@@ -28,16 +26,16 @@ export default function ProfilePad() {
     let user = userId === 'user'? globalContext.globalState.user : null;
 
     return (
-        <div className='profile-pad flex-col height-full width-full'>
+        <div className='flex-col profile-pad height-full width-full'>
 
             {/* Header */}
             <PlatformHeader/>
 
             {/* Profile Area */}
-            <div className="profile-area flex-row width-full flex-grow bg-1 bg-2 justify-center overflow-auto">
+            <div className="flex-row justify-center flex-grow overflow-auto profile-area width-full bg-1 bg-2">
                 
                 {/* Profile Content */}
-                <div className="profile-content flex-col height-full" style={{width: '70%'}}>
+                <div className="flex-col profile-content height-full" style={{width: '70%'}}>
                     
                     {/* Profile Details */}
                     <ProfileDetails user={user} />
@@ -57,7 +55,7 @@ export default function ProfilePad() {
 // Component: ProfileDetails
 function ProfileDetails({ user }) {
     return (
-        <div className="profile-details flex-col items-stretch gap-5px bg-1">
+        <div className="flex-col items-stretch profile-details gap-5px bg-1">
             <div className="flex-row padding-34px gap-34px">
 
                 {/* profile avatar */}
@@ -90,8 +88,8 @@ function ProfileDetails({ user }) {
 // Component: ProfileData
 function ProfileData({ user }) {
     return (
-        <div className="profile-data flex-col gap-5px flex-grow">
-            <h2 className="editable-field text-center flex-row pos-relative gap-8px width-fit-c">
+        <div className="flex-col flex-grow profile-data gap-5px">
+            <h2 className="flex-row text-center editable-field pos-relative gap-8px width-fit-c">
                 <div>{user?.name}</div>
                 <div 
                     style={{
@@ -141,10 +139,10 @@ function InteractionTabs() {
 // Component: InteractionLog
 function InteractionLog({ projects }) {
     return (
-        <div className="interaction-log flex-col">
+        <div className="flex-col interaction-log">
 
             {/* projects list */}
-            <div className="projects-list gap-8px paddingY-13px flex-col">
+            <div className="flex-col projects-list gap-8px paddingY-13px">
                 {
                     projects.map((value, index) => (
                         <div key={index} className="project-card-container bg-1">

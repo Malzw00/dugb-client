@@ -13,6 +13,10 @@ import dateFilterReducer from '@slices/dateFilter.slice';
 import semesterReducer from '@slices/semester.slice'; 
 import orderReducer from '@slices/order.slice'; 
 import sideBarContentReducer from '@slices/sideBarContent.slice'; 
+import selectedHeaderTabReducer from '@slices/selectedHeaderTab.slice'; 
+import selectedPeopleTabReducer from '@slices/selectedPeopleTab.slice'; 
+import selectedSearchTabReducer from '@slices/selectedSearchTab.slice'; 
+import personReducer from '@root/src/store/slices/person.slice'; 
 
 const store = configureStore({
     reducer: {
@@ -30,6 +34,10 @@ const store = configureStore({
         semester: semesterReducer,
         order: orderReducer,
         sideBarContent: sideBarContentReducer,
+        selectedHeaderTab: selectedHeaderTabReducer,
+        selectedPeopleTab: selectedPeopleTabReducer,
+        person: personReducer,
+        selectedSearchTab: selectedSearchTabReducer,
     }
 });
 

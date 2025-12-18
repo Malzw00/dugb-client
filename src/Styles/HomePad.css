@@ -1,10 +1,18 @@
-#home-pad {
+.home-pad-parent {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     height: 100%;
+    min-height: 0;
 }
 
-#home-pad .sidebar{
+.home-pad {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    height: 50%;
+}
+
+.home-pad .sidebar {
     width: 260px;
     border-left: 1px solid var(--colorNeutralStroke2);
     padding: 13px;
@@ -14,21 +22,25 @@
     min-height: 0;
     background-color: var(--colorNeutralBackground2);
 }
-.sidebar .logo-caption-div {
+
+.sidebar-placeholder {
+    color: rgba(0, 0, 0, 0.6);
     display: flex;
+    justify-content: center;
+}
+
+.sidebar-header {
+    display: flex;
+    flex-direction: column;
     gap: 13px;
-    margin-bottom: 13px;
 }
-.logo-caption-div .logo-img {
-    height: 40px;
-    width: 34px;
-}
-.collages-tablist {
+
+.sidebar-tablist {
     min-height: 0;
     flex: 1;
     overflow: auto;
 }
-.collages-tablist > .collage-tab:hover {
+.sidebar-tablist > .collage-tab:hover {
     background-color: rgba(0, 0, 0, 0.03) !important;
 }
 
@@ -54,7 +66,7 @@
 }
 
 
-#home-pad .content-area {
+.home-pad .content-area {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -86,7 +98,7 @@
 }
   
 
-.content-area .projects-area {
+.content-area .projects-area, .content-area .people-area {
 
     display: flex;
     flex-direction: column;
@@ -94,10 +106,8 @@
     border: 1px solid var(--colorNeutralStroke2);
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.06);
     flex: 1;
-    /* gap: 5px; */
     border-radius: 5px;
-    /* border-end-end-radius: 0;
-    border-end-start-radius: 0; */
+    min-height: 0;
 }
 
 .projects-area .ranks-bar {
@@ -118,10 +128,14 @@
     padding-top: 0 !important;
 }
 
-.projects-area .projects-list {
+.projects-area .projects-list, .people-area .people-list {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    min-height: 0;
 }
+
 
 .project-card {
     border-bottom: 1px solid var(--colorNeutralStroke2);
@@ -137,9 +151,6 @@
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.03);
 }
-
-/* .keywords-section {
-} */
 
 .proj-category-span, .proj-keyword-span {
     padding: 0 5px;
@@ -169,4 +180,47 @@
     background-color: var(--colorBrandBackground);
     color: white;
     font-weight: bold;
+}
+
+
+.person-card {
+    display: flex;
+    gap: 13px;
+    padding: 13px;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+.person-card:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+    color: var(--colorBrandForeground1);
+}
+
+
+.person-dialog-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.person-dialog-body .details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.profile-image-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    width: 144px;
+    height: 144px;
+    border-radius: 50%;
+    background-color: var(--colorNeutralBackground3);
+    border: 1px solid var(--colorNeutralStroke2);
 }

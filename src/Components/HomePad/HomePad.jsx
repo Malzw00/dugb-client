@@ -1,44 +1,46 @@
-import { createContext } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import '@styles/HomePad.css';
-import SideBar from '@components/HomePad/SideBar';
-import ContentArea from '@components/HomePad/ContentArea';
 import ProjectPad from '@components/ProjectPad';
 import ProfilePad from '@components/ProfilePad';
 import DocumentationPad from '@components/DocumentationPad/DocumentationPad';
 import ControlPad from '@components/ControlPad/ControlPad';
+import Header from './Header';
+import ProjectsHomePad from '@components/HomePad/ProjectsHomePad/ProjectsHomePad';
+import { useSelector } from 'react-redux';
+import CategoriesHomePad from '@components/HomePad/CategoriesHomePad/CategoriesHomePad';
+import PeopleHomePad from '@components/HomePad/PeopleHomePad/PeopleHomePad';
+import PersonDialog from '@root/src/components/Dialogs/PersonDialog';
 
 
-
-export const HomePadContext = createContext();
 
 export default function HomePad() {
-
-    const navigate = useNavigate();
-
-    const openProject = (projectId) => navigate(`/home/project/${projectId}`);
+    
+    const location = useLocation();
+    
+    const selectedHeaderTab = useSelector(state => state.selectedHeaderTab.value);
+    const person = useSelector(state => state.person.value);
+    
+    const shouldShowHeader = !location.pathname.includes('/projects/');
 
     return (
-        <Routes>
-            {/** home pad route */}
-            <Route path="/" element={
-                <div id="home-pad">
-                    <SideBar />
-                    <ContentArea />
-                </div>
-            }/>
-
-            {/** project pad route */}
-            <Route path="/project/:projectId" element={<ProjectPad/>}/>
-
-            {/** profile pad route */}
-            <Route path="/profile/:userId" element={<ProfilePad/>}/>
-
-            {/** Control pad route */}
-            <Route path="/control" element={<ControlPad/>}/>
-
-            {/** project documentation pad route */}
-            <Route path="/control/documentation" element={<DocumentationPad/>}/>
-        </Routes>
+        <div className="home-pad-parent">
+            {shouldShowHeader && <Header />}
+            
+            <Routes>
+                <Route path="/" element={
+                    selectedHeaderTab === 'projects'? <ProjectsHomePad/> 
+                    : selectedHeaderTab === 'categories'? <CategoriesHomePad/>
+                    : selectedHeaderTab === 'people'? <PeopleHomePad/>
+                    : selectedHeaderTab === 'search'? <PeopleHomePad/>
+                    : null
+                }/>
+                <Route path="/projects/:projectId" element={<ProjectPad/>}/>
+                <Route path="/profile/:userId" element={<ProfilePad/>}/>
+                <Route path="/control" element={<ControlPad/>}/>
+                <Route path="/control/documentation" element={<DocumentationPad/>}/>
+            </Routes>
+            
+            {person && <PersonDialog/>}
+        </div>
     );
 }

@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
                 '@root': path.resolve(__dirname, './'),
                 '@src': path.resolve(__dirname, './src'),
                 '@components': path.resolve(__dirname, './src/components'),
+                '@PreMadeComponents': path.resolve(__dirname, './src/components/PreMadeComponents'),
                 '@config': path.resolve(__dirname, './src/config'),
                 '@resources': path.resolve(__dirname, './src/resources'),
                 '@services': path.resolve(__dirname, './src/services'),

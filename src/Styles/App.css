@@ -17,8 +17,6 @@
     overflow: hidden;
 }
 
-
-
 .header {
 
     display: flex;
@@ -28,18 +26,18 @@
     padding: 21px 10%;
     border-bottom: 1px solid var(--colorNeutralStroke2);
 }
+
 .header-caption > .header-logo {
     width: 30px;
     height: 38px;
     mix-blend-mode: multiply;
 }
+
 .header-caption {
     display: flex;
     gap: 13px;
     align-items: center;
 }
-
-
 
 #app-grid {
     display: grid;
@@ -109,4 +107,18 @@
 }
 .fui-Input.invalid-input {
     border-bottom-color: red !important;
+}
+
+
+.rows-div {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    padding: 3px 5px;
+    justify-content: space-between;
 }

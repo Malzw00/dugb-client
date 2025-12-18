@@ -5,6 +5,7 @@
       "@root/*": ["./*"],
       "@src/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
+      "@PreMadeComponents/*": ["./src/components/PreMadeComponents/*"],
       "@config/*": ["./src/config/*"],
       "@resources/*": ["./src/resources/*"],
       "@services/*": ["./src/services/*"],

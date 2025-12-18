@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value: 0
+    value: localStorage['selectedCategory']?? 0
 }
 
 const selectedCategorySlice = createSlice({
@@ -9,6 +9,7 @@ const selectedCategorySlice = createSlice({
     initialState,
     reducers: {
         selectCategory(state, action) {
+            localStorage['selectedCategory'] = action.payload; 
             state.value = action.payload;
         }
     }

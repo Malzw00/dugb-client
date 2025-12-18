@@ -6,18 +6,13 @@ import {
     Button,
 } from '@fluentui/react-components';
 import { Dismiss16Regular, Search20Regular, } from '@fluentui/react-icons';
-import ProjectsArea from '@components/HomePad/ProjectsArea';
+import ProjectsArea from '@components/HomePad/ProjectsHomePad/ProjectsArea';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCategory } from '@root/src/store/slices/selectedCategory.slice';
 import { setSearchText } from '@slices/searchProject.slice';
 import { selectDepartment } from '@slices/selectedDepartment.slice';
-import { getCategories } from '@services/category';
-import { setCategories } from '@slices/categories.slice';
 import { getDepartments } from '@services/collage';
 import { setDepartments } from '@slices/departments.slice';
-import { UserBtn } from '@components/HomePad/UserBtn';
-import { setFrom, setTo } from '@root/src/store/slices/dateFilter.slice';
-import { setSemester } from '@root/src/store/slices/semester.slice';
+import { setSemester } from '@slices/semester.slice';
 
 
 
@@ -53,21 +48,6 @@ export default function ContentArea() {
 
     React.useEffect(() => {
 
-        // load and set categories
-        getCategories({ collageId: selectedCollage }).then(res => {
-          
-            const categories = res?.data?.result?? [];
-            
-            dispatch(setCategories(categories));
-            
-            dispatch(selectCategory(categories?.[0].category_id?? 0));
-        
-        }).catch(err => {
-          
-            if(err.status === 404 || err.status === 400)
-                dispatch(setCategories(0));
-        });
-
         // load and set departments
         getDepartments(selectedCollage).then(res => {
 
@@ -86,7 +66,7 @@ export default function ContentArea() {
     return (
         <div className="content-area">
             
-            <div className="flex-row justify-between">
+            <div className="flex-row justify-start gap-8px">
                 <div className="filter-div" style={{width: '60%', padding: '2px', height: 'fit-content'}}>
                     <Input 
                         className="search-input" 
@@ -98,12 +78,7 @@ export default function ContentArea() {
                     />
                     <Button icon={<Dismiss16Regular/>} onClick={() => dispatch(setSearchText(''))}/>
                 </div>
-                {/* user button */}
-                <UserBtn />
-            </div>
-
-            <div className='flex-row flex-wrap items-center gap-5px'>
-
+                
                 <DepartmentsDropdown
                     departments={departments}
                     selectedDepartment={selectedDepartment}
@@ -131,26 +106,6 @@ export default function ContentArea() {
     );
 }
 
-function CategoriesDropdown({ categories, selectedCategories, onCategorySelect, handleUnSelect }) {
-
-    return <div className='filter-div'>
-        <Dropdown 
-            multiselect
-            className="dropdown filter-input"
-            placeholder="تحديد الفئات"
-            selectedOptions={selectedCategories} 
-            onOptionSelect={onCategorySelect}>
-
-            {categories?.map?.((category, index) => {
-                return <Option key={index} value={category.category_id}>
-                    {category.category_name}
-                </Option>
-            })}
-        </Dropdown>
-        <Button icon={<Dismiss16Regular/>} onClick={handleUnSelect}/>
-    </div>
-}
-
 function DepartmentsDropdown({ departments, selectedDepartment, onDepartmentSelect, handleUnSelect }) {
 
     return <div className='filter-div'>
@@ -167,42 +122,5 @@ function DepartmentsDropdown({ departments, selectedDepartment, onDepartmentSele
             })}
         </Dropdown>
         <Button icon={<Dismiss16Regular/>} onClick={handleUnSelect}/>
-    </div>
-}
-
-
-function DateFilter () {
-
-    const dispatch = useDispatch();
-    
-    const dateFilter = useSelector(state => state.dateFilter.value);
-
-    const handleFromDateChange = (event) => {
-        dispatch(setFrom(event.target.value));
-    };
-
-    const handleToDateChange = (event) => {
-        dispatch(setTo(event.target.value));
-    };
-
-    return <div className="filter-div">
-        
-        <span style={{ fontSize: '14px', padding: '0 8px' }}>التاريخ من:</span>
-        
-        <Input 
-            className='date-box' 
-            type="date" 
-            value={dateFilter.from}
-            onChange={handleFromDateChange}
-        />
-        
-        <span style={{ fontSize: '14px', padding: '0 8px' }}>إلى:</span>
-
-        <Input 
-            className='date-box' 
-            type="date" 
-            value={dateFilter.to} 
-            onChange={handleToDateChange}
-        />
     </div>
 }

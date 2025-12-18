@@ -1,28 +1,26 @@
 import { 
     Button, 
-    Menu,
-    MenuTrigger,
-    MenuButton,
-    MenuPopover,
-    MenuList,
-    MenuItem, Slider, 
-    Tooltip
+    Accordion,
+    AccordionItem,
+    AccordionHeader,
+    AccordionPanel,
+    tokens,
+    Rating
 } from "@fluentui/react-components";
 import { 
-    ArrowDown20Regular, 
-    Attach20Regular, 
-    Chat20Regular, 
-    Heart20Regular, 
-    List20Regular, 
-    Person20Regular, 
-    TextDescription20Regular 
+    Chat24Regular,  
+    Heart24Regular, 
 } from "@fluentui/react-icons";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import '@styles/ProjectPad.css'
 import PlatformHeader from "@components/PreMadeComponents/PlatformHeader";
-import { getProjectById } from "../services/project/project";
+import { getProjectById } from "@services/project/project";
 import bookImg from '@resources/book.svg'
+import { useDispatch } from "react-redux";
+import { selectHeaderTab } from "@slices/selectedHeaderTab.slice";
+import { selectCategory } from "@slices/selectedCategory.slice";
+import { selectCollage } from "@slices/selectedCollage.slice";
 
 
 
@@ -32,25 +30,24 @@ export default function ProjectPad() {
     const [project, setProject] = useState(null);
 
     React.useEffect(() => {
+        getProjectById(projectId)
+            .then(res => {
+                if(res?.data?.success){
+                    const resProject = res?.data?.result;
 
-        getProjectById(projectId).then(res => {
+                    if(resProject)
+                    setProject(resProject);
 
-            if(res?.data?.success){
-                const resProject = res?.data?.result;
-
-                if(resProject)
-                setProject(resProject);
-            }
-
-        }).catch(err => {
-            setProject(null);
-        })
-
-    }, [])
+                    console.log(resProject);                    
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }, []);
     
     return ( 
-        project
-        ? <div 
+        project && <div 
             className="flex-col project-float-pad height-full width-full" 
             style={{background: 'white'}}
         >
@@ -61,50 +58,36 @@ export default function ProjectPad() {
             <div className='flex-row flex-grow overflow-auto project-content-area min-height-0'>
 
                 {/** cover side */}
-                <CoverSide projImgPath={bookImg}/>
+                <SideBar projImgPath={bookImg}/>
 
                 {/** project details section */}
-                <div className='flex-col flex-grow overflow-auto project-details-section bg-1 gap-13px padding-34px'>
+                <div 
+                    className='flex-col flex-grow overflow-auto project-details-section bg-1 gap-13px padding-34px'
+                    style={{paddingBottom: '189px'}}>
 
-                    {/* Title Description Section */}
-                    <TitleDescriptionSection 
+                    {/* Project Header */}
+                    <ProjectHeader 
                         title={project.project_title} 
+                        updatedAt={project.updatedAt}
                         description={project.project_description}
+                        date={project.project_date}
+                        semester={project.project_semester}
+                        grade={project.project_grade}
+                        department={project.Department}
+                        collage={project.Department?.Collage}
                     />
 
-                    {/** separator */}
-                    <div style={{height: '13px'}}/>
-
-                    {/* Details Section */}
-                    <DetailsSection project={project}/>
-                    
-                    {/** separator */}
-                    <div style={{height: '13px'}}/>
-
-                    {/* Developers Section */}
-                    <StudentsSection students={project.Students}/>
-
-                    {/* Supervisor Section */}
-                    <SupervisorSection supervisor={project.Supervisor}/>
-
-                    {/* Float Action Buttons */}
-                    <div 
-                        className='flex-row float-action-btns pos-fixed gap-8px' 
-                        style={{bottom: '34px', left: '34px'}}
-                    >
-                        <CircleButton tiptext={`التعليقات`}>
-                            <Chat20Regular/>
-                        </CircleButton>
-                        <CircleButton tiptext={`إعجاب`}>
-                            <Heart20Regular/>
-                        </CircleButton>
-                        <ProjectOptionsMenu tiptext={`خيارات أخرى`}/>
-                    </div>
-                    
+                    {/* Project Body */}
+                    <ProjectBody
+                        supervisor={project.Supervisor}
+                        students={project.Students}
+                        keywords={project.Keywords}
+                        categories={project.Categories}
+                    />
+                
                 </div>
             </div>
-        </div>
-        : <div className="not-found-div">404 Not Found</div>
+        </div> || <></>
     );
 }
 
@@ -113,23 +96,38 @@ export default function ProjectPad() {
 
 // -----------------------------------------------------------------------------
 // Component: CoverSide
-function CoverSide({projImgPath}) {
-    return <div className='block cover-side height-full padding-13px'>
+function SideBar({projImgPath}) {
+    const reactionBtnsStyle = {
+        borderRadius: '50em',
+        // minWidth: '0px',
+        minWidth: '44px',
+        height: '44px',
+        display: 'flex',
+        gap: '13px'
+    }
+    return <div className='flex-col cover-side height-full padding-13px gap-5px'>
         <img
             className="block border-radius-8px"
             src={projImgPath}
             alt="project cover" 
         />
+
+        <RatingRange/>
         
-        {/* هذا الزر يضهر ديالوق فيه خيارين واحد لتنزيل الكتاب والآخر للعرض التقديمي */}
-        <Button appearance="primary" style={{
-            display: 'flex',
-            gap: '8px', position: 'fixed', bottom: '34px', right: '34px',
-            minHeight: '44px', width: '44px', minWidth: '44px', height: '44px', padding: '0',
-            alignSelf: 'end', borderRadius: '50em', boxShadow: '0 0 6px rgba(0,0,0,0.2)'
-        }}>
-            <ArrowDown20Regular /> 
-        </Button>
+        <Button appearance="primary">كتاب المشروع</Button>
+        
+        <Button appearance="primary">العرض التقديمي</Button>
+        
+        <Button appearance="primary">المراجع</Button>
+        
+        <div className="flex-row gap-5px" style={{marginTop: 'auto'}}>
+            <Button appearance="primary" style={reactionBtnsStyle}>
+                <Heart24Regular/>
+            </Button>
+            <Button appearance="primary" style={reactionBtnsStyle}>
+                <Chat24Regular/> <span>التعليقات</span>
+            </Button>
+        </div>
     </div>;
 }
 
@@ -137,208 +135,169 @@ function CoverSide({projImgPath}) {
 
 // -----------------------------------------------------------------------------
 // Component: TitleDescriptionSection
-function TitleDescriptionSection({title, description}) {
+function ProjectHeader({ title, description, updatedAt, date, semester, grade, department, collage }) {
 
-    const [rate, setRate] = useState(0);
-
-    return <div style={{maxWidth: '80%'}} className="flex-col gap-13px">
+    return <div className="flex-col gap-13px" style={{ width: '80%' }}>
         
-        <div className="flex-row items-center justify-between gap-8px">
+        <div className="flex-row items-center justify-between gap-8px" style={{ lineHeight: '44px' }}>
             <h1>{title}</h1>
         </div>
+
+        <div><p style={{ fontSize:'16px', lineHeight:'25px' }}>{description}</p></div>
         
-        <div><p>{description}</p></div>
-
-        <div className={`
-                flex-row 
-                gap-0px 
-                width-100 
-                items-center 
-                bg-3 
-                border-radius-5px 
-                padding-5px
-                paddingX-21px
-            `}
-            style={{ border: '1px solid silver'}}>
-
-            <span>تقييم المشروع</span>
-            <Slider 
-                max={5}  
-                value={rate}
-                style={{width: '100px', padding: '0'}}
-                onChange={(ev)=>setRate(ev.target.value)}
-            />
-            <span>5/{rate}</span>
+        <div className="flex-col" style={{fontSize:'12px'}}>
+            {(collage && department) && <span>
+                كلية {collage.collage_name} قسم {department.department_name}
+            </span>}
+            {(date && semester) && <span>
+                تم إنشاء المشروع سنة {new Date(date).getFullYear()} فصل 
+                {semester.toLowerCase() === 'spring' && <span> الربيع</span>} 
+                {semester.toLowerCase() === 'autumn' && <span> الخريف</span>} 
+            </span>}
+            
+            {updatedAt && <span style={{ color:'gray' }}>
+                آخر تحديث: {new Date(updatedAt).toISOString().slice(0, 10)}
+            </span>}
         </div>
+
+        {grade && <div className="bg-3" style={{
+            width:'fit-content',
+            border: '1px solid silver',
+            padding: '3px 13px',
+            borderRadius: '50em'
+        }}>
+            <span style={{ fontWeight:'bold' }}>الدرجة:</span>
+            <span> </span>
+            <span>{grade}</span>
+        </div>}
     </div>;
 }
 
 
 
-// -----------------------------------------------------------------------------
-// Component: DetailsSection
-function DetailsSection({ project }) {
+function RatingRange() {
 
-    return <div className='flex-col details-section gap-13px'>
+    const [rate, setRate] = useState(0);
 
-        <div className="flex-row detail-section collage-section gap-13px">
-            <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>الكلية</h3>
-            <p>{project.Department.Collage.collage_name}</p>
-        </div>
+    return <div className={`
+            flex-row 
+            gap-0px 
+            width-100 
+            items-center 
+            justify-center
+            padding-5px
+            paddingX-21px
+        `}>
 
-        <div className="flex-row detail-section major-section gap-13px">
-            <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>الفصل الدراسي</h3>
-            <p>{project.project_semester}</p>
-        </div>
-
-        <div className="flex-row detail-section major-section gap-13px">
-            <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>القسم</h3>
-            <p>{project.Department.department_name}</p>
-        </div>
-
-        <div className="flex-row detail-section major-section gap-13px">
-            <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>تاريخ المشروع</h3>
-            <p>{new Date(project.project_date).toISOString().slice(0, 10)}</p>
-        </div>
-
-        {/* <CategoriesSection categories={categories}/> */}
-
-        {/* <KeywordsSection keywords={keywords}/> */}
+        <Rating 
+            value={rate} 
+            onChange={(_, data) => {setRate(data.value)}}
+        />
 
     </div>
 }
 
 
-// -----------------------------------------------------------------------------
-// Component: KeywordsSection
-function KeywordsSection({keywords}) {    
 
-    return <div className="flex-row detail-section keywords-section gap-13px">
-        <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>الكلمات المفتاحية</h3>
-        <div className="flex-row gap-3px">
-            {keywords.map((keyword, index) => {
-                return <span key={index} className='proj-keyword-span'>{keyword}</span>;
-            })}
+function ProjectBody ({ students=[], supervisor, keywords=[], categories=[]  }) {
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const itemStyle = {
+        borderRadius: '8px',
+        padding: '3px 5px',
+        background: tokens.colorNeutralBackground2,
+        border: `1px solid ${tokens.colorNeutralStroke1}`,
+        width: 'max-content'
+    } 
+
+    const placeholderStyle = {
+        fontSize: '12px',
+        color: 'gray'
+    }
+
+    const panelStyle = {
+        background: tokens.colorNeutralBackground3,
+        borderRadius: '13px',
+        padding: '13px',
+        border: `1px solid ${tokens.colorNeutralStroke2}`
+    }
+
+    const handleCategoryClick = function (category) {
+        return () => {
+            dispatch(selectHeaderTab('categories'));
+            dispatch(selectCollage(category.collage_id));
+            dispatch(selectCategory(category.category_id));
+            navigate('/home');
+        }
+    }
+    
+    return (
+        <div className="flex-col gap-8px" style={{ width: '80%' }}>
+
+            <Accordion multiple>
+                
+                <AccordionItem value={'supervisor'}>
+                    <AccordionHeader size='medium'>المشرف</AccordionHeader>
+                    <AccordionPanel style={panelStyle}>
+                        {supervisor && <div>
+                            {supervisor.supervisor_title}. {supervisor.supervisor_full_name}
+                        </div>}
+                        {!supervisor && <div style={placeholderStyle}>
+                            لم يتم توثيق بيانات المشرف بعد
+                        </div>}
+                    </AccordionPanel>
+                </AccordionItem>
+                
+                <AccordionItem value={'students'}>
+                    <AccordionHeader size='medium'>إعداد الطلبة</AccordionHeader>
+                    <AccordionPanel style={panelStyle}>
+                        <div className="flex-col items-stretch gap-5px" style={{minWidth:'200px'}}>
+                            {students.map((student, i) => {
+                                return <div key={i} style={{ padding: '5px', width: '100%'}}>
+                                    {student.student_full_name}
+                                </div>
+                            })}
+                            {(students.length < 1) && <div style={placeholderStyle}>
+                                لم يتم توثيق بيانات الطلبة بعد
+                            </div>}
+                        </div>
+                    </AccordionPanel>
+                </AccordionItem>
+                
+                <AccordionItem value={'keywords'}>
+                    <AccordionHeader size='medium'>الكلمات المفتاحية</AccordionHeader>
+                    <AccordionPanel style={{ ...panelStyle, display:'flex', flexWrap:'wrap', gap:'5px' }}>
+                        {keywords.map((keyword, i) => {
+                            return <div key={i} style={itemStyle}>
+                                {keyword.keyword}
+                            </div>
+                        })}
+                        {(keywords.length < 1) && <div style={placeholderStyle}>
+                            لم يتم تحديد الكلمات المفتاحية بعد
+                        </div>}
+                    </AccordionPanel>
+                </AccordionItem>
+                
+                <AccordionItem value={'categories'}>
+                    <AccordionHeader size='medium'>الفئات</AccordionHeader>
+                    <AccordionPanel style={{ ...panelStyle, display:'flex', flexWrap:'wrap', gap:'5px' }}>
+                        {categories.map((category, i) => {
+                            return <div 
+                                key={i} style={{...itemStyle, cursor: 'pointer' }} 
+                                onClick={handleCategoryClick(category)}>
+                                    
+                                {category.category_name}
+                            </div>
+                        })}
+                        {(categories.length < 1) && <div style={placeholderStyle}>
+                            لم يتم تحديد الفئات بعد
+                        </div>}
+                    </AccordionPanel>
+                </AccordionItem>
+            
+            </Accordion>
         </div>
-    </div>;
-}
-
-// -----------------------------------------------------------------------------
-// Component: CategoriesSection
-function CategoriesSection({categories}) {
-
-    return <div className="flex-row detail-section categories-section gap-13px">
-        <h3 style={{ color: 'rgba(0, 0, 0, 0.8)' }}>الفئات</h3>
-        <div className="flex-row gap-3px">{categories.map((category) => {
-            return <span className='cursor-pointer proj-category-span'>{category}</span>;
-        })}</div>
-    </div>;
-}
-
-
-
-// -----------------------------------------------------------------------------
-// Component: DevelopersSection
-function StudentsSection({ students }) {
-    return students?.length && <span className="flex-col data-section developers-section gap-13px">
-        <h3>إعداد الطلبة</h3>
-        <div className='flex-row flex-wrap gap-8px'>{students.map((student, index) => {
-            return <Button 
-                key={index}
-                appearance="primary"
-                style={{
-                    padding: '3px 8px',
-                    width: 'fit-content',
-                    display: 'flex',
-                    justifyContent: 'start',
-                    gap: '8px',
-                }}
-            >
-                <Person20Regular /> {student.student_name}
-            </Button>;
-        })}</div>
-    </span>;
-}
-
-// -----------------------------------------------------------------------------
-// Component: SupervisorSection
-function SupervisorSection({ supervisor }) {
-
-    return supervisor && <span className="flex-col data-section developers-section gap-13px">
-        <h3>تحت إشراف</h3>
-        <Button
-            appearance="primary"
-            style={{
-                padding: '3px 8px',
-                width: 'fit-content',
-                display: 'flex',
-                justifyContent: 'start',
-                gap: '8px',
-            }}
-        >
-            <Person20Regular /> {supervisor.supervisor_name}
-        </Button>
-    </span>;
-}
-
-// -----------------------------------------------------------------------------
-// Component: CircleButton
-function CircleButton (props) {
-
-    return (
-        <Tooltip content={props.tiptext} children={
-            <Button appearance="primary" style={{ 
-                display: 'flex',
-                gap: '8px', borderRadius: '50em', 
-                minHeight: '40px', padding: '0',
-                minWidth: '40px'
-            }} {...props}>
-                {props.children?? ''}
-            </Button>
-        }/>
-    )
-}
-
-
-// -----------------------------------------------------------------------------
-// Component: ProjectOptionsMenu
-function ProjectOptionsMenu({ tiptext }) {
-    return (
-        <Menu title={tiptext} className='project-options-menu'>
-            <MenuTrigger disableButtonEnhancement>
-                <MenuButton 
-                    className='project-options-menu-btn' 
-                    style={{
-                        display: 'flex',
-                        gap: '8px', borderRadius: '50em', 
-                        minHeight: '40px', padding: '0',
-                        minWidth: '40px'
-                    }} 
-                    appearance="primary" 
-                    icon={<List20Regular/>}
-                />
-            </MenuTrigger>
-            <MenuPopover>
-                <MenuList>
-                    <MenuItem
-                        icon={<TextDescription20Regular/>}
-                        onClick={() => {
-                            // TODO: handle logout
-                        }}
-                    >
-                        الملخص
-                    </MenuItem>
-
-                    <MenuItem
-                        icon={<Attach20Regular/>}
-                        onClick={() => {
-                            // TODO: handle logout
-                        }}
-                    >
-                        المراجع
-                    </MenuItem>
-                </MenuList>
-            </MenuPopover>
-        </Menu>
     );
 }

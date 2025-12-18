@@ -12,12 +12,10 @@ export default function ProjectsArea() {
     const dispatch = useDispatch();
 
     const projects = useSelector(state => state.projects.value);
-    const dateFilter = useSelector(state => state.dateFilter.value);
-    const selectedDepartment = useSelector(state => state.selectedDepartment.value);
-    const semester = useSelector(state => state.semester.value);
     const order = useSelector(state => state.order.value);
+    const semester = useSelector(state => state.semester.value);
     const selectedCollage = useSelector(state => state.selectedCollage.value);
-    // const selectedCategories = useSelector(state => state.selectedCategories.value);
+    const selectedDepartment = useSelector(state => state.selectedDepartment.value);
 
     const handleOrderSelected = function (_, data) {
         dispatch(setOrder(data.value));
@@ -25,7 +23,6 @@ export default function ProjectsArea() {
 
     React.useEffect(() => {
         getProjects({
-            // categories: selectedCategories,
             collageId: selectedCollage,
             sortBy: orderDict[order][0],
             order: orderDict[order][1],
@@ -36,7 +33,7 @@ export default function ProjectsArea() {
         }).then(res => {
             dispatch(setProjects(res.data.result.projects?? []));
         });
-    }, [ selectedDepartment, semester, order, selectedCollage, dateFilter, ]);
+    }, [ selectedDepartment, semester, order, selectedCollage, ]);
 
     return <div className='projects-area min-height-0'>
         
@@ -54,7 +51,7 @@ export default function ProjectsArea() {
             <Tab key={6} className='rank-tab' value={'lowLiked'}>الأقل إعجابا</Tab>
         </TabList>
 
-        <div className="projects-list height-full overflowY-auto min-height-0">
+        <div className="projects-list">
             {projects.map((project, index) => (
                 <ProjectCard key={index} {...project}/>
             ))}

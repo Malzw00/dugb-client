@@ -15,19 +15,14 @@ const reactionDivStyle = (`
     gap-13px`
 );
 
-export default function ProjectCard({ project_id, project_title, project_description, stats, style}) 
-    {
-
-    const navigate = useNavigate();
+export default function ProjectCard({ project_id, project_title, project_description, stats }) {
 
     return (
         <a
             key={project_id}
-            className='project-card flex-row padding-13px gap-13px'
-            onClick={() => {
-                navigate(`/home/project/${project_id}`);
-            }}
-            style={style?? {}}
+            className='flex-row project-card padding-13px gap-13px'
+            href={`/home/projects/${project_id}`}
+            style={{textDecoration: 'none', color:'black'}}
         >
             <img 
                 className="project-card-cover border-radius-4px" 
@@ -36,7 +31,7 @@ export default function ProjectCard({ project_id, project_title, project_descrip
                 style={{ width: '100px' }}
             />
 
-            <div className="project-details-div flex-col gap-8px">
+            <div className="flex-col project-details-div gap-8px">
                 
                 <h2 className='project-title-h2'>{project_title}</h2>
                 

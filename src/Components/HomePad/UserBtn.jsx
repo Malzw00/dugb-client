@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 
 
 
-export function UserBtn({ }) {
+export function UserBtn() {
 
     const navigate = useNavigate();
     const user = useSelector(state => state.user.value);

@@ -1,0 +1,47 @@
+.dialog-parent {
+    display: grid;
+    place-items: center;
+    background-color: transparent;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.dialog {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    max-width: 60%;
+    min-height: 80%;
+    max-height: 90%;
+    border: 1px solid var(--colorNeutralStroke1);
+    border-radius: 13px;
+    box-shadow: var(--shadow16);
+    background-color: white;
+    min-height: 0;
+}
+
+.dialog .header, .dialog .body, .dialog .footer {
+    padding: 13px;
+}
+
+.dialog .header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dialog .body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.dialog .close-btn {
+    min-width: 0px !important;
+}
