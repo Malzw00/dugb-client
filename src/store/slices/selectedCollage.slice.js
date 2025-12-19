@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value: localStorage['selectedCollage']?? 0
+    value: 0
 }
 
 const selectedCollage = createSlice({
@@ -9,7 +9,6 @@ const selectedCollage = createSlice({
     initialState,
     reducers: {
         selectCollage(state, action) {
-            localStorage['selectedCollage'] = action.payload;
             state.value = action.payload;
         }
     }

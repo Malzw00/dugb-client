@@ -150,34 +150,19 @@ export async function deleteProject(projectId) {
  *
  * @function searchProjects
  * @param {Object} [options={}] - Search filters.
- * @param {string} [options.keyword=""] - Search keyword.
- * @param {Array<number>} [options.categories=[]] - Category ID filters.
- * @param {Array<number>} [options.collages=[]] - Collage ID filters.
- * @param {Array<number>} [options.departments=[]] - Department ID filters.
- * @param {"date"|"ratingAverage"|"likesCount"} [options.orderBy="date"] - Sort field.
- * @param {"ASC"|"DESC"} [options.orderDir="DESC"] - Sort direction.
+ * @param {string} [options.text=""] - Search text.
  * @param {number} [options.offset=0] - Pagination offset.
  * @param {number} [options.limit=20] - Pagination limit.
  * @returns {Promise<AxiosResponse>} Axios full response.
  */
 export async function searchProjects({
-    keyword = "",
-    categories = [],
-    collages = [],
-    departments = [],
-    orderBy = "date",
-    orderDir = "DESC",
+    text = '',
     offset = 0,
     limit = 20,
 } = {}) {
     return api.get("/projects/search", {
         params: {
-            keyword,
-            categories: categories.join(","),
-            collages: collages.join(","),
-            departments: departments.join(","),
-            orderBy,
-            orderDir,
+            text,
             offset,
             limit,
         },

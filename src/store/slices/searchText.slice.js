@@ -4,8 +4,8 @@ const initialState = {
     value: '',
 }
 
-const searchProjectSlice = createSlice({
-    name: 'searchProject',
+const searchTextSlice = createSlice({
+    name: 'searchText',
     initialState,
     reducers: {
         setSearchText(state, action) {
@@ -14,5 +14,5 @@ const searchProjectSlice = createSlice({
     }
 });
 
-export const { setSearchText, } = searchProjectSlice.actions;
-export default searchProjectSlice.reducer;
+export const { setSearchText, } = searchTextSlice.actions;
+export default searchTextSlice.reducer;

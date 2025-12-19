@@ -25,6 +25,20 @@ export function getSupervisors(params = {}) {
     return api.get("/supervisors", { params });
 }
 
+
+/**
+ * search for student.
+ *
+ * @function searchForSupervisors
+ * @returns {Promise<AxiosResponse>}
+ */
+export function searchForSupervisors({ text, limit, offset }) {
+    return api.get(`/supervisors/search`, {
+        params: { text, limit, offset }
+    });
+}
+
+
 /**
  * Get a supervisor by ID.
  *
@@ -133,6 +147,18 @@ export function removeSupervisorAccount(supervisorId) {
  */
 export function getStudents(params = {}) {
     return api.get("/students", { params });
+}
+
+/**
+ * search for student.
+ *
+ * @function searchForStudents
+ * @returns {Promise<AxiosResponse>}
+ */
+export function searchForStudents({ text, limit, offset }) {
+    return api.get(`/students/search`, {
+        params: { text, limit, offset }
+    });
 }
 
 /**

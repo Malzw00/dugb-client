@@ -1,9 +1,10 @@
-import { Tab, TabList } from "@fluentui/react-components";
+import { Button, Tab, TabList } from "@fluentui/react-components";
 import { UserBtn } from "@components/HomePad/UserBtn";
 import LogoImg from "@resources/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { selectHeaderTab } from "@root/src/store/slices/selectedHeaderTab.slice";
 import { useNavigate } from "react-router-dom";
+import { Search16Regular, Search20Regular } from "@fluentui/react-icons";
 
 export default function Header () {
 
@@ -30,13 +31,16 @@ export default function Header () {
                 </a>  
             </div>         
 
-            <TabList selectedValue={selectedHeaderTab} onTabSelect={handleTabSelect}>
+            <TabList 
+                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} 
+                selectedValue={selectedHeaderTab} onTabSelect={handleTabSelect}>
+                    
+                <Tab title='بحث' icon={<Search20Regular/>} value={'search'}/>
                 <Tab value='projects'>المشاريع</Tab>
                 <Tab value='categories'>الفئات</Tab>
                 <Tab value='people'>الطلبة والمشرفين</Tab>
             </TabList>
 
-            
             <UserBtn/>
         </div>
     );

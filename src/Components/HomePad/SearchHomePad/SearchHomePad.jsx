@@ -2,8 +2,10 @@ import React from "react";
 import AbstractHomePad from "@components/HomePad/AbstractHomePad";
 import { useDispatch, useSelector } from "react-redux";
 import { Tab } from "@fluentui/react-components";
-import PeopleContentArea from "./SearchProjectContentArea";
-import { selectPeopleTab } from "@root/src/store/slices/selectedPeopleTab.slice";
+import { selectSearchTab } from "@root/src/store/slices/selectedSearchTab.slice";
+import SearchProjectContentArea from "./SearchProjectContentArea";
+import SearchStudentContentArea from "./SearchStudentContentArea";
+import SearchSupervisorContentArea from "./SearchSupervisorContentArea";
 
 
 export default function SearchHomePad () {
@@ -12,7 +14,7 @@ export default function SearchHomePad () {
 
     const selectedSearchTab = useSelector(state => state.selectedSearchTab.value);
 
-    const handleTabSelect = (_, data) => dispatch(selectPeopleTab(data.value)); 
+    const handleTabSelect = (_, data) => dispatch(selectSearchTab(data.value)); 
 
     return <AbstractHomePad
         sideBar={{ 
@@ -25,6 +27,14 @@ export default function SearchHomePad () {
             onTabSelect: handleTabSelect,
             selectedValue: selectedSearchTab,
         }}
-        contentArea={<PeopleContentArea/>}
+        contentArea={
+            selectedSearchTab === 'projects'
+            ? <SearchProjectContentArea/>
+            : selectedSearchTab === 'students'
+            ? <SearchStudentContentArea/>
+            : selectedSearchTab === 'supervisors'
+            ? <SearchSupervisorContentArea/>
+            : null
+        }
     />
 }

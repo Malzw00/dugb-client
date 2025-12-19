@@ -5,7 +5,7 @@ import { selectCollage } from "@root/src/store/slices/selectedCollage.slice";
 import React from "react";
 import { getAllCollages } from "@root/src/services/collage";
 import { setCollages } from "@root/src/store/slices/collages.slice";
-import ContentArea from "./ProjectsContentArea";
+import ProjectsContentArea from "./ProjectsContentArea";
 
 
 
@@ -47,6 +47,6 @@ export default function ProjectsHomePad () {
             onTabSelect: handleTabSelect,
             selectedValue: selectedCollage,
         }}
-        contentArea={<ContentArea />}
+        contentArea={<ProjectsContentArea />}
     />
 }

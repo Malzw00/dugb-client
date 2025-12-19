@@ -15,12 +15,19 @@
     width: 500px;
     max-width: 60%;
     min-height: 80%;
-    max-height: 90%;
+    height: 90%;
+    max-height: 98%;
     border: 1px solid var(--colorNeutralStroke1);
     border-radius: 13px;
     box-shadow: var(--shadow16);
     background-color: white;
     min-height: 0;
+    animation: openDialog 300ms ease;
+}
+
+@keyframes openDialog {
+    0% { scale: .2; opacity: 0; }
+    100% { scale: 1; opacity: 1; }
 }
 
 .dialog .header, .dialog .body, .dialog .footer {

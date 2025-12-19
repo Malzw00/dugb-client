@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import CategoriesHomePad from '@components/HomePad/CategoriesHomePad/CategoriesHomePad';
 import PeopleHomePad from '@components/HomePad/PeopleHomePad/PeopleHomePad';
 import PersonDialog from '@root/src/components/Dialogs/PersonDialog';
+import SearchHomePad from './SearchHomePad/SearchHomePad';
 
 
 
@@ -31,7 +32,7 @@ export default function HomePad() {
                     selectedHeaderTab === 'projects'? <ProjectsHomePad/> 
                     : selectedHeaderTab === 'categories'? <CategoriesHomePad/>
                     : selectedHeaderTab === 'people'? <PeopleHomePad/>
-                    : selectedHeaderTab === 'search'? <PeopleHomePad/>
+                    : selectedHeaderTab === 'search'? <SearchHomePad/>
                     : null
                 }/>
                 <Route path="/projects/:projectId" element={<ProjectPad/>}/>

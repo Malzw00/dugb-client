@@ -25,6 +25,7 @@ export default function PersonDialog() {
                 email: _person[(selectedPeopleTab === 'students')? 'student_email': 'supervisor_email'],
                 Department: _person.Department,
                 Projects: _person.Projects,
+                updatedAt: _person.updatedAt
             });
         };
 
@@ -82,6 +83,10 @@ function StudentDialogBody ({ person }) {
                 {person?.Department?.Collage && <div className="row">
                     <h3 className="field">الكلية </h3>
                     <p className="value">{person.Department.Collage.collage_name}</p>
+                </div>}
+                {person?.updatedAt && <div className="row">
+                    <h3 className="field">آخر تحديث للبيانات </h3>
+                    <p className="value">{new Date(person.updatedAt).toISOString().slice(0,10)}</p>
                 </div>}
             </div>
             

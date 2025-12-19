@@ -122,3 +122,12 @@
     padding: 3px 5px;
     justify-content: space-between;
 }
+
+.placeholder-label {
+    /* color: rgba(0, 0, 0, 0.67); */
+    color: gray
+}
+
+.spinner, .loading {
+    margin: 13px !important;
+}

@@ -102,9 +102,9 @@
 
     display: flex;
     flex-direction: column;
-    background-color: white;
+    /* background-color: white;
     border: 1px solid var(--colorNeutralStroke2);
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.06); */
     flex: 1;
     border-radius: 5px;
     min-height: 0;
@@ -116,12 +116,10 @@
     padding: 8px;
     padding-bottom: 0;
     
-    border-bottom: 1px solid var(--colorNeutralStroke2);
+    border: 1px solid var(--colorNeutralStroke2);
     background-color: var(--colorNeutralBackground2);
 
     border-radius: 5px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
 }
 .rank-tab {
     padding: 8px !important;
@@ -136,13 +134,17 @@
     min-height: 0;
 }
 
-
 .project-card {
-    border-bottom: 1px solid var(--colorNeutralStroke2);
+    border-radius: 13px;
+    animation: cardIn 200ms ease;
+}
+@keyframes cardIn {
+    0% { scale: .5; }
+    100% { scale: 1; }
 }
 .project-card:hover {
     cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.015);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 .project-card:hover .project-title-h2 {
     color: rgb(0, 67, 190);
@@ -191,9 +193,12 @@
     cursor: pointer;
     text-decoration: none;
     color: black;
+    border-radius: 9px;
+    border-radius: 13px;
+    animation: cardIn 200ms ease;
 }
 .person-card:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: rgba(0, 0, 0, 0.05);
     color: var(--colorBrandForeground1);
 }
 

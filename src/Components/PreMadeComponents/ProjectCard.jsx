@@ -15,7 +15,11 @@ const reactionDivStyle = (`
     gap-13px`
 );
 
-export default function ProjectCard({ project_id, project_title, project_description, stats }) {
+export default function ProjectCard({ 
+    project_id, project_title, project_description, stats, iconWidth=100,
+    titleStyle='header', // | 'paragraph'
+    project_placeholder=''
+}) {
 
     return (
         <a
@@ -28,12 +32,16 @@ export default function ProjectCard({ project_id, project_title, project_descrip
                 className="project-card-cover border-radius-4px" 
                 src={projectIcon} 
                 alt="Project Cover" 
-                style={{ width: '100px' }}
+                style={{ width: `${iconWidth}px` }}
             />
 
             <div className="flex-col project-details-div gap-8px">
                 
-                <h2 className='project-title-h2'>{project_title}</h2>
+                {titleStyle === 'header' && <h2 className='project-title-h2'>{project_title}</h2>}
+                {titleStyle === 'paragraph' && <div>
+                    <p>{project_title}</p>
+                    <p style={{color: 'gray'}}>{project_placeholder}</p>
+                </div>}
                 
                 <p>{project_description}</p>
 

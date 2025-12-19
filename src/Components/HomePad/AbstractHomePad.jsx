@@ -1,4 +1,4 @@
-import { TabList } from "@fluentui/react-components";
+import { TabList, Spinner } from "@fluentui/react-components";
 
 /**
  * AbstractHomePad Component

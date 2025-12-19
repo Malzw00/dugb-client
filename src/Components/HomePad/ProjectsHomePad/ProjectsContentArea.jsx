@@ -4,30 +4,32 @@ import {
     Dropdown,
     Option,
     Button,
+    TabList,
+    Tab,
 } from '@fluentui/react-components';
-import { Dismiss16Regular, Search20Regular, } from '@fluentui/react-icons';
+import { Dismiss16Regular, } from '@fluentui/react-icons';
 import ProjectsArea from '@components/HomePad/ProjectsHomePad/ProjectsArea';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSearchText } from '@slices/searchProject.slice';
 import { selectDepartment } from '@slices/selectedDepartment.slice';
 import { getDepartments } from '@services/collage';
 import { setDepartments } from '@slices/departments.slice';
 import { setSemester } from '@slices/semester.slice';
+import { setOrder } from '@root/src/store/slices/order.slice';
 
 
 
-export default function ContentArea() {
+export default function ProjectsContentArea() {
 
     const dispatch = useDispatch();
-
-    const searchProject = useSelector(state => state.searchProject.value);
+    
     const departments = useSelector(state => state.departments.value);
     const semester = useSelector(state => state.semester.value);
     const selectedCollage = useSelector(state => state.selectedCollage.value);
     const selectedDepartment = useSelector(state => state.selectedDepartment.value);
-
-    const handleSearchInput = function (event) {
-        dispatch(setSearchText(event.target.value));
+    const order = useSelector(state => state.order.value);
+    
+    const handleOrderSelected = function (_, data) {
+        dispatch(setOrder(data.value));
     }
 
     const handleDepartmentSelect = function (_, data) {
@@ -67,17 +69,6 @@ export default function ContentArea() {
         <div className="content-area">
             
             <div className="flex-row justify-start gap-8px">
-                <div className="filter-div" style={{width: '60%', padding: '2px', height: 'fit-content'}}>
-                    <Input 
-                        className="search-input" 
-                        contentBefore={<Search20Regular/>}
-                        placeholder="بحث عن مشروع" 
-                        value={searchProject}
-                        style={{ flex: '1' }}
-                        onChange={handleSearchInput}
-                    />
-                    <Button icon={<Dismiss16Regular/>} onClick={() => dispatch(setSearchText(''))}/>
-                </div>
                 
                 <DepartmentsDropdown
                     departments={departments}
@@ -99,6 +90,20 @@ export default function ContentArea() {
                     <Button icon={<Dismiss16Regular/>} onClick={handleUnSelectSemester}/>
                 </div>
             </div>
+
+            <TabList 
+                vertical={false} 
+                className="ranks-bar"
+                selectedValue={order}
+                onTabSelect={handleOrderSelected}>
+
+                <Tab key={1} className='rank-tab' value={'latest'}>الأحدث</Tab>
+                <Tab key={2} className='rank-tab' value={'oldest'}>الأقدم</Tab>
+                <Tab key={3} className='rank-tab' value={'topRated'}>الأعلى تقييما</Tab>
+                <Tab key={4} className='rank-tab' value={'lowRated'}>الأقل تقييما</Tab>
+                <Tab key={5} className='rank-tab' value={'topLiked'}>الأكثر إعجابا</Tab>
+                <Tab key={6} className='rank-tab' value={'lowLiked'}>الأقل إعجابا</Tab>
+            </TabList>
             
             {/* Projects Area */}
             <ProjectsArea/>
