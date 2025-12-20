@@ -2,14 +2,10 @@ import { useNavigate } from "react-router-dom"
 import Header from "./Header"
 import { Button } from "@fluentui/react-components"
 import { ArrowRight20Regular } from "@fluentui/react-icons";
-import logo from '../../resources/logo.png'
 
-/**
- * 
- * @param {React.HTMLProps} props 
- * @returns 
- */
-export default function PlatformHeader(props) {
+
+
+export default function PlatformHeader({ caption, handleBackButtonClick }) {
     
     const navigate = useNavigate();
 
@@ -18,14 +14,12 @@ export default function PlatformHeader(props) {
         contentBefore={
             <Button 
                 icon={<ArrowRight20Regular/>} 
-                onClick={() => navigate(-1)} 
+                onClick={handleBackButtonClick} 
                 appearance="transparent"
             />
         }
-        logo={logo}
-        caption={'توثيق مشاريع التخرج الجامعية'}
+        caption={caption}
         captionClickEvent={() => navigate('/intro')}
         style={{paddingTop: '13px', paddingBottom: '13px'}}
-        {...props}
     />
 }

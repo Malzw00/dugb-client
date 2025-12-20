@@ -20,23 +20,29 @@ export function UserBtn() {
 
     const navigate = useNavigate();
     const user = useSelector(state => state.user.value);
-    const isAdmin = user.role === 'admin' || user.role === 'manager';
-    const img = undefined;
+    let isAdmin = false;
+
+    if(user)
+    isAdmin = user.role === 'admin' || user.role === 'manager';
+
+    const handleProfile = () => navigate('/home/profile');
     
-    // React.useEffect(() => {
-    //     // load and set user data
-    // }, [])
+    const handleControl = () => navigate('/home/control');
+
+    const handleSignout = function () {
+        navigate('/signout')
+    }
 
     return (
-        user.accountId
+        user
         ? <Menu className='user-menu' positioning={{ autoSize: true, }}>
             <MenuTrigger disableButtonEnhancement>
                 <MenuButton className='user-menu-btn' appearance="transparent">
                     <div className='user-menu-btn-content'>
-                        {!img
+                        {!user.image
                             ? <Avatar className='user-menu-avatar' />
                             : <Image 
-                                src={img} 
+                                src={user.image} 
                                 width={34} 
                                 height={34}
                                 style={{borderRadius: '50em'}} 
@@ -50,27 +56,37 @@ export function UserBtn() {
             </MenuTrigger>
             <MenuPopover>
                 <MenuList>
-                    <MenuItem icon={<Person20Regular />} onClick={() => navigate('profile/user')}>
+                    <MenuItem icon={<Person20Regular />} onClick={handleProfile}>
                         عرض الملف الشخصي
                     </MenuItem>
                     {
                         isAdmin &&
-                        <MenuItem icon={<Settings20Regular />} onClick={() => navigate('/home/control')}>
+                        <MenuItem icon={<Settings20Regular />} onClick={handleControl}>
                             لوحة التحكم
                         </MenuItem>
                     }
-                    <MenuItem style={{ color: 'red' }} icon={<SignOut20Regular />}>تسجيل الخروج</MenuItem>
+                    <MenuItem style={{ color: 'red' }} icon={<SignOut20Regular />} onClick={handleSignout}>
+                        تسجيل الخروج
+                    </MenuItem>
                 </MenuList>
             </MenuPopover>
         </Menu>
-        : <Button
-            appearance='primary'
-            onClick={() => {
-                navigate('/Auth');
-            }}
-            style={{marginInlineStart: 'auto'}}>
-
-            تسجيل الدخول
-        </Button>
+        : <LoginButton/>
     );
+}
+
+
+function LoginButton() {
+    
+    const navigate = useNavigate();
+
+    return <Button
+        appearance='primary'
+        onClick={() => {
+            navigate('/login');
+        }}
+        style={{marginInlineStart: 'auto'}}>
+
+        تسجيل الدخول
+    </Button>
 }

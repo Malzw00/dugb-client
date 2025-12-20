@@ -2,14 +2,20 @@ import {
     BrowserRouter,
     Routes,
     Route,
+    useNavigate,
 } from 'react-router-dom';
-import { FluentProvider, webLightTheme } from '@fluentui/react-components';
-import { createContext, useState } from 'react';
-import AuthPad from '@components/AuthPad';
+import { FluentProvider, Spinner, tokens, webLightTheme } from '@fluentui/react-components';
+import { createContext, useEffect } from 'react';
 import HomePad from '@components/HomePad/HomePad';
 import IntroRedirector from '@components/IntroRedirector';
 import SmartStart from '@components/SmartStart';
 import '@styles/App.css';
+import SignUpForm from '@components/SignUpForm/SignUpForm';
+import LoginForm from '@components/LoginForm';
+import { useDispatch } from "react-redux";
+import { loadCurrentUser } from "@store/thunks/auth.thunk";
+import Signout from './Signout';
+
 
 
 
@@ -33,14 +39,25 @@ export default function AppWrapper() {
 
 function App() {
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // load user
+    useEffect(() => {
+        dispatch(loadCurrentUser());
+    }, [dispatch]);
+
     return (
         <FluentProvider theme={webLightTheme} style={fluentStyle} dir="rtl">
             <div className="app">
                 <Routes>
                     <Route path="*" element={<SmartStart/>}/>
                     <Route path="/intro" element={<IntroRedirector/>}/>
-                    <Route path="/auth" element={<AuthPad/>}/>
                     <Route path="/home/*" element={<HomePad/>}/>
+                    <Route path="/auth" element={() => navigate('/login')}/>
+                    <Route path="/login" element={<LoginForm/>}/>
+                    <Route path="/signup" element={<SignUpForm/>}/>
+                    <Route path="/signout" element={<Signout/>}/>
                 </Routes>
             </div>
         </FluentProvider>

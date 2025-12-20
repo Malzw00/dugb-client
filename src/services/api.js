@@ -1,6 +1,7 @@
 // src/services/api.js
 import axios from "axios";
 import baseURL from "@config/baseURL.config";
+import { store } from '@store/store';
 
 // Create an instance to facilitate its use in all functions.
 const api = axios.create({
@@ -14,9 +15,10 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         // Example: Adding the Authorization header if it exists
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        const state = store.getState();
+        const accessToken = state.user?.accessToken;
+        if (accessToken) {
+            config.headers.Authorization = `Bearer ${accessToken}`;
         }
         return config;
     },

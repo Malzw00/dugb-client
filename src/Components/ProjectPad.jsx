@@ -21,6 +21,8 @@ import { useDispatch } from "react-redux";
 import { selectHeaderTab } from "@slices/selectedHeaderTab.slice";
 import { selectCategory } from "@slices/selectedCategory.slice";
 import { selectCollage } from "@slices/selectedCollage.slice";
+import PersonCard from "./PreMadeComponents/PersonCard";
+import { setPerson } from "../store/slices/person.slice";
 
 
 
@@ -232,6 +234,19 @@ function ProjectBody ({ students=[], supervisor, keywords=[], categories=[]  }) 
             navigate('/home');
         }
     }
+
+    const handleStudentCardClick = function (student) {
+        // return () => {
+        //     dispatch(setPerson({
+        //         id: student.student_id,
+        //         fullName: student.student_full_name,
+        //         email: student.student_email,
+        //         Department: student.Department,
+        //         Projects: student.Projects,
+        //         updatedAt: student.updated_at,
+        //     }))
+        // }
+    }
     
     return (
         <div className="flex-col gap-8px" style={{ width: '80%' }}>
@@ -255,9 +270,12 @@ function ProjectBody ({ students=[], supervisor, keywords=[], categories=[]  }) 
                     <AccordionPanel style={panelStyle}>
                         <div className="flex-col items-stretch gap-5px" style={{minWidth:'200px'}}>
                             {students.map((student, i) => {
-                                return <div key={i} style={{ padding: '5px', width: '100%'}}>
-                                    {student.student_full_name}
-                                </div>
+                                return <PersonCard
+                                    index={i}
+                                    name={student.student_full_name}
+                                    onClick={handleStudentCardClick}
+                                    updated_at={student.updated_at}
+                                />
                             })}
                             {(students.length < 1) && <div style={placeholderStyle}>
                                 لم يتم توثيق بيانات الطلبة بعد

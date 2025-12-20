@@ -32,7 +32,7 @@ export default function Header () {
             </div>         
 
             <TabList 
-                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} 
+                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0 2%' }} 
                 selectedValue={selectedHeaderTab} onTabSelect={handleTabSelect}>
                     
                 <Tab title='بحث' icon={<Search20Regular/>} value={'search'}/>

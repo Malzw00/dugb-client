@@ -1,10 +1,12 @@
 import { useState, createContext } from 'react';
-import FormHead from '../FormHead';
+import FormHead from '@components/FormHead';
 import AccountSetupForm from './AccountSetupForm';
 import PersonalInfoForm from './PersonalInfoForm';
-import VerificationEmailForm from './VerificationEmailForm';
 import CompleteAccountCreation from './CompleteAccountCreationForm';
-import logo from '../../resources/logo.png';
+import logo from '@resources/logo.png';
+import '@styles/AuthPad.css';
+import PlatformHeader from '../PreMadeComponents/PlatformHeader';
+import { useNavigate } from 'react-router-dom';
 
 // إنشاء سياق بيانات التسجيل
 export const SignupContext = createContext({
@@ -27,6 +29,8 @@ export const CurrentSignupFormContext = createContext({
 
 export default function SignUpForm() {
 
+    const navigate = useNavigate();
+
     const [signupData, setSignupData] = useState({
         email: '',
         password: '',
@@ -44,8 +48,8 @@ export default function SignUpForm() {
         switch (lowerForm) {
             case 'pif':
                 return <PersonalInfoForm />;
-            case 'vef':
-                return <VerificationEmailForm />;
+            // case 'vef':
+            //     return <VerificationEmailForm />;
             case 'cacf':
                 return <CompleteAccountCreation />;
             default:
@@ -55,17 +59,25 @@ export default function SignUpForm() {
 
     return (
         <SignupContext.Provider value={{ signupData, setSignupData }}>
-            <div className="form">
-                <FormHead
-                    caption="منصة توثيق مشاريع التخرج الجامعية"
-                    title={lowerForm !== 'cacf' ? 'إنشاء حساب جديد' : 'حسابك جاهز'}
-                    logo={logo}
+            <div className='auth-pad'>
+                
+                <PlatformHeader
+                    caption={"إنشاء حساب جديد"}
+                    handleBackButtonClick={() => navigate('/home')}
                 />
+                
+                <div className="form">
+                    <FormHead
+                        caption="منصة توثيق مشاريع التخرج الجامعية"
+                        title={lowerForm !== 'cacf' ? 'إنشاء حساب جديد' : 'حسابك جاهز'}
+                        logo={logo}
+                    />
 
-                <div className="form-center">
-                    <CurrentSignupFormContext.Provider value={{ currentForm, setCurrentForm }}>
-                        {renderForm()}
-                    </CurrentSignupFormContext.Provider>
+                    <div className="form-center">
+                        <CurrentSignupFormContext.Provider value={{ currentForm, setCurrentForm }}>
+                            {renderForm()}
+                        </CurrentSignupFormContext.Provider>
+                    </div>
                 </div>
             </div>
         </SignupContext.Provider>

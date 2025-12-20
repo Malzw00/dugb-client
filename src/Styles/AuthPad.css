@@ -1,12 +1,13 @@
-#auth-pad {   
+.auth-pad {   
     display: grid;
     place-items: center;
     height: 100%;
     width: 100%;
     background-color: var(--colorNeutralBackground3);
+    overflow: auto;
 }
 
-#auth-pad .header {
+.auth-pad .header {
     position: fixed;
     top: 0;
     left: 0;

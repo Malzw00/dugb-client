@@ -13,7 +13,6 @@ export default function AccountSetupForm() {
     const [passwordsMatch, setPasswordsMatch] = useState(false);
     const [warningText, setWarningText] = useState({ text: "", color: "black" });
     const [fieldWarnings, setFieldWarnings] = useState({
-        username: false,
         email: false,
         password: false,
         surePassword: false,
@@ -21,7 +20,6 @@ export default function AccountSetupForm() {
 
     const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    const isValidUsername = (username) => /^[a-zA-Z0-9_]{3,20}$/.test(username);
 
     const handleChange = useCallback((field) => (event) => {
         const value = event.target.value;
@@ -38,8 +36,6 @@ export default function AccountSetupForm() {
     }, [setSignupData]);
 
     const validateForm = () => {
-        const usernameEmpty = !signupData.username || signupData.username.trim() === "";
-        const usernameInvalid = !usernameEmpty && !isValidUsername(signupData.username);
         const emailEmpty = signupData.email.trim() === "";
         const emailInvalid = !emailEmpty && !isValidEmail(signupData.email);
         const passwordEmpty = signupData.password.trim() === "";
@@ -47,23 +43,17 @@ export default function AccountSetupForm() {
         const passwordTooShort = !passwordEmpty && signupData.password.length < 8;
 
         if (
-            usernameEmpty || usernameInvalid ||
             emailEmpty || emailInvalid ||
             passwordEmpty || passwordTooShort ||
             surePasswordEmpty
         ) {
             setFieldWarnings({
-                username: usernameEmpty || usernameInvalid,
                 email: emailEmpty || emailInvalid,
                 password: passwordEmpty || passwordTooShort,
                 surePassword: surePasswordEmpty,
             });
 
-            if (usernameInvalid)
-                setWarningText({ 
-                    text: "اسم المستخدم يجب أن يحتوي على 3 إلى 20 حرفًا (حروف، أرقام، _ فقط)", color: "red" 
-                });
-            else if (emailInvalid)
+            if (emailInvalid)
                 setWarningText({ text: "صيغة البريد الإلكتروني غير صحيحة", color: "red" });
             else if (passwordTooShort)
                 setWarningText({ text: "كلمة المرور يجب أن تكون 8 أحرف على الأقل", color: "red" });
@@ -92,14 +82,6 @@ export default function AccountSetupForm() {
     return (
         <>
             <h3>بيانات تسجيل الدخول</h3>
-
-            <Input
-                contentBefore={<Mention20Regular />}
-                placeholder='اسم المستخدم'
-                value={signupData.username || ''}
-                className={fieldWarnings.username ? "invalid-input" : ""}
-                onChange={handleChange("username")}
-            />
 
             <EmailInput
                 className={fieldWarnings.email ? "invalid-input" : ""}

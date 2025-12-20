@@ -8,6 +8,7 @@ export default function FormHead({caption, title, logo}) {
         <div className='form-head'>
             <LogoImg src={logo} alt='Logo'/>
             <h3>{caption}</h3>
+            <br />
             <h3>{title}</h3>
         </div>
     );

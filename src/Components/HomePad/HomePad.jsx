@@ -36,7 +36,7 @@ export default function HomePad() {
                     : null
                 }/>
                 <Route path="/projects/:projectId" element={<ProjectPad/>}/>
-                <Route path="/profile/:userId" element={<ProfilePad/>}/>
+                <Route path="/profile" element={<ProfilePad/>}/>
                 <Route path="/control" element={<ControlPad/>}/>
                 <Route path="/control/documentation" element={<DocumentationPad/>}/>
             </Routes>

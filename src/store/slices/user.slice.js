@@ -1,14 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value: {
-        accountId: 1,
-        fstName: 'muaad', 
-        lstName: 'alzwy', 
-        email: 'muaad@alzwy.ly', 
-        role: 'admin',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsBmB0MzASlFQ0ty-z88E2dTS7OxPI7D4tKw&s',
-    }
+    value: null
 }
 
 const userSlice = createSlice({
@@ -17,16 +10,20 @@ const userSlice = createSlice({
     reducers: {
         setUser(state, action) {
             state.value = {
-                accountId: action.payload.accountId,
-                fstName: action.payload.fstName, 
-                lstName: action.payload.lstName, 
-                email: action.payload.email, 
-                role: action.payload.role,
-                image: action.payload.image,
+                accountId: action.payload.account_id,
+                fstName: action.payload.fst_name, 
+                lstName: action.payload.lst_name, 
+                email: action.payload.account_email, 
+                role: action.payload.account_role,
+                imageId: action.payload.profile_image_id,
+                accessToken: action.payload.accessToken
             }
-        }
+        },
+        clearUser(state) {
+            state.value = null;
+        },
     }
 });
 
-export const { setUser, } = userSlice.actions;
+export const { setUser, clearUser } = userSlice.actions;
 export default userSlice.reducer;

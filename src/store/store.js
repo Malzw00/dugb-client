@@ -20,6 +20,7 @@ import searchedSupervisorsReducer from '@slices/searchedSupervisor.slice';
 import selectedHeaderTabReducer from '@slices/selectedHeaderTab.slice'; 
 import selectedPeopleTabReducer from '@slices/selectedPeopleTab.slice'; 
 import selectedSearchTabReducer from '@slices/selectedSearchTab.slice'; 
+import profileReducer from '@root/src/store/slices/profile.slice'
 
 const store = configureStore({
     reducer: {
@@ -44,6 +45,7 @@ const store = configureStore({
         selectedSearchTab: selectedSearchTabReducer,
         searchedSupervisors: searchedSupervisorsReducer,
         searchedStudents: searchedStudentsReducer,
+        profile: profileReducer,
     }
 });
 

@@ -21,8 +21,8 @@ import api from "@services/api";
  *
  * @function register
  * @param {Object} data
- * @param {string} data.firstName
- * @param {string} data.lastName
+ * @param {string} data.fst_name
+ * @param {string} data.lst_name
  * @param {string} data.email
  * @param {string} data.password
  * @returns {Promise<AxiosResponse>}

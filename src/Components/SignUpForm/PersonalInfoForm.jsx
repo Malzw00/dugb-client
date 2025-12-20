@@ -63,18 +63,15 @@ export default function PersonalInfoForm() {
 
         const fname = signupData.fname.trim();
         const lname = signupData.lname.trim();
-        const bdate = signupData.bdate;
     
         const isFnameEmpty = fname === ''; 
         const isLnameEmpty = lname === ''; 
-        const isBDateEmpty = bdate === null || bdate === undefined; 
     
-        if (isFnameEmpty || isLnameEmpty || isBDateEmpty) {
+        if (isFnameEmpty || isLnameEmpty) {
             setWarningText({ text: "يرجى تعبئة جميع الحقول", color: "red" });
             setFieldWarnings({
                 fname: isFnameEmpty,
                 lname: isLnameEmpty,
-                bdate: isBDateEmpty
             });
             return;
         }
@@ -91,28 +88,14 @@ export default function PersonalInfoForm() {
             });
             return;
         }
-
-        const birthYear = new Date(bdate).getFullYear();
-        const currentYear = new Date().getFullYear();
-        const age = currentYear - birthYear;
-
-        if (age < 12) {
-            setWarningText({ text: "العمر يجب أن يكون 12 سنة أو أكثر", color: "red" });
-            setFieldWarnings({
-                ...fieldWarnings,
-                bdate: true
-            });
-            return;
-        }
     
         // في حال عدم وجود مشاكل
         setWarningText({ text: "", color: "black" });
         setFieldWarnings({
             fname: false,
             lname: false,
-            bdate: false
         });
-        setCurrentForm("VEF");
+        setCurrentForm("CACF");
     };    
 
     return (
@@ -141,13 +124,6 @@ export default function PersonalInfoForm() {
                 placeholder="الاسم الثاني"
                 className={fieldWarnings.lname? 'invalid-input': ''}
                 contentBefore={<Person20Regular />}
-            />
-
-            <DatePicker
-                value={signupData.bdate}
-                placeholder="حدد تاريخ ميلادك"
-                className={fieldWarnings.bdate? 'invalid-input': ''}
-                onSelectDate={(date) => setSignupData({ ...signupData, bdate: date })}
             />
 
             <Label style={{ color: warningText.color }}>{warningText.text}</Label>
