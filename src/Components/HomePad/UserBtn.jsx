@@ -12,20 +12,23 @@ import {
 } from '@fluentui/react-components';
 import { SignOut20Regular, Person20Regular, Settings20Regular } from '@fluentui/react-icons';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setProfile } from '@root/src/store/slices/profile.slice';
 
 
 
 export function UserBtn() {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const user = useSelector(state => state.user.value);
     let isAdmin = false;
 
     if(user)
     isAdmin = user.role === 'admin' || user.role === 'manager';
 
-    const handleProfile = () => navigate('/home/profile');
+    const handleProfile = () => dispatch(setProfile(user.accountId));
     
     const handleControl = () => navigate('/home/control');
 

@@ -13,6 +13,7 @@ import { setUser } from "@slices/user.slice";
 import logo from '@resources/logo.png';
 
 export default function LoginForm() {
+     
      const navigate = useNavigate();
      const dispatch = useDispatch();
 
@@ -177,6 +178,20 @@ export default function LoginForm() {
                                    style={{ marginTop: '10px' }}
                               />
                          )}
+
+                         <Button
+                              className='craete-account-btn'
+                              appearance='transparent'
+                              style={{ 
+                                   alignSelf: 'flex-start', 
+                                   marginTop: '15px',
+                                   padding: 0 
+                              }}
+                              type='button'
+                              onClick={() => navigate('/signup')}
+                         >
+                              إنشاء حساب جديد
+                         </Button>
 
                          {/* رابط استعادة كلمة المرور
                          <Button

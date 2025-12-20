@@ -1,9 +1,9 @@
-import { useContext, useState, useCallback } from "react";
+import { useContext, useState, useCallback, useEffect } from "react";
 import { SignupContext, CurrentSignupFormContext } from "./SignUpForm";
-import EmailInput from "../PreMadeComponents/EmailInput";
-import PasswordInput from "../PreMadeComponents/PasswordInput";
-import { Button, Input, Label } from "@fluentui/react-components";
-import { Checkmark20Filled, Key20Regular, Mention20Regular } from "@fluentui/react-icons";
+import EmailInput from "@PreMadeComponents/EmailInput";
+import PasswordInput from "@PreMadeComponents/PasswordInput";
+import { Button, Label } from "@fluentui/react-components";
+import { Checkmark20Filled, Key20Regular } from "@fluentui/react-icons";
 
 export default function AccountSetupForm() {
 
@@ -18,33 +18,46 @@ export default function AccountSetupForm() {
         surePassword: false,
     });
 
-    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidEmail = (email) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+    const handleChange = useCallback(
+        (field) => (event) => {
+            const value = event.target.value;
 
-    const handleChange = useCallback((field) => (event) => {
-        const value = event.target.value;
-        setSignupData((prev) => {
-            const updated = { ...prev, [field]: value };
+            setSignupData((prev) => ({
+                ...prev,
+                [field]: value,
+            }));
 
-            if (field === "password" || field === "surePassword") {
-                setPasswordsMatch(updated.password === updated.surePassword);
-            }
+            setFieldWarnings((prev) => ({
+                ...prev,
+                [field]: false,
+            }));
+        },
+        [setSignupData]
+    );
 
-            setFieldWarnings((prevWarn) => ({ ...prevWarn, [field]: false }));
-            return updated;
-        });
-    }, [setSignupData]);
+    useEffect(() => {
+        setPasswordsMatch(
+            signupData.password !== "" &&
+            signupData.password === signupData.surePassword
+        );
+    }, [signupData.password, signupData.surePassword]);
 
     const validateForm = () => {
         const emailEmpty = signupData.email.trim() === "";
         const emailInvalid = !emailEmpty && !isValidEmail(signupData.email);
         const passwordEmpty = signupData.password.trim() === "";
         const surePasswordEmpty = signupData.surePassword.trim() === "";
-        const passwordTooShort = !passwordEmpty && signupData.password.length < 8;
+        const passwordTooShort =
+            !passwordEmpty && signupData.password.length < 8;
 
         if (
-            emailEmpty || emailInvalid ||
-            passwordEmpty || passwordTooShort ||
+            emailEmpty ||
+            emailInvalid ||
+            passwordEmpty ||
+            passwordTooShort ||
             surePasswordEmpty
         ) {
             setFieldWarnings({
@@ -53,21 +66,35 @@ export default function AccountSetupForm() {
                 surePassword: surePasswordEmpty,
             });
 
-            if (emailInvalid)
-                setWarningText({ text: "صيغة البريد الإلكتروني غير صحيحة", color: "red" });
-            else if (passwordTooShort)
-                setWarningText({ text: "كلمة المرور يجب أن تكون 8 أحرف على الأقل", color: "red" });
-            else setWarningText({text: '', color: 'black'})
+            if (emailInvalid) {
+                setWarningText({
+                    text: "صيغة البريد الإلكتروني غير صحيحة",
+                    color: "red",
+                });
+            } else if (passwordTooShort) {
+                setWarningText({
+                    text: "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+                    color: "red",
+                });
+            } else {
+                setWarningText({ text: "", color: "black" });
+            }
+
             return false;
         }
 
-        if (signupData.password !== signupData.surePassword) {
-            setWarningText({ text: "تحقق من تطابق كلمة المرور", color: "red" });
+        if (!passwordsMatch) {
+            setWarningText({
+                text: "تحقق من تطابق كلمة المرور",
+                color: "red",
+            });
+
             setFieldWarnings((prev) => ({
                 ...prev,
                 password: true,
                 surePassword: true,
             }));
+
             return false;
         }
 
@@ -76,7 +103,9 @@ export default function AccountSetupForm() {
     };
 
     const handleSubmit = () => {
-        if (validateForm()) setCurrentForm("PIF");
+        if (validateForm()) {
+            setCurrentForm("PIF");
+        }
     };
 
     return (
@@ -95,9 +124,11 @@ export default function AccountSetupForm() {
                 value={signupData.password}
                 placeholder="أدخل كلمة المرور"
                 contentBefore={
-                    passwordsMatch && signupData.password.length >= 8 ?
-                        <Checkmark20Filled color="green" /> :
+                    passwordsMatch && signupData.password.length >= 8 ? (
+                        <Checkmark20Filled color="green" />
+                    ) : (
                         <Key20Regular />
+                    )
                 }
                 onChange={handleChange("password")}
             />
@@ -107,14 +138,18 @@ export default function AccountSetupForm() {
                 value={signupData.surePassword}
                 placeholder="أدخل كلمة المرور مجددًا"
                 contentBefore={
-                    passwordsMatch && signupData.surePassword.length >= 8 ?
-                        <Checkmark20Filled color="green" /> :
+                    passwordsMatch && signupData.surePassword.length >= 8 ? (
+                        <Checkmark20Filled color="green" />
+                    ) : (
                         <Key20Regular />
+                    )
                 }
                 onChange={handleChange("surePassword")}
             />
 
-            <Label style={{ color: warningText.color }}>{warningText.text}</Label>
+            <Label style={{ color: warningText.color }}>
+                {warningText.text}
+            </Label>
 
             <Button appearance="primary" onClick={handleSubmit}>
                 التالي

@@ -11,6 +11,7 @@ import CategoriesHomePad from '@components/HomePad/CategoriesHomePad/CategoriesH
 import PeopleHomePad from '@components/HomePad/PeopleHomePad/PeopleHomePad';
 import PersonDialog from '@root/src/components/Dialogs/PersonDialog';
 import SearchHomePad from './SearchHomePad/SearchHomePad';
+import ProfileDialog from '../Dialogs/ProfileDialog';
 
 
 
@@ -20,6 +21,7 @@ export default function HomePad() {
     
     const selectedHeaderTab = useSelector(state => state.selectedHeaderTab.value);
     const person = useSelector(state => state.person.value);
+    const profile = useSelector(state => state.profile.value);
     
     const shouldShowHeader = !location.pathname.includes('/projects/');
 
@@ -42,6 +44,7 @@ export default function HomePad() {
             </Routes>
             
             {person && <PersonDialog/>}
+            {profile && <ProfileDialog/>}
         </div>
     );
 }

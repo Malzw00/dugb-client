@@ -2,11 +2,11 @@ import { Button } from "@fluentui/react-components";
 import { Dismiss16Regular } from "@fluentui/react-icons";
 import '@styles/dialog.css'
 
-export default function Dialog({ className, title, onCloseBtnClick, body, footer }) {
+export default function Dialog({ style, className, title, onCloseBtnClick, body, footer }) {
 
     return (
         <div className="dialog-parent">
-            <div className={`dialog ${className || ''}`}>
+            <div className={`dialog ${className || ''}`} style={style?? {}}>
             
                 <div className="header">
                     <div className="title">{title}</div>

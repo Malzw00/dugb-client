@@ -5,7 +5,7 @@ import PersonalInfoForm from './PersonalInfoForm';
 import CompleteAccountCreation from './CompleteAccountCreationForm';
 import logo from '@resources/logo.png';
 import '@styles/AuthPad.css';
-import PlatformHeader from '../PreMadeComponents/PlatformHeader';
+import PlatformHeader from '@PreMadeComponents/PlatformHeader';
 import { useNavigate } from 'react-router-dom';
 
 // إنشاء سياق بيانات التسجيل
