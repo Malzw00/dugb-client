@@ -4,37 +4,40 @@ import {
     Tab,
     Button,
 } from '@fluentui/react-components';
-import LogoImg from '../PreMadeComponents/LogoImg';
-import logo from '../../resources/logo.png';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectControlPanel } from '@slices/selectedControlPanel.slice';
 
 
 
 export default function SideBar(props) {
 
+    const dispatch = useDispatch();
+    
     const navigate = useNavigate();
-    const { setContentArea, contentArea } = props;
+
+    const selectedControlPanel = useSelector(state => state.selectedControlPanel.value)
 
     return (
         <div {...props} className = {`sidebar ${props.className?? ''}`}>
-            
-            <div className='logo-caption-div'>
-                <LogoImg src={logo}/>
-                <h4 onClick={() => navigate('/intro')}>منصة توثيق مشاريع التخرج الجامعية</h4>
-            </div>
       
             <TabList 
                 className='tab-list' 
                 vertical 
-                selectedValue={contentArea}
-                onTabSelect={(e, data) => setContentArea(data.value)}
+                selectedValue={selectedControlPanel}
+                onTabSelect={(e, data) => {dispatch(selectControlPanel(data.value))}}
             >
-                <Tab key={0} value={'projects'}>المشاريع</Tab>
-                <Tab key={1} value={'admins'}>المسؤولين</Tab>
-                <Tab key={2} value={'accounts'}>حسابات المستخدمين</Tab>
+                <Tab key={1} value={'projects'}>المشاريع</Tab>
+                <Tab key={2} value={'categories'}>الفئات</Tab>
+                <Tab key={3} value={'students'}>الطلبة</Tab>
+                <Tab key={4} value={'supervisors'}>المشرفين</Tab>
+                <Tab key={5} value={'references'}>المراجع</Tab>
+                <Tab key={6} value={'files'}>الملفات</Tab>
+                <Tab key={8} value={'collages'}>الكليات</Tab>
+                <Tab key={8} value={'departments'}>الأقسام</Tab>
+                <Tab key={7} value={'permissions'}>الصلاحيات</Tab> 
+                <Tab key={9} value={'accounts'}>حسابات المستخدمين</Tab>
             </TabList>
-
-            <Button appearance='secondary' onClick={() => navigate('/home')}>العودة إلى الرئيسية</Button>
           </div>
     );
 }

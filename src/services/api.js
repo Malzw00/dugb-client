@@ -2,33 +2,78 @@
 import axios from "axios";
 import baseURL from "@config/baseURL.config";
 import { store } from '@store/store';
+import { setAccessToken, clearUser } from '@store/slices/user.slice';
 
-// Create an instance to facilitate its use in all functions.
+// Create axios instance
 const api = axios.create({
-    baseURL, // Primary link from the config file
+    baseURL,
     headers: { "Content-Type": "application/json" },
-    withCredentials: true, // مهم جدًا للكوكيز Cross-origin
-    timeout: 5000, // Example: 5 second timeout
+    withCredentials: true, // مهم للـ refresh_token cookie
+    timeout: 5000,
 });
 
-// Intercepting requests and responses (optional, for adding token or logging)
+/* =========================
+   Request Interceptor
+========================= */
 api.interceptors.request.use(
     (config) => {
-        // Example: Adding the Authorization header if it exists
         const state = store.getState();
-        const accessToken = state.user?.accessToken;
+        const accessToken = state.user?.value?.accessToken;
+
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
+        } else {
+            delete config.headers.Authorization;
         }
+
         return config;
     },
     (error) => Promise.reject(error)
 );
 
+/* =========================
+   Response Interceptor
+========================= */
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
-        console.error("API Error:", error);
+    async (error) => {
+        const originalRequest = error.config;
+        
+        // تحقق من شروط refresh
+        if (
+            error.response?.status === 401 &&
+            error.response?.data?.accessTokenExpired === true &&
+            !originalRequest._retry &&
+            !originalRequest.url.includes('/auth/me')
+        ) {
+            console.log('will request auth/me to refresh access token');
+
+            originalRequest._retry = true;
+
+            try {
+                // اطلب access token جديد باستخدام refresh token (cookie)
+                const res = await api.post('/auth/me');
+
+                const newAccessToken = res.data.result.accessToken;
+
+                console.log(newAccessToken);
+
+                // خزّنه في redux
+                store.dispatch(setAccessToken(newAccessToken));
+
+                // أعد تعيين الهيدر وأعد الطلب
+                originalRequest.headers.Authorization =
+                    `Bearer ${newAccessToken}`;
+
+                return api(originalRequest);
+
+            } catch (refreshError) {
+                // refresh فشل → logout
+                store.dispatch(clearUser());
+                return Promise.reject(refreshError);
+            }
+        }
+
         return Promise.reject(error);
     }
 );

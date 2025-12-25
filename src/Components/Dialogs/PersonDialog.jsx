@@ -1,5 +1,5 @@
 import Dialog from "@components/Dialogs/AbstractDialog";
-import { Link } from "@fluentui/react-components";
+import { Divider, Link, tokens } from "@fluentui/react-components";
 import { Person48Regular } from "@fluentui/react-icons";
 import { getStudentById, getSupervisorById } from "@root/src/services/people";
 import { setPerson } from "@root/src/store/slices/person.slice";
@@ -13,6 +13,9 @@ const PERSON_TYPE_CONFIG = {
         fetchFunction: getStudentById,
         idKey: 'student_id',
         nameKey: 'student_name',
+        fatherNameKey: 'student_father_name',
+        grandNameKey: 'student_grandfather_name',
+        familyNameKey: 'student_family_name',
         fullNameKey: 'student_full_name',
         emailKey: 'student_email',
         title: 'الطالب',
@@ -23,6 +26,9 @@ const PERSON_TYPE_CONFIG = {
         fetchFunction: getSupervisorById,
         idKey: 'supervisor_id',
         nameKey: 'supervisor_name',
+        fatherNameKey: 'supervisor_father_name',
+        grandNameKey: 'supervisor_grandfather_name',
+        familyNameKey: 'supervisor_family_name',
         fullNameKey: 'supervisor_full_name',
         emailKey: 'supervisor_email',
         title: 'المشرف',
@@ -31,7 +37,8 @@ const PERSON_TYPE_CONFIG = {
     }
 };
 
-export default function PersonDialog() {
+export default function PersonDialog({ style }) {
+    
     const dispatch = useDispatch();
     const personId = useSelector(state => state.person.value);
     const selectedPeopleTab = useSelector(state => state.selectedPeopleTab.value);
@@ -55,6 +62,9 @@ export default function PersonDialog() {
                 setPersonData({
                     id: data[config.idKey],
                     name: data[config.nameKey],
+                    fatherName: data[config.fatherNameKey],
+                    grandName: data[config.grandNameKey],
+                    familyName: data[config.familyNameKey],
                     fullName: data[config.fullNameKey],
                     email: data[config.emailKey],
                     Department: data.Department,
@@ -63,7 +73,7 @@ export default function PersonDialog() {
                     type: selectedPeopleTab
                 });
             } catch (error) {
-                console.error('خطأ في جلب بيانات الشخص:', error);
+                console.error('Fetch Person Data Error', error);
             } finally {
                 setLoading(false);
             }
@@ -80,6 +90,7 @@ export default function PersonDialog() {
         <Dialog
             className='person-dialog'
             title={dialogTitle}
+            style={style}
             body={
                 loading ? 
                 <Loading /> : 
@@ -97,23 +108,30 @@ export default function PersonDialog() {
 
 function PersonDialogBody ({ person, config }) {
     return (
-        <div className="rows-div person-dialog-body">
-            <div className="profile-image-div">
-                {person?.profile_image_id ? 
-                    <img className="profile-image" alt="صورة الملف الشخصي" /> : 
-                    <Person48Regular/>
-                }
+        <div className="person-dialog-body">
+            <div>
+                <div className="profile-image-div">
+                    {person?.profile_image_id ? 
+                        <img className="profile-image" alt="صورة الملف الشخصي" /> : 
+                        <Person48Regular/>
+                    }
+                </div>
             </div>
             
-            <div className='details'>
-                {person?.fullName && <div className="row">
+            <div className='details' style={{flex: '1',}}>
+                {person.name && <div className="row">
                     <h3 className="field">إسم {config.personTypeText}</h3>
-                    <p className="value">{person.fullName}</p>
+                    <p className="value">
+                        {person.name} <span> </span>
+                        {person.fatherName} <span> </span>
+                        {person.grandName} <span> </span>
+                        {person.familyName} <span> </span>
+                    </p>
                 </div>}
                 
                 {person?.email && <div className="row">
                     <h3 className="field">البريد الإلكتروني</h3>
-                    <p className="value">{person.email}</p>
+                    <Link href={`mailto:${person.email}`} className="value">{person.email}</Link>
                 </div>}
                 
                 {person?.Department && <div className="row">

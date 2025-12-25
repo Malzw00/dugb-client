@@ -1,3 +1,8 @@
+.control-pad { 
+    background-color: var(--colorNeutralBackground2); 
+    min-height: 0;
+}
+
 .control-pad .sidebar {
 
     display: flex;
@@ -6,15 +11,15 @@
     border-left: 1px solid var(--colorNeutralStroke2);
     background-color: var(--colorNeutralBackground3);
     padding: 21px;
-    width: 20%;
+    min-width: 240px;
+    width: 16%;
 }
 
 .control-pad .sidebar .tab-list {
     flex-grow: 1 !important;
 }
 
-.control-pad .content-area {
-
+.control-pad .control-area {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -22,46 +27,85 @@
     min-height: 0;
 }
 
-.control-pad .content-area .tool-bar, 
-.control-pad .content-area .filter-box {
+.control-pad .control-area .data-container {
+    overflow-y: auto;
+} 
+
+.control-pad .control-area .tool-bar {
     display: flex;
     gap: 5px;
     width: 100% !important;
-    padding: 5px 8px;
+    padding: 21px;
     min-height: 0;
-    background-color: var(--colorNeutralBackground3);
-    border-bottom: 1px solid var(--colorNeutralStroke2);
     flex-wrap: wrap;
+    border-bottom: 1px solid var(--colorNeutralStroke1);
 }
 
-.control-pad .content-area .filter-box {
-    border: none;
-}
-
-.control-pad .content-area .filter-box > .search-input, 
-.control-pad .content-area .filter-box > .filter-input {
-    height: 32px !important;
-}
-
-.control-pad .content-area .tool-bar .button {
+.control-pad .control-area .tool-bar .button {
     padding: 5px 13px !important;
     width: fit-content !important;
     min-width: 0;
 }
 
-.control-pad .content-area .table-container {
-    flex: 1;
-    width: 100%;
-    overflow-y: auto;
-    min-height: 0;
+/* row */
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    min-height: 40px;
+    height: 40px;
+    gap: 13px;
+    align-items: center;
+}
+
+/* actions */
+.row .identity, .row .actions {
+    display: flex;
     padding: 5px;
+    align-items: center;
+    gap: 13px;
 }
 
-.control-pad .content-area .table {
-    border: 1px solid var(--colorNeutralStroke2);
+/* name, index-num */
+.row .identity .index-num, .row .identity .name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 40px;
+    width: auto;
 }
 
-.control-pad .content-area .table .table-header {
-    background-color: var(--colorNeutralBackground2);
-    border-bottom: 1px solid var(--colorNeutralStroke2);
+/* name */
+.row .name {
+    min-width: 80px;
+    justify-content: start;
+}
+
+/* cells */
+.row .cell {
+    min-width: 80px;
+    justify-content: start;
+}
+
+.row .actions {
+    gap: 5px
+}
+
+.row .actions .action {
+    min-width: 0 !important;
+    width: fit-content !important;
+    padding: 2px 5px !important;
+    cursor: pointer !important;
+}
+
+.row.active {
+    cursor: pointer;
+}
+.row.active:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+
+.file-item:hover {
+    background: var(--colorNeutralBackground3);
 }

@@ -40,6 +40,7 @@ export default function CompleteAccountCreationForm() {
             {success && <>
                 <h3>{signupData.fname} {signupData.lname}</h3>
                 <p>تم إنشاء حسابك على المنصة بنجاح</p>
+                <p>حسابك جاهز</p>
             </>}
 
             {(!success && !isLoading) && <p>فشل إنشاء حساب</p>}

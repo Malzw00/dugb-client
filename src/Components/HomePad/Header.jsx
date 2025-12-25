@@ -13,6 +13,9 @@ export default function Header () {
     const dispatch = useDispatch();
 
     const selectedHeaderTab = useSelector(state => state.selectedHeaderTab.value);
+    
+    const user = useSelector(state => state.user.value);
+    const isAdmin = user?.role !== 'user';
 
     const handleTabSelect = (_, data) => dispatch(selectHeaderTab(data.value));
 
@@ -39,6 +42,7 @@ export default function Header () {
                 <Tab value='projects'>المشاريع</Tab>
                 <Tab value='categories'>الفئات</Tab>
                 <Tab value='people'>الطلبة والمشرفين</Tab>
+                {isAdmin && <Tab value='control'>لوحة التحكم</Tab>}
             </TabList>
 
             <UserBtn/>

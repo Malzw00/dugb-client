@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value: null
+    value: 'loading'
 }
 
 const userSlice = createSlice({
@@ -14,10 +14,13 @@ const userSlice = createSlice({
                 fstName: action.payload.fst_name, 
                 lstName: action.payload.lst_name, 
                 email: action.payload.account_email, 
-                role: action.payload.account_role,
+                role: action.payload.account_role || action.payload.role,
                 imageId: action.payload.profile_image_id,
                 accessToken: action.payload.accessToken
             }
+        },
+        setAccessToken(state, action) {
+            state.value.accessToken = action.payload
         },
         clearUser(state) {
             state.value = null;
@@ -25,5 +28,5 @@ const userSlice = createSlice({
     }
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, clearUser, setAccessToken } = userSlice.actions;
 export default userSlice.reducer;

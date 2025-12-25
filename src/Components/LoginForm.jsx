@@ -171,6 +171,16 @@ export default function LoginForm() {
                               {loading ? 'جاري التسجيل...' : 'تسجيل الدخول'}
                          </Button>
 
+                         <Button
+                              className='craete-account-btn'
+                              appearance='secondary'
+                              disabled={loading}
+                              type='button'
+                              onClick={() => navigate('/signup')}
+                         >
+                              إنشاء حساب جديد
+                         </Button>
+
                          {loading && (
                               <Spinner 
                                    className="spinner" 
@@ -178,20 +188,6 @@ export default function LoginForm() {
                                    style={{ marginTop: '10px' }}
                               />
                          )}
-
-                         <Button
-                              className='craete-account-btn'
-                              appearance='transparent'
-                              style={{ 
-                                   alignSelf: 'flex-start', 
-                                   marginTop: '15px',
-                                   padding: 0 
-                              }}
-                              type='button'
-                              onClick={() => navigate('/signup')}
-                         >
-                              إنشاء حساب جديد
-                         </Button>
 
                          {/* رابط استعادة كلمة المرور
                          <Button

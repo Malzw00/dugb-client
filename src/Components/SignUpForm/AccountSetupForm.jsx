@@ -110,7 +110,6 @@ export default function AccountSetupForm() {
 
     return (
         <>
-            <h3>بيانات تسجيل الدخول</h3>
 
             <EmailInput
                 className={fieldWarnings.email ? "invalid-input" : ""}

@@ -1,7 +1,5 @@
 import { Avatar } from "@fluentui/react-components";
 import { Person24Regular } from "@fluentui/react-icons";
-import { setPerson } from "@root/src/store/slices/person.slice";
-import { useDispatch } from "react-redux";
 
 export default function PersonCard({ name, index, onClick, updated_at }) {
 

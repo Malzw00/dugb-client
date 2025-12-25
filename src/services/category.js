@@ -35,7 +35,7 @@ export function getCategories(params = {}) {
  *
  * @function createCategories
  * @param {Object} data
- * @param {Array<string>} data.names - Array of category names.
+ * @param {Array<string>} data.name
  * @param {number} data.collageId
  * @returns {Promise<AxiosResponse>}
  */

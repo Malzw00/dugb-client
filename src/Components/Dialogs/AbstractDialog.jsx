@@ -17,9 +17,10 @@ export default function Dialog({ style, className, title, onCloseBtnClick, body,
                 
                 <div className="body">
                     {body || null}
-                    <div className="footer">
-                        {footer || null}
-                    </div>
+                </div>
+                
+                <div className="footer">
+                    {footer || null}
                 </div>
 
             </div>

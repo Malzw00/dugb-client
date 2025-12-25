@@ -5,7 +5,7 @@ import { ArrowRight20Regular } from "@fluentui/react-icons";
 
 
 
-export default function PlatformHeader({ caption, handleBackButtonClick }) {
+export default function PlatformHeader({ caption, handleBackButtonClick, style={} }) {
     
     const navigate = useNavigate();
 
@@ -20,6 +20,6 @@ export default function PlatformHeader({ caption, handleBackButtonClick }) {
         }
         caption={caption}
         captionClickEvent={() => navigate('/intro')}
-        style={{paddingTop: '13px', paddingBottom: '13px'}}
+        style={{paddingTop: '13px', paddingBottom: '13px', ...style}}
     />
 }

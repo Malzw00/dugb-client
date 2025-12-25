@@ -1,33 +1,45 @@
 import SideBar from "./SideBar";
-import '../../Styles/ControlPad.css';
-import ProjectsCA from "./ProjectsCA";
-import AdminsCA from "./AdminsCA";
-import AccountsCA from "./AccountsCA";
-import { useState } from "react";
+import '@styles/ControlPad.css';
+import { useSelector } from "react-redux";
+import Projects from "./Projects";
+import Permissions from "./Permissions";
+import Accounts from "./Accounts";
+import Categories from "./Categories";
+import Students from "./Students";
+import Supervisors from "./Supervisors";
+import References from "./References";
+import Files from "./Files";
+import Collages from "./Collages";
+import Departments from "./Departments";
 
 
 
 export default function ControlPad() {
     
-    const [contentArea, setContentArea] = useState('projects'/** [admins, accounts, admins] */);
+    const selectedControlPanel = useSelector(state => state.selectedControlPanel.value);
+    
+    return <div className='flex-row control-pad height-100 width-100'>
 
-    return <div className='control-pad height-100 width-100 flex-row'>
-
-        <SideBar setContentArea={setContentArea} contentArea={contentArea}/>
-        <ContentArea contentArea={contentArea}/>
+        <SideBar />
+        <ControlArea selectedControlPanel={selectedControlPanel}/>
     </div>
 }
 
 
-function ContentArea(props) {
-
-    const { contentArea } = props;
+function ControlArea({ selectedControlPanel }) {
 
     return (
         <>
-            {contentArea === 'projects' && <ProjectsCA/>}   
-            {contentArea === 'admins' && <AdminsCA/>}   
-            {contentArea === 'accounts' && <AccountsCA/>}   
+            {selectedControlPanel === 'projects'    && <Projects/>}   
+            {selectedControlPanel === 'categories'  && <Categories/>}   
+            {selectedControlPanel === 'students'    && <Students/>}   
+            {selectedControlPanel === 'supervisors' && <Supervisors/>}   
+            {selectedControlPanel === 'references'  && <References/>}   
+            {selectedControlPanel === 'files'       && <Files/>}   
+            {selectedControlPanel === 'permissions' && <Permissions/>}   
+            {selectedControlPanel === 'collages'    && <Collages/>}   
+            {selectedControlPanel === 'departments' && <Departments/>}   
+            {selectedControlPanel === 'accounts'    && <Accounts/>}   
         </>
     );
 }

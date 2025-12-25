@@ -203,19 +203,29 @@
 }
 
 
+.person-dialog .body {
+    padding: 21px !important;
+    gap: 21px !important;
+}
+
 .person-dialog-body {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     height: 100%;
     width: 100%;
     flex: 1;
-    justify-content: space-between;
+    justify-content: start;
+    gap: 30px !important;
 }
 
 .person-dialog-body .details {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 0px;
+}
+
+.person-dialog-body .details .row {
+    padding: 0;
 }
 
 .profile-image-div {
@@ -225,7 +235,7 @@
     align-self: center;
     width: 144px;
     height: 144px;
-    border-radius: 50%;
+    border-radius: 21px;
     background-color: var(--colorNeutralBackground3);
     border: 1px solid var(--colorNeutralStroke2);
 }

@@ -69,7 +69,7 @@ export default function SignUpForm() {
                 <div className="form">
                     <FormHead
                         caption="منصة توثيق مشاريع التخرج الجامعية"
-                        title={lowerForm !== 'cacf' ? 'إنشاء حساب جديد' : 'حسابك جاهز'}
+                        title={lowerForm !== 'cacf' ? 'إنشاء حساب جديد' : ''}
                         logo={logo}
                     />
 

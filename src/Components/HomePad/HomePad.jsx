@@ -35,16 +35,15 @@ export default function HomePad() {
                     : selectedHeaderTab === 'categories'? <CategoriesHomePad/>
                     : selectedHeaderTab === 'people'? <PeopleHomePad/>
                     : selectedHeaderTab === 'search'? <SearchHomePad/>
+                    : selectedHeaderTab === 'control'? <ControlPad/>
                     : null
                 }/>
                 <Route path="/projects/:projectId" element={<ProjectPad/>}/>
-                <Route path="/profile" element={<ProfilePad/>}/>
-                <Route path="/control" element={<ControlPad/>}/>
                 <Route path="/control/documentation" element={<DocumentationPad/>}/>
             </Routes>
             
-            {person && <PersonDialog/>}
-            {profile && <ProfileDialog/>}
+            {person && <PersonDialog style={{ width:'60%', minHeight:'80%' }}/>}
+            {profile && <ProfileDialog style={{ minWidth:'60%' }}/>}
         </div>
     );
 }

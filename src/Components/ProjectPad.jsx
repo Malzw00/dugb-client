@@ -1,321 +1,456 @@
 import { 
-    Button, 
-    Accordion,
-    AccordionItem,
-    AccordionHeader,
-    AccordionPanel,
+    Button,
     tokens,
-    Rating
+    Rating,
+    Badge,
+    Link
 } from "@fluentui/react-components";
-import { 
-    Chat24Regular,  
-    Heart24Regular, 
+import {
+    ArrowDown24Regular,
+    Calendar24Regular,
+    Heart24Regular,
+    Heart24Filled,
+    Star24Regular,
+    People24Regular,
+    Building24Regular,
+    Link24Regular,
+    Comment24Regular,
+    Grid24Regular,
+    Book48Color,
+    BookOpen24Regular
 } from "@fluentui/react-icons";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import '@styles/ProjectPad.css'
 import PlatformHeader from "@components/PreMadeComponents/PlatformHeader";
 import { getProjectById } from "@services/project/project";
-import bookImg from '@resources/book.svg'
 import { useDispatch } from "react-redux";
 import { selectHeaderTab } from "@slices/selectedHeaderTab.slice";
 import { selectCategory } from "@slices/selectedCategory.slice";
 import { selectCollage } from "@slices/selectedCollage.slice";
-import PersonCard from "./PreMadeComponents/PersonCard";
 import { setPerson } from "../store/slices/person.slice";
+import { selectPeopleTab } from "../store/slices/selectedPeopleTab.slice";
+import Loading from "./PreMadeComponents/Loading";
+import '@styles/ProjectPad.css';
+import projectIcon from '@resources/book.svg';
 
+// كائن تخطيط لأنواع المستخدمين
+const PERSON_TYPE_CONFIG = {
+    student: {
+        peopleTab: 'students',
+        idField: 'student_id',
+        displayName: (person) => person.student_full_name
+    },
+    supervisor: {
+        peopleTab: 'supervisors',
+        idField: 'supervisor_id',
+        displayName: (person) => `${person.supervisor_title || ''} . ${person.supervisor_full_name}`.trim()
+    }
+};
 
+// مكونات فرعية
+const ProjectHeaderSection = ({ project, rating, likes, onLikeClick }) => {
 
-export default function ProjectPad() {
+    const [isLiked, setIsLiked] = useState(false);
+    const [currentLikes, setCurrentLikes] = useState(likes);
 
-    const { projectId } = useParams();
-    const [project, setProject] = useState(null);
+    const handleLike = useCallback(() => {
+        setIsLiked(!isLiked);
+        setCurrentLikes(prev => isLiked ? prev - 1 : prev + 1);
+        onLikeClick?.();
+    }, [isLiked, onLikeClick]);
 
-    React.useEffect(() => {
-        getProjectById(projectId)
-            .then(res => {
-                if(res?.data?.success){
-                    const resProject = res?.data?.result;
+    return (
+        <header className="project-header">
+            <div className="project-title-area">
+                <div className="project-icon">
+                    {/* <Book48Color style={{ width: '89px', height: '89px' }}/> */}
+                    <img src={projectIcon} style={{ width: '80px', height: '80px' }}></img>
+                </div>
+                <div className="project-title-content">
+                    <h1>{project.project_title || 'عنوان المشروع'}</h1>
 
-                    if(resProject)
-                    setProject(resProject);
-
-                    console.log(resProject);                    
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }, []);
-    
-    return ( 
-        project && <div 
-            className="flex-col project-float-pad height-full width-full" 
-            style={{background: 'white'}}
-        >
-            {/* Platform Header */}
-            <PlatformHeader/>
-
-            {/* project Content Area */}
-            <div className='flex-row flex-grow overflow-auto project-content-area min-height-0'>
-
-                {/** cover side */}
-                <SideBar projImgPath={bookImg}/>
-
-                {/** project details section */}
-                <div 
-                    className='flex-col flex-grow overflow-auto project-details-section bg-1 gap-13px padding-34px'
-                    style={{paddingBottom: '189px'}}>
-
-                    {/* Project Header */}
-                    <ProjectHeader 
-                        title={project.project_title} 
-                        updatedAt={project.updatedAt}
-                        description={project.project_description}
-                        date={project.project_date}
-                        semester={project.project_semester}
-                        grade={project.project_grade}
-                        department={project.Department}
-                        collage={project.Department?.Collage}
-                    />
-
-                    {/* Project Body */}
-                    <ProjectBody
-                        supervisor={project.Supervisor}
-                        students={project.Students}
-                        keywords={project.Keywords}
-                        categories={project.Categories}
-                    />
-                
+                    <div className="badge-group">
+                        <div className="rating-container">
+                            <Rating 
+                                value={rating} 
+                                aria-label="تقييم المشروع"
+                                size="large"
+                                // onChange={onRatingChange}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div> || <></>
+            <div className="project-header-right">
+                <div className="project-stats">
+                    <div className="stat-item">
+                        <Star24Regular className="stat-icon" />
+                        <span>{rating.toFixed(1)}/5</span>
+                    </div>
+                    <div className="stat-item">
+                        <Button
+                            size="small"
+                            appearance="subtle"
+                            icon={isLiked ? <Heart24Filled color="red" /> : <Heart24Regular />}
+                            onClick={handleLike}
+                            className="like-button"
+                        >
+                            {currentLikes} إعجاب
+                        </Button>
+                    </div>
+                </div>
+                <p className="project-update-date">
+                    آخر تحديث: {project.updatedAt ? new Date(project.updatedAt).toISOString().slice(0, 10) : '2023-10-25'}
+                </p>
+            </div>
+        </header>
     );
-}
+};
 
+const ProjectDescriptionSection = ({ project, onCategoryClick }) => {
+    
+    const keywordPills = useMemo(() => {
+        if (!project.Keywords?.length) {
+            return (
+                <div className="empty-state">
+                    لم يتم تحديد الكلمات المفتاحية بعد
+                </div>
+            );
+        }
 
+        return project.Keywords.map((keyword, index) => (
+            <Badge
+                key={index}
+                appearance="tint"
+                size="medium"
+                className="keyword-pill"
+            >
+                {keyword.keyword}
+            </Badge>
+        ));
+    }, [project.Keywords]);
 
+    return (
+        <section className="project-card2 description-card">
+            <div className="card-title">
+                <BookOpen24Regular />
+                <span>وصف المشروع</span>
+            </div>
+            <div className="project-description">
+                {project.project_description || 'لا يوجد وصف للمشروع.'}
+            </div>
+            <div className="keywords-section">
+                <div className="section-label">الكلمات المفتاحية</div>
+                <div className="pill-container">
+                    {keywordPills}
+                </div>
+            </div>
+        </section>
+    );
+};
 
-// -----------------------------------------------------------------------------
-// Component: CoverSide
-function SideBar({projImgPath}) {
-    const reactionBtnsStyle = {
-        borderRadius: '50em',
-        // minWidth: '0px',
-        minWidth: '44px',
-        height: '44px',
-        display: 'flex',
-        gap: '13px'
-    }
-    return <div className='flex-col cover-side height-full padding-13px gap-5px'>
-        <img
-            className="block border-radius-8px"
-            src={projImgPath}
-            alt="project cover" 
-        />
+const ReferencesSection = ({ project }) => (
+    <section className="project-card2">
+        <div className="card-title">
+            <Link24Regular />
+            <span>المراجع</span>
+        </div>
+        <ul className="info-list">
+            {project?.References?.map(ref => {
+                return (
+                    ref.reference_link 
+                    && <Link href={ref.reference_link}>{ref.reference_title} - {ref.reference_author}</Link>
+                    || <span>{ref.reference_title} - {ref.reference_author}</span>
+                )
+            })}
+            {project?.References?.length || <span className="placeholder-label">لم يتم إرفاق المراجع</span>}
+        </ul>
+    </section>
+);
 
-        <RatingRange/>
-        
-        <Button appearance="primary">كتاب المشروع</Button>
-        
-        <Button appearance="primary">العرض التقديمي</Button>
-        
-        <Button appearance="primary">المراجع</Button>
-        
-        <div className="flex-row gap-5px" style={{marginTop: 'auto'}}>
-            <Button appearance="primary" style={reactionBtnsStyle}>
-                <Heart24Regular/>
+const CategoriesSection = ({ project }) => {
+    return (
+        <section className="project-card2">
+            <div className="card-title">
+                <Grid24Regular />
+                <span>الفئات</span>
+            </div>
+            <ul className="pill-container">
+                {project?.Categories?.slice(0, 2).map((category, index) => (
+                    <Badge 
+                        key={index} 
+                        appearance="tint"
+                        size="medium"
+                        className="keyword-pill"
+                    >
+                        {category.category_name}
+                    </Badge>
+                ))}
+            </ul>
+        </section>
+    )
+};
+
+const CommentsSection = () => (
+    <section className="project-card2">
+        <div className="card-title">
+            <Comment24Regular />
+            <span>التعليقات</span>
+        </div>
+        <p className="comments-placeholder">
+           لا توجد تعليقات
+        </p>
+    </section>
+);
+
+const FilesSection = () => (
+    <section className="project-card2">
+        <div className="card-title">
+            <ArrowDown24Regular />
+            <span>ملفات المشروع</span>
+        </div>
+        <div className="action-buttons">
+            <Button 
+                appearance="primary" 
+                size="medium"
+                className="action-btn"
+            >
+                كتاب المشروع
             </Button>
-            <Button appearance="primary" style={reactionBtnsStyle}>
-                <Chat24Regular/> <span>التعليقات</span>
+            <Button 
+                appearance="secondary" 
+                size="medium"
+                className="action-btn"
+            >
+                عرض تقديمي
             </Button>
         </div>
-    </div>;
-}
+    </section>
+);
 
+const TeamSection = ({ project, onPersonClick }) => {
+    
+    const supervisorDisplayName = useMemo(() => {
+        return project.Supervisor ? 
+            PERSON_TYPE_CONFIG.supervisor.displayName(project.Supervisor) : 
+            'غير محدد';
+    }, [project.Supervisor]);
 
+    const studentsDisplay = useMemo(() => {
+        return project.Students?.map(s => s.student_full_name).join('، ') || 'غير محدد';
+    }, [project.Students]);
 
-// -----------------------------------------------------------------------------
-// Component: TitleDescriptionSection
-function ProjectHeader({ title, description, updatedAt, date, semester, grade, department, collage }) {
+    return (
+        <section className="project-card2">
+            <div className="card-title">
+                <People24Regular />
+                <span>الفريق</span>
+            </div>
+            <ul className="info-list">
+                <li>
+                    <span className="info-label">المشرف</span>
+                    <span 
+                        className=" clickable"
+                        onClick={project.Supervisor ? onPersonClick(project.Supervisor, 'supervisor') : undefined}
+                    >
+                        {supervisorDisplayName}
+                    </span>
+                </li>
+                <li>
+                    <span className="info-label">الطلاب</span>
+                    <div className="students-list">
+                        {project.Students?.map((student, index) => (
+                            <span 
+                                key={index}
+                                className="student-name clickable"
+                                onClick={onPersonClick(student, 'student')}
+                            >
+                                {student.student_full_name}
+                            </span>
+                        ))}
+                    </div>
+                </li>
+            </ul>
+        </section>
+    );
+};
 
-    return <div className="flex-col gap-13px" style={{ width: '80%' }}>
-        
-        <div className="flex-row items-center justify-between gap-8px" style={{ lineHeight: '44px' }}>
-            <h1>{title}</h1>
-        </div>
+const AcademicInfoSection = ({ project }) => {
+    const semesterText = useMemo(() => {
+        if (!project.project_semester) return '';
+        const semesterLower = project.project_semester.toLowerCase();
+        return semesterLower === 'spring' ? 'الربيع' : 
+               semesterLower === 'autumn' ? 'الخريف' : 
+               project.project_semester;
+    }, [project.project_semester]);
 
-        <div><p style={{ fontSize:'16px', lineHeight:'25px' }}>{description}</p></div>
-        
-        <div className="flex-col" style={{fontSize:'12px'}}>
-            {(collage && department) && <span>
-                كلية {collage.collage_name} قسم {department.department_name}
-            </span>}
-            {(date && semester) && <span>
-                تم إنشاء المشروع سنة {new Date(date).getFullYear()} فصل 
-                {semester.toLowerCase() === 'spring' && <span> الربيع</span>} 
-                {semester.toLowerCase() === 'autumn' && <span> الخريف</span>} 
-            </span>}
-            
-            {updatedAt && <span style={{ color:'gray' }}>
-                آخر تحديث: {new Date(updatedAt).toISOString().slice(0, 10)}
-            </span>}
-        </div>
+    const yearText = useMemo(() => {
+        return project.project_date ? new Date(project.project_date).getFullYear() : '';
+    }, [project.project_date]);
 
-        {grade && <div className="bg-3" style={{
-            width:'fit-content',
-            border: '1px solid silver',
-            padding: '3px 13px',
-            borderRadius: '50em'
-        }}>
-            <span style={{ fontWeight:'bold' }}>الدرجة:</span>
-            <span> </span>
-            <span>{grade}</span>
-        </div>}
-    </div>;
-}
+    return (
+        <section className="project-card2" style={{marginBottom:'21px'}}>
+            <div className="card-title">
+                <Building24Regular />
+                <span>معلومات الأكاديمية</span>
+            </div>
+            <ul className="info-list">
+                <li>
+                    <span className="info-label">الكلية</span>
+                    <span className="info-value">
+                        {project.Department?.Collage?.collage_name || 'غير محدد'}
+                    </span>
+                </li>
+                <li>
+                    <span className="info-label">القسم</span>
+                    <span className="info-value">
+                        {project.Department?.department_name || 'غير محدد'}
+                    </span>
+                </li>
+                <li>
+                    <div className="academic-semester">
+                        <Calendar24Regular className="academic-icon" />
+                        <span className="academic-text">
+                            {yearText} - فصل {semesterText}
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    );
+};
 
-
-
-function RatingRange() {
-
-    const [rate, setRate] = useState(0);
-
-    return <div className={`
-            flex-row 
-            gap-0px 
-            width-100 
-            items-center 
-            justify-center
-            padding-5px
-            paddingX-21px
-        `}>
-
-        <Rating 
-            value={rate} 
-            onChange={(_, data) => {setRate(data.value)}}
-        />
-
-    </div>
-}
-
-
-
-function ProjectBody ({ students=[], supervisor, keywords=[], categories=[]  }) {
+// المكون الرئيسي
+export default function ProjectDisplay() {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { projectId } = useParams();
+    const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [rating, setRating] = useState(0);
+    const [likes, setLikes] = useState(0);
 
-    const itemStyle = {
-        borderRadius: '8px',
-        padding: '3px 5px',
-        background: tokens.colorNeutralBackground2,
-        border: `1px solid ${tokens.colorNeutralStroke1}`,
-        width: 'max-content'
-    } 
+    useEffect(() => {
+        const fetchProject = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                
+                const response = await getProjectById(projectId);
+                
+                if (response?.data?.success && response.data.result) {
+                    setProject(response.data.result);
+                } else {
+                    setError('تعذر تحميل بيانات المشروع');
+                }
+            } catch (err) {
+                console.error('خطأ في جلب بيانات المشروع:', err);
+                setError('حدث خطأ أثناء تحميل البيانات');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const placeholderStyle = {
-        fontSize: '12px',
-        color: 'gray'
-    }
+        fetchProject();
+    }, [projectId]);
 
-    const panelStyle = {
-        background: tokens.colorNeutralBackground3,
-        borderRadius: '13px',
-        padding: '13px',
-        border: `1px solid ${tokens.colorNeutralStroke2}`
-    }
+    const handleBackClick = useCallback(() => {
+        navigate('/home');
+    }, [navigate]);
 
-    const handleCategoryClick = function (category) {
+    const handleLikeClick = useCallback(() => {
+        // منطق الإعجاب
+    }, []);
+
+    const handleRatingChange = useCallback((_, data) => {
+        setRating(data.value);
+    }, []);
+
+    const handleCategoryClick = useCallback((category) => {
         return () => {
             dispatch(selectHeaderTab('categories'));
             dispatch(selectCollage(category.collage_id));
             dispatch(selectCategory(category.category_id));
             navigate('/home');
-        }
+        };
+    }, [dispatch, navigate]);
+
+    const handlePersonClick = useCallback((person, type) => {
+        return () => {
+            const config = PERSON_TYPE_CONFIG[type];
+            dispatch(selectPeopleTab(config.peopleTab));
+            dispatch(setPerson(person[config.idField]));
+        };
+    }, [dispatch]);
+
+    const handleCommentClick = useCallback(() => {
+        // منطق التعليقات
+    }, []);
+
+    if (loading) {
+        return (
+            <Loading 
+                text="جار تحميل بيانات المشروع" 
+                vertical 
+                full={true} 
+                size="extra-large"
+            />
+        );
     }
 
-    const handleStudentCardClick = function (student) {
-        // return () => {
-        //     dispatch(setPerson({
-        //         id: student.student_id,
-        //         fullName: student.student_full_name,
-        //         email: student.student_email,
-        //         Department: student.Department,
-        //         Projects: student.Projects,
-        //         updatedAt: student.updated_at,
-        //     }))
-        // }
+    if (error || !project) {
+        return (
+            <div className="project-error-container">
+                <div className="project-error-content">
+                    <h2>{error || 'المشروع غير موجود'}</h2>
+                    <Button appearance="primary" onClick={handleBackClick}>
+                        العودة إلى الصفحة الرئيسية
+                    </Button>
+                </div>
+            </div>
+        );
     }
-    
+
     return (
-        <div className="flex-col gap-8px" style={{ width: '80%' }}>
+        <div className="project-display-container">
+            <PlatformHeader
+                style={{ background: tokens.colorNeutralBackground1 }}
+                caption={`مشروع ${project.project_title || ''}`}
+                handleBackButtonClick={handleBackClick}
+            />
 
-            <Accordion multiple>
-                
-                <AccordionItem value={'supervisor'}>
-                    <AccordionHeader size='medium'>المشرف</AccordionHeader>
-                    <AccordionPanel style={panelStyle}>
-                        {supervisor && <div>
-                            {supervisor.supervisor_title}. {supervisor.supervisor_full_name}
-                        </div>}
-                        {!supervisor && <div style={placeholderStyle}>
-                            لم يتم توثيق بيانات المشرف بعد
-                        </div>}
-                    </AccordionPanel>
-                </AccordionItem>
-                
-                <AccordionItem value={'students'}>
-                    <AccordionHeader size='medium'>إعداد الطلبة</AccordionHeader>
-                    <AccordionPanel style={panelStyle}>
-                        <div className="flex-col items-stretch gap-5px" style={{minWidth:'200px'}}>
-                            {students.map((student, i) => {
-                                return <PersonCard
-                                    index={i}
-                                    name={student.student_full_name}
-                                    onClick={handleStudentCardClick}
-                                    updated_at={student.updated_at}
-                                />
-                            })}
-                            {(students.length < 1) && <div style={placeholderStyle}>
-                                لم يتم توثيق بيانات الطلبة بعد
-                            </div>}
-                        </div>
-                    </AccordionPanel>
-                </AccordionItem>
-                
-                <AccordionItem value={'keywords'}>
-                    <AccordionHeader size='medium'>الكلمات المفتاحية</AccordionHeader>
-                    <AccordionPanel style={{ ...panelStyle, display:'flex', flexWrap:'wrap', gap:'5px' }}>
-                        {keywords.map((keyword, i) => {
-                            return <div key={i} style={itemStyle}>
-                                {keyword.keyword}
-                            </div>
-                        })}
-                        {(keywords.length < 1) && <div style={placeholderStyle}>
-                            لم يتم تحديد الكلمات المفتاحية بعد
-                        </div>}
-                    </AccordionPanel>
-                </AccordionItem>
-                
-                <AccordionItem value={'categories'}>
-                    <AccordionHeader size='medium'>الفئات</AccordionHeader>
-                    <AccordionPanel style={{ ...panelStyle, display:'flex', flexWrap:'wrap', gap:'5px' }}>
-                        {categories.map((category, i) => {
-                            return <div 
-                                key={i} style={{...itemStyle, cursor: 'pointer' }} 
-                                onClick={handleCategoryClick(category)}>
-                                    
-                                {category.category_name}
-                            </div>
-                        })}
-                        {(categories.length < 1) && <div style={placeholderStyle}>
-                            لم يتم تحديد الفئات بعد
-                        </div>}
-                    </AccordionPanel>
-                </AccordionItem>
-            
-            </Accordion>
+            <div className="project-main-container">
+                <ProjectHeaderSection 
+                    project={project}
+                    rating={rating}
+                    likes={likes}
+                    onLikeClick={handleLikeClick}
+                />
+
+                <div className="project-grid-layout">
+                    <main className="project-main-content">
+                        <ProjectDescriptionSection 
+                            project={project}
+                            onCategoryClick={handleCategoryClick}
+                        />
+                        <CategoriesSection project={project}/>
+                        <ReferencesSection project={project}/>
+                        <CommentsSection project={project}/>
+                    </main>
+
+                    <aside className="project-sidebar">
+                        <FilesSection />
+                        <TeamSection 
+                            project={project}
+                            onPersonClick={handlePersonClick}
+                        />
+                        <AcademicInfoSection project={project} />
+                        
+                    </aside>
+                </div>
+            </div>
         </div>
     );
 }

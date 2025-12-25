@@ -14,6 +14,7 @@ import { SignOut20Regular, Person20Regular, Settings20Regular } from '@fluentui/
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProfile } from '@root/src/store/slices/profile.slice';
+import Loading from '../PreMadeComponents/Loading';
 
 
 
@@ -35,6 +36,9 @@ export function UserBtn() {
     const handleSignout = function () {
         navigate('/signout')
     }
+
+    if(user === 'loading')
+    return <Loading size={'tiny'} full={false} paddingless={true}/>;
 
     return (
         user
@@ -62,12 +66,6 @@ export function UserBtn() {
                     <MenuItem icon={<Person20Regular />} onClick={handleProfile}>
                         عرض الملف الشخصي
                     </MenuItem>
-                    {
-                        isAdmin &&
-                        <MenuItem icon={<Settings20Regular />} onClick={handleControl}>
-                            لوحة التحكم
-                        </MenuItem>
-                    }
                     <MenuItem style={{ color: 'red' }} icon={<SignOut20Regular />} onClick={handleSignout}>
                         تسجيل الخروج
                     </MenuItem>

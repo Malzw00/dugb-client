@@ -53,7 +53,7 @@ export function getCollageByID(collageId) {
  *
  * @function createCollage
  * @param {Object} data
- * @param {string} data.name - Collage name
+ * @param {string} data.collageName - Collage name
  * @returns {Promise<AxiosResponse>}
  */
 export function createCollage(data) {
@@ -157,4 +157,19 @@ export function addDepartment(collageId, data) {
  */
 export function removeDepartment(collageId, departmentId) {
     return api.delete(`/collages/${collageId}/departments/${departmentId}`);
+}
+
+
+/**
+ * Remove a department from a collage.
+ *
+ * @function removeDepartment
+ * @param {number|string} params
+ * @param {number|string} [params.collageId]
+ * @param {number|string} [params.departmentId]
+ * @param {string} [params.name]
+ * @returns {Promise<AxiosResponse>}
+ */
+export function updateDepartment({ collageId, departmentId, name }) {
+    return api.put(`/collages/${collageId}/departments/${departmentId}`, { name, collageId });
 }

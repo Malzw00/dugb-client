@@ -21,6 +21,9 @@ import selectedHeaderTabReducer from '@slices/selectedHeaderTab.slice';
 import selectedPeopleTabReducer from '@slices/selectedPeopleTab.slice'; 
 import selectedSearchTabReducer from '@slices/selectedSearchTab.slice'; 
 import profileReducer from '@root/src/store/slices/profile.slice'
+import selectedControlPanelReducer from '@root/src/store/slices/selectedControlPanel.slice'
+import controlDialogReducer from '@root/src/store/slices/controlDialogs.slice'
+import editReducer from '@root/src/store/slices/edit.slice'
 
 const store = configureStore({
     reducer: {
@@ -46,6 +49,9 @@ const store = configureStore({
         searchedSupervisors: searchedSupervisorsReducer,
         searchedStudents: searchedStudentsReducer,
         profile: profileReducer,
+        selectedControlPanel: selectedControlPanelReducer,
+        controlDialog: controlDialogReducer,
+        edit: editReducer,
     }
 });
 

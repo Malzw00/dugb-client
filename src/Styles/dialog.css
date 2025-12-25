@@ -13,10 +13,8 @@
 .dialog {
     display: flex;
     flex-direction: column;
-    width: 500px;
-    max-width: 60%;
-    min-height: 80%;
-    height: 90%;
+    width: auto;
+    min-width: 400px;
     max-height: 98%;
     border: 1px solid var(--colorNeutralStroke1);
     border-radius: 13px;
