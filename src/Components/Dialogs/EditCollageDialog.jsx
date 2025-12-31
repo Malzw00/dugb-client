@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Dialog from "./AbstractDialog";
-import { clearControlDialog } from "@root/src/store/slices/controlDialogs.slice";
+import { clearControlDialog } from "@root/src/store/slices/controlDialog.slice";
 import { Button, Input, Spinner, tokens } from "@fluentui/react-components";
 import { updateCollage } from "@root/src/services/collage";
 

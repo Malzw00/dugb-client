@@ -1,6 +1,5 @@
-import { Button, Display, Title1, Title3, tokens, } from "@fluentui/react-components";
-import { Book24Color, Calendar24Color, Desktop24Filled, PictureInPicture24Filled, PictureInPicture24Regular, Square24Filled } from "@fluentui/react-icons";
-
+import { Button, tokens, } from "@fluentui/react-components";
+import { Book24Color, Calendar24Color, } from "@fluentui/react-icons";
 
 
 export default function ControlArea({ className, dataContainer, toolbar, footer, title }) {
@@ -24,9 +23,9 @@ export default function ControlArea({ className, dataContainer, toolbar, footer,
     </div>
 }
 
-export function Row({ index, name, actions=[], extraCells=[], active=false, title }) {
+export function Row({ index, name, actions=[], extraCells=[], active=true, onClick=()=>{}, title }) {
     return (
-        <div key={index} className={`row ${active && 'active'}`} title={title}>
+        <div key={index} className={`row ${active && 'active'}`} title={title} onClick={onClick}>
             <div className="identity">
                 <div className="index-num">
                     {index}
@@ -60,7 +59,7 @@ export function Row({ index, name, actions=[], extraCells=[], active=false, titl
 }
 
 
-export function FileItem ({ filename, size, type, actions, lastUpdate, category }) {
+export function FileItem ({ filename, size, type, actions, lastUpdate, category, style={} }) {
 
     const rowStyle = { display: 'flex', flexDirection: 'row', gap: '5px' };
     const colStyle = { display: 'flex', flexDirection: 'column', gap: '5px' };
@@ -72,53 +71,60 @@ export function FileItem ({ filename, size, type, actions, lastUpdate, category 
         background: category === 'book'
             ? tokens.colorBrandBackgroundSelected
             : tokens.colorPaletteRedBackground3,
-        borderRadius: '8px',
-        padding: '0px 8px',
+        borderRadius: '5px',
+        padding: '0px 5px',
         color: 'white',
-        fontSize: '11px'
+        fontSize: '11px',
+        height: 'min-content',
+        width: 'max-content',
+        lineHeight: '16px'
     }
 
     return (
-        <div className="file-item" style={{...rowStyle, cursor: 'pointer', borderRadius: '13px'}}>
+        <div className="file-item" style={{...rowStyle, cursor: 'pointer', borderRadius: '13px', ...style}}>
             <div style={{ 
                 ...colStyle, 
                 justifyContent: 'center', 
                 alignItems: 'center', 
                 padding: '8px', 
-                width: '100px' }}>
+                width: '60px' }}>
 
-                {category === 'book' && <Book24Color style={{ width: '100%', height: '100%' }}/>}
-                {category === 'presentation' && <Calendar24Color style={{ width: '100%', height: '100%' }}/>}
+                {category === 'book' && <Book24Color style={{ width: '100%', height: '100%' }}/>
+                || <Calendar24Color style={{ width: '100%', height: '100%' }}/>}
             </div>
 
             <div style={{...colStyle, flex: '1', justifyContent: 'space-between', padding: '8px 0'}}>
+
                 <div style={colStyle}>
                     <div style={rowStyle}>
                         <h3>{filename}</h3>
-                        <span style={categoryStyle}>{category === 'book' && 'كتاب' || 'عرض تقديمي'}</span>
+                        <span style={placeholderStyle}>آخر تحديث: {lastUpdate}</span>
                     </div>
                     <div style={rowStyle}>
+                        <span style={categoryStyle}>{category === 'book' && 'كتاب' || 'عرض تقديمي'}</span>
+                        -
                         <span style={placeholderStyle}>{type}</span>
                         -
                         <span style={placeholderStyle}>{size}</span>
                     </div>
-                    <span style={placeholderStyle}>آخر تحديث: {lastUpdate}</span>
                 </div>
-                <div style={{...rowStyle, }}>
-                    {actions.map((action, index) => {
-                        return (
-                            <Button
-                                key={index}
-                                size={`${action.size || 'small'}`}
-                                style={{ minWidth: '0' }}
-                                appearance={`${action.appearance || 'secondary'}`}
-                                className={`action ${action.className || ''}`}
-                                onClick={action.onClick || (() => {})}>
-                                {action.content}
-                            </Button>
-                        )
-                    })}
-                </div>
+                
+            </div>
+            
+            <div style={{...colStyle, padding: '5px 13px', }} className='items-center justify-center'>
+                {actions.map((action, index) => {
+                    return (
+                        <Button
+                            key={index}
+                            size={`${action.size || 'small'}`}
+                            style={{ minWidth: '0', width: 'auto', }}
+                            appearance={`${action.appearance || 'secondary'}`}
+                            className={`action ${action.className || ''}`}
+                            onClick={action.onClick || (() => {})}>
+                            {action.content}
+                        </Button>
+                    )
+                })}
             </div>
 
         </div>

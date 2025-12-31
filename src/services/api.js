@@ -56,8 +56,6 @@ api.interceptors.response.use(
 
                 const newAccessToken = res.data.result.accessToken;
 
-                console.log(newAccessToken);
-
                 // خزّنه في redux
                 store.dispatch(setAccessToken(newAccessToken));
 

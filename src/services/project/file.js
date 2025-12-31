@@ -31,19 +31,31 @@ export async function getBookFile(projectId) {
 }
 
 /**
- * Upload or replace book file for a project.
+ * Upload a new Book.
  *
  * @function uploadBookFile
- * @param {string|number} projectId - Project ID.
- * @param {File} file - Book file to upload.
+ * @param {Object} params
+ * @param {string|number} params.projectId - Project ID
+ * @param {File} params.file - File object from input[type=file]
+ * @param {function} [params.onProgress] - Upload progress callback
  * @returns {Promise<AxiosResponse>}
  */
-export async function uploadBookFile({ projectId, file }) {
+export function uploadBookFile({ projectId, file, onProgress }) {
+
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("category", 'book');
 
     return api.post(`/projects/${projectId}/files/book`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: onProgress
+            ? (e) => {
+                const percent = Math.round((e.loaded * 100) / e.total);
+                onProgress(percent);
+            }
+            : undefined,
     });
 }
 
@@ -73,20 +85,33 @@ export async function getPresentationFile(projectId) {
     return api.get(`/projects/${projectId}/files/presentation`);
 }
 
+
 /**
- * Upload or replace presentation file for a project.
+ * Upload a new Presentation.
  *
  * @function uploadPresentationFile
- * @param {string|number} projectId - Project ID.
- * @param {File} file - Presentation file.
+ * @param {Object} params
+ * @param {string|number} params.projectId - Project ID
+ * @param {File} params.file - File object from input[type=file]
+ * @param {function} [params.onProgress] - Upload progress callback
  * @returns {Promise<AxiosResponse>}
  */
-export async function uploadPresentationFile({ projectId, file }) {
+export function uploadPresentationFile({ projectId, file, onProgress }) {
+
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("category", 'presentation');
 
     return api.post(`/projects/${projectId}/files/presentation`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: onProgress
+            ? (e) => {
+                const percent = Math.round((e.loaded * 100) / e.total);
+                onProgress(percent);
+            }
+            : undefined,
     });
 }
 

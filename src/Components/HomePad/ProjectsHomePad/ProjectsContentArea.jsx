@@ -97,12 +97,12 @@ export default function ProjectsContentArea() {
                 selectedValue={order}
                 onTabSelect={handleOrderSelected}>
 
-                <Tab key={1} className='rank-tab' value={'latest'}>الأحدث</Tab>
+                {/* <Tab key={1} className='rank-tab' value={'latest'}>الأحدث</Tab>
                 <Tab key={2} className='rank-tab' value={'oldest'}>الأقدم</Tab>
                 <Tab key={3} className='rank-tab' value={'topRated'}>الأعلى تقييما</Tab>
                 <Tab key={4} className='rank-tab' value={'lowRated'}>الأقل تقييما</Tab>
                 <Tab key={5} className='rank-tab' value={'topLiked'}>الأكثر إعجابا</Tab>
-                <Tab key={6} className='rank-tab' value={'lowLiked'}>الأقل إعجابا</Tab>
+                <Tab key={6} className='rank-tab' value={'lowLiked'}>الأقل إعجابا</Tab> */}
             </TabList>
             
             {/* Projects Area */}

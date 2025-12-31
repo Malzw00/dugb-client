@@ -52,18 +52,29 @@ export function deleteFile(fileId) {
 /**
  * Upload a new file.
  *
- * NOTE:
- *  - Must be multipart/form-data
- *  - file + optional category
- *
  * @function uploadFile
- * @param {FormData} formData
+ * @param {File} file - File object from input[type=file]
+ * @param {'book'|'presentation'} [category]
+ * @param {function} [onProgress] - Upload progress callback
  * @returns {Promise<AxiosResponse>}
  */
-export function uploadFile(formData) {
+export function uploadFile(file, category, onProgress) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    if (category) {
+        formData.append("category", category);
+    }
+
     return api.post("/files", formData, {
         headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data'
         },
+        onUploadProgress: onProgress
+            ? (e) => {
+                const percent = Math.round((e.loaded * 100) / e.total);
+                onProgress(percent);
+            }
+            : undefined,
     });
 }

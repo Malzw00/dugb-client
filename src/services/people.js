@@ -143,6 +143,7 @@ export function removeSupervisorAccount(supervisorId) {
  * @param {Object} params
  * @param {number} [params.offset]
  * @param {number} [params.limit]
+ * @param {number} [params.departmentId]
  * @returns {Promise<AxiosResponse>}
  */
 export function getStudents(params = {}) {

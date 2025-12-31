@@ -2,7 +2,7 @@ import { Button } from "@fluentui/react-components";
 import { Dismiss16Regular } from "@fluentui/react-icons";
 import '@styles/dialog.css'
 
-export default function Dialog({ style, className, title, onCloseBtnClick, body, footer }) {
+export default function Dialog({ style, className, title, onCloseBtnClick, body, bodyStyle, footer }) {
 
     return (
         <div className="dialog-parent">
@@ -15,13 +15,13 @@ export default function Dialog({ style, className, title, onCloseBtnClick, body,
                     </Button>
                 </div>
                 
-                <div className="body">
+                <div className="body" style={bodyStyle || {}}>
                     {body || null}
                 </div>
                 
-                <div className="footer">
+                {footer && <div className="footer">
                     {footer || null}
-                </div>
+                </div>}
 
             </div>
         </div>

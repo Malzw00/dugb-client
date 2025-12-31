@@ -1,14 +1,5 @@
 import { Spinner } from "@fluentui/react-components";
 
-
-/**
- * 
- * @param {Object} props
- * @param {'tiny'|'small'|'medium'|'large'|'huge'|'extra-tiny'|'extra-small'|'extra-large'} [props.size]
- * @param {boolean} [props.paddingless]
- * @param {boolean} [props.full]
- * @returns 
- */
 export default function Loading({ full, paddingless, size, text, vertical }) {
 
     return (

@@ -21,7 +21,7 @@ export default function ProjectsArea() {
     React.useEffect(() => {
 
         setLoading(true);
-        
+
         getProjects({
             collageId: selectedCollage,
             sortBy: orderDict[order][0],

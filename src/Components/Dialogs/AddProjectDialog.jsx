@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Dialog from "./AbstractDialog";
-import { clearControlDialog } from "@root/src/store/slices/controlDialogs.slice";
+import { clearControlDialog } from "@root/src/store/slices/controlDialog.slice";
 import { Button, Input, Dropdown, Option, Textarea, tokens } from "@fluentui/react-components";
 import { createProject } from "@services/project/project";
 import Loading from "@PreMadeComponents/Loading";
@@ -91,10 +91,10 @@ export default function AddProjectDialog({ selectedCollage, departments }) {
             const res = await createProject({
                 title: formData.title.trim(),
                 description: formData.description.trim(),
-                date: new Date(`${formData.year}-01-01`).toISOString().split('T')[0], // YYYY-MM-DD
+                date: new Date(`${formData.year}-01-01`).toISOString().split('T')[0],
                 semester: formData.semester,
                 departmentId: formData.departmentId,
-                supervisorId: null // يمكن إضافته لاحقاً
+                supervisorId: null,
             });
             
             if (res.data?.success) {
@@ -162,7 +162,7 @@ export default function AddProjectDialog({ selectedCollage, departments }) {
     if (!selectedCollage) {
         return (
             <Dialog
-                style={{ minWidth: '35%' }}
+                style={{ width: '60%', minWidth: '700px', maxHeight: '90vh' }}
                 title={'إضافة مشروع'}
                 body={
                     <div style={{ padding: '16px 0', textAlign: 'center', color: '#ef4444' }}>
@@ -187,7 +187,7 @@ export default function AddProjectDialog({ selectedCollage, departments }) {
     return (
         <Dialog
             style={{ width: '60%', minWidth: '500px' }}
-            title={`توثيق مشروع جديد - ${selectedCollage.collage_name}`}
+            title={`توثيق مشروع - ${selectedCollage.collage_name}`}
             body={
                 <DialogBody 
                     formData={formData}
@@ -349,13 +349,6 @@ function DialogBody({ formData, error, isLoading, departments, semesterOptions, 
             {error && (
                 <div style={{ marginTop: '8px', textAlign: 'center', color: '#ef4444', whiteSpace: 'pre-line' }}>
                     {error}
-                </div>
-            )}
-            
-            {isLoading && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '8px' }}>
-                    <Loading size="small" />
-                    <span>جاري توثيق المشروع...</span>
                 </div>
             )}
             

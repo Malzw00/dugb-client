@@ -45,7 +45,7 @@ function App() {
     // load user
     useEffect(() => {
         dispatch(loadCurrentUser());
-    }, [dispatch]);
+    });
 
     return (
         <FluentProvider theme={webLightTheme} style={fluentStyle} dir="rtl">

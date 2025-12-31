@@ -1,13 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Dialog from "./AbstractDialog";
-import { clearControlDialog } from "@root/src/store/slices/controlDialogs.slice";
+import { clearControlDialog, setControlDialog } from "@root/src/store/slices/controlDialog.slice";
 import { Button, Input, Dropdown, Option } from "@fluentui/react-components";
 import { createStudent } from "@root/src/services/people";
 import { getAllCollages, getDepartments } from "@root/src/services/collage";
 import Loading from "@PreMadeComponents/Loading";
 
-export default function AddStudentDialog({ onStudentAdded }) {
+export default function AddStudentDialog({ onStudentAdded, onClose }) {
     const dispatch = useDispatch();
     
     // بيانات الطالب
@@ -115,7 +115,7 @@ export default function AddStudentDialog({ onStudentAdded }) {
         }
 
         // التحقق من صحة الأسماء (حروف عربية/إنجليزية فقط)
-        const nameRegex = /^[A-Za-z\u0600-\u06FF]+$/;
+        const nameRegex = /^[A-Za-z\u0600-\u06FF]+(?:\s[A-Za-z\u0600-\u06FF]+)*$/;
         if (!nameRegex.test(studentName.trim())) {
             setError("اسم الطالب يجب أن يحتوي على حروف فقط");
             return false;
@@ -173,13 +173,13 @@ export default function AddStudentDialog({ onStudentAdded }) {
             setStudentEmail('');
             setSelectedCollage(null);
             setSelectedDepartment(null);
-            setError('');
+            setError(null);
             
             // إغلاق الديالوج وتحديث القائمة
             if (onStudentAdded) {
                 onStudentAdded();
             }
-            dispatch(clearControlDialog());
+            handleClose();
             
         } catch (err) {
             console.error('Error creating student:', err);
@@ -200,11 +200,11 @@ export default function AddStudentDialog({ onStudentAdded }) {
         dispatch
     ]);
 
-    const handleClose = useCallback(() => {
+    const handleClose = useCallback(onClose || (() => {
         if (!isLoading) {
             dispatch(clearControlDialog());
         }
-    }, [dispatch, isLoading]);
+    }), [dispatch, isLoading]);
 
     const handleKeyUp = useCallback((e) => {
         if (e.key === 'Enter' && !isLoading) {
@@ -241,7 +241,7 @@ export default function AddStudentDialog({ onStudentAdded }) {
 
     return (
         <Dialog
-            style={{ width: '50%', maxWidth: '600px' }}
+            style={{ width: '60%', maxWidth: '800px' }}
             title={'إضافة طالب جديد'}
             body={
                 <DialogBody 
@@ -545,7 +545,7 @@ function DialogBody({
                     fontSize: '14px',
                     lineHeight: '1.4'
                 }}>
-                    فشل إنشاء طالب، تأكد من عدم تكرار الإسم وصحة المدخلات.
+                    فشل إنشاء طالب.
                 </div>
             )}
 

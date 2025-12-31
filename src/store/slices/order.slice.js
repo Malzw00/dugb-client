@@ -6,8 +6,8 @@ const initialState = {
 }
 
 export const orderDict = {
-    latest:      ['date', 'ASC' ], 
-    oldest:      ['date', 'DESC'], 
+    latest:      ['date', 'DESC' ], 
+    oldest:      ['date', 'ASC'], 
     topRated:   ['rate', 'ASC' ],
     lowRated:   ['rate', 'DESC'],
     topLiked:   ['likes', 'ASC'],
@@ -20,24 +20,6 @@ const orderSlice = createSlice({
     reducers: {
         setOrder(state, action) {
             state.value = action.payload
-        },
-        setLatest(state) {
-            state.value = ['date', 'ASC'];
-        },
-        setOldest(state) {
-            state.value = ['date', 'DESC'];
-        },
-        setTopRated(state) {
-            state.value = ['rate', 'ASC'];
-        },
-        setLowRated(state) {
-            state.value = ['rate', 'DESC'];
-        },
-        setTopLiked(state) {
-            state.value = ['likes', 'ASC'];
-        },
-        setLowLiked(state) {
-            state.value = ['likes', 'DESC'];
         },
     }
 });

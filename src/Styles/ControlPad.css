@@ -100,12 +100,20 @@
 
 .row.active {
     cursor: pointer;
+    border: 2px solid transparent;
 }
 .row.active:hover {
     background-color: rgba(0, 0, 0, 0.05);
+    /* scale: .99; */
+}
+.row.active:active {
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    scale: .99;
+    border-color: var(--colorBrandStroke1);
 }
 
 
 .file-item:hover {
-    background: var(--colorNeutralBackground3);
+    background: rgba(0, 0, 0, 0.06);
 }

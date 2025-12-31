@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Dialog from "./AbstractDialog";
-import { clearControlDialog } from "@root/src/store/slices/controlDialogs.slice";
+import { clearControlDialog } from "@root/src/store/slices/controlDialog.slice";
 import { Button, Input, Dropdown, Option } from "@fluentui/react-components";
 import { createSupervisor } from "@root/src/services/people";
 import Loading from "@PreMadeComponents/Loading";

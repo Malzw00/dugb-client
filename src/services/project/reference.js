@@ -4,9 +4,9 @@
  * This module provides functions for interacting with project references endpoints.
  *
  * Endpoints:
- * - GET    /projects/:projectId/files/references
- * - POST   /projects/:projectId/files/references
- * - DELETE /projects/:projectId/files/references/:referenceId
+ * - GET    /projects/:projectId/references
+ * - POST   /projects/:projectId/references
+ * - DELETE /projects/:projectId/references/:referenceId
  */
 
 import api from "@services/api";
@@ -23,7 +23,9 @@ import api from "@services/api";
  * @returns {Promise<AxiosResponse>}
  */
 export async function getProjectReferences(projectId) {
-    return api.get(`/projects/${projectId}/files/references`);
+    return api.get(`/projects/${projectId}/references`, {
+        params: { projectId }
+    });
 }
 
 /* ============================================================
@@ -37,15 +39,14 @@ export async function getProjectReferences(projectId) {
  * @param {Object} params
  * @param {string|number} params.projectId - Project ID.
  * @param {string} params.title - Reference title.
- * @param {string} params.link - Reference link (local:{path} / network:{path}).
+ * @param {string} params.link
  * @param {string} params.author - Reference author.
  * @returns {Promise<AxiosResponse>}
  */
-export async function addProjectReference({ projectId, title, link, author }) {
-    return api.post(`/projects/${projectId}/files/references`, {
-        title,
-        link,
-        author,
+export async function addProjectReference({ projectId, referenceId }) {
+    return api.post(`/projects/${projectId}/references`, {
+        referenceId,
+        projectId,
     });
 }
 
@@ -64,6 +65,8 @@ export async function addProjectReference({ projectId, title, link, author }) {
  */
 export async function deleteProjectReference({ projectId, referenceId }) {
     return api.delete(
-        `/projects/${projectId}/files/references/${referenceId}`
+        `/projects/${projectId}/references/${referenceId}`, {
+            params: {projectId, referenceId,}
+        }
     );
 }

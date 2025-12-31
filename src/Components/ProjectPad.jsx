@@ -23,7 +23,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PlatformHeader from "@components/PreMadeComponents/PlatformHeader";
 import { getProjectById } from "@services/project/project";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectHeaderTab } from "@slices/selectedHeaderTab.slice";
 import { selectCategory } from "@slices/selectedCategory.slice";
 import { selectCollage } from "@slices/selectedCollage.slice";
@@ -32,6 +32,7 @@ import { selectPeopleTab } from "../store/slices/selectedPeopleTab.slice";
 import Loading from "./PreMadeComponents/Loading";
 import '@styles/ProjectPad.css';
 import projectIcon from '@resources/book.svg';
+import { addProjectLike, amILikeProject, getMyProjectRating, getProjectLikesCount, rateProject } from "../services/project/social";
 
 // كائن تخطيط لأنواع المستخدمين
 const PERSON_TYPE_CONFIG = {
@@ -48,16 +49,69 @@ const PERSON_TYPE_CONFIG = {
 };
 
 // مكونات فرعية
-const ProjectHeaderSection = ({ project, rating, likes, onLikeClick }) => {
+const ProjectHeaderSection = ({ project }) => {
 
-    const [isLiked, setIsLiked] = useState(false);
-    const [currentLikes, setCurrentLikes] = useState(likes);
+    const user = useSelector(state => state.user.value)
+    const [myLike, setMyLike] = useState(false);
+    const [currentLikes, setCurrentLikes] = useState(0);
+    const [rating, setRating] = useState(0);
+    const [myRating, setMyRating] = useState(0);
+
+    useEffect(() => {
+        if(user === 'loading' || !user) 
+        return;
+
+        amILikeProject(project.project_id)
+            .then(res => {
+                setMyLike(res.data?.result || false)
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        
+        getMyProjectRating(project.project_id)
+            .then(res => {
+                setMyRating(res.data?.result || false)
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+    }, [user, myRating, myLike]);
+
+    useEffect(() => {
+        getProjectLikesCount(project.project_id)
+            .then(res => {
+                setCurrentLikes(res.data?.result || 0)
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }, [myLike, myRating ]);
 
     const handleLike = useCallback(() => {
-        setIsLiked(!isLiked);
-        setCurrentLikes(prev => isLiked ? prev - 1 : prev + 1);
-        onLikeClick?.();
-    }, [isLiked, onLikeClick]);
+        addProjectLike(project.project_id)
+            .then(res => {
+                const result = res.data?.result || false;
+                setMyLike(result.hasLike);
+            })
+            .catch(err => {
+                console.log(err)
+            });
+    }, []);
+
+    const handleRatingChange = useCallback((e) => {
+        
+        rateProject({ projectId: project.project_id, rate: e.target.value })
+            .then(res => {
+                const result = res.data?.result;
+                setMyRating(result || 0);
+            })
+            .catch(err => {
+                console.log(err)
+            });
+    }, []);
+
 
     return (
         <header className="project-header">
@@ -72,10 +126,11 @@ const ProjectHeaderSection = ({ project, rating, likes, onLikeClick }) => {
                     <div className="badge-group">
                         <div className="rating-container">
                             <Rating 
-                                value={rating} 
+                                value={myRating} 
                                 aria-label="تقييم المشروع"
                                 size="large"
-                                // onChange={onRatingChange}
+                                color='marigold'
+                                onChange={handleRatingChange}
                             />
                         </div>
                     </div>
@@ -91,7 +146,7 @@ const ProjectHeaderSection = ({ project, rating, likes, onLikeClick }) => {
                         <Button
                             size="small"
                             appearance="subtle"
-                            icon={isLiked ? <Heart24Filled color="red" /> : <Heart24Regular />}
+                            icon={myLike ? <Heart24Filled color="red" /> : <Heart24Regular />}
                             onClick={handleLike}
                             className="like-button"
                         >
@@ -236,9 +291,9 @@ const TeamSection = ({ project, onPersonClick }) => {
             'غير محدد';
     }, [project.Supervisor]);
 
-    const studentsDisplay = useMemo(() => {
-        return project.Students?.map(s => s.student_full_name).join('، ') || 'غير محدد';
-    }, [project.Students]);
+    // const studentsDisplay = useMemo(() => {
+    //     return project.Students?.map(s => s.student_full_name).join('، ') || 'غير محدد';
+    // }, [project.Students]);
 
     return (
         <section className="project-card2">

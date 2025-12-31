@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import ControlArea, { Row } from "./ControlArea";
 import { Button, Link, Spinner } from "@fluentui/react-components";
-import { setControlDialog } from "@root/src/store/slices/controlDialogs.slice";
+import { setControlDialog } from "@root/src/store/slices/controlDialog.slice";
 import Loading from "@PreMadeComponents/Loading";
 import { getReferences, deleteReference } from "@root/src/services/reference";
 import { useDispatch, useSelector } from "react-redux";
@@ -116,7 +116,7 @@ export default function References() {
                         </Link>}
                         
                         {reference.reference_author && <div>
-                            ( تأليف {reference.reference_author} )
+                            ( {reference.reference_author} )
                         </div>}
                     </div>}
                     active

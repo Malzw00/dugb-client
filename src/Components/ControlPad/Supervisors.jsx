@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import ControlArea, { Row } from "./ControlArea";
 import { Button, Link, Spinner, Input } from "@fluentui/react-components";
 import { ArrowClockwise20Regular, Dismiss16Regular, Search16Regular } from "@fluentui/react-icons";
-import { setControlDialog } from "@root/src/store/slices/controlDialogs.slice";
+import { setControlDialog } from "@root/src/store/slices/controlDialog.slice";
 import Loading from "@PreMadeComponents/Loading";
 import { getSupervisors, deleteSupervisor, searchForSupervisors } from "@root/src/services/people";
 import { useDispatch, useSelector } from "react-redux";

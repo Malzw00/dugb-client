@@ -48,7 +48,7 @@ export async function getProjectLikes(projectId) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function getProjectLikesCount(projectId) {
-    return api.get(`/projects/${projectId}/likes/count`);
+    return api.get(`/projects/${projectId}/social/likes/count`, { params: { projectId } });
 }
 
 /**
@@ -59,7 +59,7 @@ export async function getProjectLikesCount(projectId) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function amILikeProject(projectId) {
-    return api.get(`/projects/${projectId}/likes/me`);
+    return api.get(`/projects/${projectId}/social/likes/me`, {  params: { projectId } });
 }
 
 /**
@@ -70,7 +70,7 @@ export async function amILikeProject(projectId) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function addProjectLike(projectId) {
-    return api.post(`/projects/${projectId}/likes`);
+    return api.post(`/projects/${projectId}/social/likes`, { projectId });
 }
 
 /**
@@ -81,7 +81,7 @@ export async function addProjectLike(projectId) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function removeProjectLike(projectId) {
-    return api.delete(`/projects/${projectId}/likes/me`);
+    return api.delete(`/projects/${projectId}/likes/me`, { params: { projectId } });
 }
 
 /* ============================================================
@@ -98,8 +98,8 @@ export async function removeProjectLike(projectId) {
  * @param {number} [params.limit=20]
  * @returns {Promise<AxiosResponse>}
  */
-export async function getProjectComments(projectId, { offset = 0, limit = 20 } = {}) {
-    return api.get(`/projects/${projectId}/comments`, { params: { offset, limit } });
+export async function getProjectComments(projectId) {
+    return api.get(`/projects/${projectId}/social/comments`, { params: { projectId } });
 }
 
 /**
@@ -110,7 +110,7 @@ export async function getProjectComments(projectId, { offset = 0, limit = 20 } =
  * @returns {Promise<AxiosResponse>}
  */
 export async function getProjectCommentsCount(projectId) {
-    return api.get(`/projects/${projectId}/comments/count`);
+    return api.get(`/projects/${projectId}/social/comments/count`, { params: { projectId } });
 }
 
 /**
@@ -123,7 +123,7 @@ export async function getProjectCommentsCount(projectId) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function addProjectComment({ projectId, content }) {
-    return api.post(`/projects/${projectId}/comments`, { content });
+    return api.post(`/projects/${projectId}/social/comments`, { content, projectId });
 }
 
 /**
@@ -136,7 +136,9 @@ export async function addProjectComment({ projectId, content }) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function deleteProjectComment({ projectId, commentId }) {
-    return api.delete(`/projects/${projectId}/comments/${commentId}`);
+    return api.delete(`/projects/${projectId}/social/comments/${commentId}`, { 
+        params: { projectId, commentId } 
+    });
 }
 
 /* ============================================================
@@ -151,7 +153,7 @@ export async function deleteProjectComment({ projectId, commentId }) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function getProjectRatings(projectId) {
-    return api.get(`/projects/${projectId}/ratings`);
+    return api.get(`/projects/${projectId}/social/ratings`, { params: { projectId } });
 }
 
 /**
@@ -162,7 +164,7 @@ export async function getProjectRatings(projectId) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function getProjectRatingAverage(projectId) {
-    return api.get(`/projects/${projectId}/ratings/average`);
+    return api.get(`/projects/${projectId}/social/ratings/average`, { params: { projectId } });
 }
 
 /**
@@ -173,7 +175,7 @@ export async function getProjectRatingAverage(projectId) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function getMyProjectRating(projectId) {
-    return api.get(`/projects/${projectId}/ratings/me`);
+    return api.get(`/projects/${projectId}/social/ratings/me`, { params: { projectId } });
 }
 
 /**
@@ -186,7 +188,7 @@ export async function getMyProjectRating(projectId) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function rateProject({ projectId, rate }) {
-    return api.post(`/projects/${projectId}/ratings`, { rate });
+    return api.post(`/projects/${projectId}/social/ratings`, { rate, projectId });
 }
 
 /**
@@ -199,5 +201,5 @@ export async function rateProject({ projectId, rate }) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function updateProjectRating({ projectId, rate }) {
-    return api.put(`/projects/${projectId}/ratings`, { rate });
+    return api.put(`/projects/${projectId}/social/ratings`, { rate, projectId });
 }

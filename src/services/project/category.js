@@ -23,7 +23,7 @@ import api from "@services/api";
  * @returns {Promise<AxiosResponse>}
  */
 export async function getProjectCategories(projectId) {
-    return api.get(`/projects/${projectId}/categories`);
+    return api.get(`/projects/${projectId}/categories`, { params: { projectId } });
 }
 
 /* ============================================================
@@ -41,7 +41,7 @@ export async function getProjectCategories(projectId) {
  */
 export async function addProjectCategory({ projectId, categoryId }) {
     return api.post(`/projects/${projectId}/categories`, {
-        categoryId,
+        categoryId, projectId
     });
 }
 
@@ -59,5 +59,7 @@ export async function addProjectCategory({ projectId, categoryId }) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function deleteProjectCategory({ projectId, categoryId }) {
-    return api.delete(`/projects/${projectId}/categories/${categoryId}`);
+    return api.delete(`/projects/${projectId}/categories/${categoryId}`, {params: {
+        projectId, categoryId
+    }});
 }

@@ -1,16 +1,16 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ControlArea, { Row } from "./ControlArea";
-import { Button, Dropdown, Option, Spinner } from "@fluentui/react-components";
+import { Button, Dropdown, Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, Option, Spinner } from "@fluentui/react-components";
 import { getAllCollages, getDepartments } from "@root/src/services/collage";
 import { setCollages } from "@root/src/store/slices/collages.slice";
-import { setControlDialog } from "@root/src/store/slices/controlDialogs.slice";
+import { setControlDialog } from "@root/src/store/slices/controlDialog.slice";
 import Loading from "@PreMadeComponents/Loading";
 import { getProjects, deleteProject } from "@services/project/project";
 import { setProjects } from "@root/src/store/slices/projects.slice";
-import { ArrowClockwise20Regular } from "@fluentui/react-icons";
+import { ArrowClockwise20Regular, Book16Regular, Bookmark16Regular, CloudWords16Regular, Folder16Regular, Grid16Regular, Key16Regular, List16Regular, Options20Regular, People16Regular, Screenshot16Regular } from "@fluentui/react-icons";
 import AddProjectDialog from "@components/Dialogs/AddProjectDialog";
-import EditProjectDialog from "@components/Dialogs/EditProjectDialog";
+import EditProjectDialog from "@components/Dialogs/EditProjectDialog/EditProjectDialog";
 
 export default function Projects() {
     
@@ -71,7 +71,6 @@ export default function Projects() {
             semester: filters.semester || undefined,
         })
             .then(res => {
-                console.log(res.data);
                 const projectsData = res.data?.result?.projects || [];
                 setLocalProjects(projectsData);
                 dispatch(setProjects(projectsData));
@@ -157,6 +156,7 @@ export default function Projects() {
                     return newState;
                 });
             }
+            handleRefresh();
         };
     }, [reduxProjects, dispatch]);
 
@@ -199,6 +199,10 @@ export default function Projects() {
         }));
     };
 
+    const handleFiles = () => {
+
+    }
+
     const renderDataContainer = useCallback(() => {
         if (!selectedCollage) {
             return (
@@ -228,42 +232,20 @@ export default function Projects() {
 
         return projects?.map?.((project, index) => {
             const isDeleting = loadingStates[project.project_id];
-            const semesterArabic = {
-                'Winter': 'شتاء',
-                'Spring': 'ربيع',
-                'Summer': 'صيف',
-                'Autumn': 'خريف',
-                'spring': 'ربيع',
-                'autumn': 'خريف'
-            }[project.semester] || project.semester;
-            
-            // البحث عن اسم القسم إذا كان متاحاً
-            const departmentName = project.department_name || 
-                departments.find(d => d.department_id === project.department_id)?.department_name || 
-                'غير محدد';
             
             return (
                 <Row
                     key={project.project_id}
                     index={index + 1}
-                    name={project.project_title || project.title}
-                    description={`القسم: ${departmentName} | الفصل: ${semesterArabic} | التقدير: ${project.grade || 'غير محدد'}`}
-                    active={project.available !== false}
+                    name={project.project_title}
+                    active={true}
+                    onClick={handleEdit(project)}
                     actions={[
                         {
-                            className: 'edit',
-                            content: 'تعديل',
-                            onClick: handleEdit(project),
-                            disabled: isDeleting
-                        },
-                        {
                             className: 'delete',
-                            content: isDeleting ? (
-                                <>
-                                    <Spinner size="tiny" style={{ marginLeft: '4px' }} />
-                                    جاري الحذف...
-                                </>
-                            ) : 'حذف',
+                            content: (isDeleting ? (
+                                <Spinner size="tiny"/>
+                            ) : 'حذف'),
                             onClick: handleDelete(project),
                             disabled: isDeleting
                         },
@@ -288,7 +270,7 @@ export default function Projects() {
                         selectedOptions={selectedCollage ? [selectedCollage.collage_id] : []}
                         onOptionSelect={handleCollageSelect}
                         placeholder="اختر كلية"
-                        style={{ minWidth: '150px' }}
+                        // style={{ minWidth: '150px' }}
                     >
                         {collages.map((c) => (
                             <Option key={c.collage_id} value={c.collage_id}>
@@ -311,7 +293,7 @@ export default function Projects() {
                         onOptionSelect={handleDepartmentSelect}
                         placeholder="اختر قسم"
                         disabled={!selectedCollage || departments.length === 0}
-                        style={{ minWidth: '150px' }}
+                        // style={{ minWidth: '150px' }}
                     >
                         <Option value="all">كل الأقسام</Option>
                         {departments.map((d) => (
@@ -324,36 +306,37 @@ export default function Projects() {
                 
                 (<Dropdown
                     key="semester-filter"
-                    value={filters.semester || "جميع الفصول"}
+                    value={filters.semester?.toLowerCase() || "جميع الفصول"}
                     onOptionSelect={(_, data) => handleFilterChange('semester', data.selectedOptions[0] || "")}
                     placeholder="الفصل الدراسي"
                     disabled={!selectedCollage}
+                    style={{ maxWidth: '100px' }}
                 >
                     <Option value="">جميع الفصول</Option>
                     <Option text="ربيع" value="spring">ربيع</Option>
                     <Option text="خريف" value="autumn">خريف</Option>
-                    <Option text="شتاء" value="winter">شتاء</Option>
-                    <Option text="صيف" value="summer">صيف</Option>
                 </Dropdown>),
-                
-                (<Button
-                    key="add-project"
-                    appearance='primary' 
-                    onClick={handleAddDialog}
-                    disabled={isLoadingAll || !selectedCollage}
-                >
-                    إضافة مشروع
-                </Button>),
-                
-                (<Button 
-                    key="refresh"
-                    appearance='secondary' 
-                    onClick={handleRefresh}
-                    disabled={isLoadingAll || !selectedCollage}
-                    icon={isLoadingAll ? <Loading paddingless size='extra-tiny' /> : <ArrowClockwise20Regular/>}
-                >
-                    تحديث
-                </Button>)
+                <br/>,
+                <div style={{ display: 'flex', gap: '5px' }}>
+                    <Button
+                        key="add-project"
+                        appearance='primary' 
+                        onClick={handleAddDialog}
+                        disabled={isLoadingAll || !selectedCollage}
+                    >
+                        توثيق مشروع
+                    </Button>
+                    
+                    <Button 
+                        key="refresh"
+                        appearance='secondary' 
+                        onClick={handleRefresh}
+                        disabled={isLoadingAll || !selectedCollage}
+                        icon={isLoadingAll ? <Loading paddingless size='extra-tiny' /> : <ArrowClockwise20Regular/>}
+                    >
+                        تحديث
+                    </Button>
+                </div>
             ]}
             dataContainer={renderDataContainer()}
             footer={<>
@@ -370,4 +353,41 @@ export default function Projects() {
             </>}
         />
     );
+}
+
+
+function ProjectOptions ({ onFiles, onKeywords, onProjectData, onReferences, onCategories, onPeople }) {
+
+    return <Menu positioning={{ autoSize: true }}>
+        
+        <MenuTrigger disableButtonEnhancement>
+            <button style={{ background:'transparent', border: 'none' }}>
+                تعديل
+            </button>
+        </MenuTrigger>
+
+        <MenuPopover>
+            <MenuList>
+                <MenuItem icon={<Folder16Regular/>} onClick={onProjectData || (() => {})}>
+                    البيانات الأساسية
+                </MenuItem>
+                <MenuItem icon={<Book16Regular/>} onClick={onFiles || (() => {})}>
+                    الملفات
+                </MenuItem>
+                <MenuItem icon={<People16Regular/>} onClick={onPeople || (() => {})}>
+                    فريق العمل
+                </MenuItem>
+                <MenuItem icon={<Bookmark16Regular/>} onClick={onReferences || (() => {})}>
+                    المراجع
+                </MenuItem>
+                <MenuItem icon={<Grid16Regular/>} onClick={onCategories || (() => {})}>
+                    الفئات
+                </MenuItem>
+                <MenuItem icon={<Key16Regular/>} onClick={onKeywords || (() => {})}>
+                    الكلمات المفتاحية
+                </MenuItem>
+            </MenuList>
+        </MenuPopover>
+
+    </Menu>
 }

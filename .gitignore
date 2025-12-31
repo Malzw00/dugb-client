@@ -28,3 +28,5 @@ dist-ssr
 out/
 
 fluent-ui-color.css
+*.backup
+*.bu

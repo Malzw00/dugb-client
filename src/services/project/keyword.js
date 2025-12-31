@@ -23,7 +23,7 @@ import api from "@services/api";
  * @returns {Promise<AxiosResponse>}
  */
 export async function getProjectKeywords(projectId) {
-    return api.get(`/projects/${projectId}/keywords`);
+    return api.get(`/projects/${projectId}/keywords`, { params: { projectId } });
 }
 
 /* ============================================================
@@ -41,6 +41,7 @@ export async function getProjectKeywords(projectId) {
  */
 export async function addProjectKeywords({ projectId, keywords }) {
     return api.post(`/projects/${projectId}/keywords`, {
+        projectId,
         keywords,
     });
 }
@@ -59,5 +60,7 @@ export async function addProjectKeywords({ projectId, keywords }) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function deleteProjectKeyword({ projectId, keywordId }) {
-    return api.delete(`/projects/${projectId}/keywords/${keywordId}`);
+    return api.delete(`/projects/${projectId}/keywords/${keywordId}`, { params: {
+        projectId, keywordId
+    }});
 }

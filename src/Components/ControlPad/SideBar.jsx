@@ -28,14 +28,13 @@ export default function SideBar(props) {
                 onTabSelect={(e, data) => {dispatch(selectControlPanel(data.value))}}
             >
                 <Tab key={1} value={'projects'}>المشاريع</Tab>
+                <Tab key={10} value={'collages'}>الكليات</Tab>
+                <Tab key={8} value={'departments'}>الأقسام</Tab>
                 <Tab key={2} value={'categories'}>الفئات</Tab>
                 <Tab key={3} value={'students'}>الطلبة</Tab>
                 <Tab key={4} value={'supervisors'}>المشرفين</Tab>
                 <Tab key={5} value={'references'}>المراجع</Tab>
                 <Tab key={6} value={'files'}>الملفات</Tab>
-                <Tab key={8} value={'collages'}>الكليات</Tab>
-                <Tab key={8} value={'departments'}>الأقسام</Tab>
-                <Tab key={7} value={'permissions'}>الصلاحيات</Tab> 
                 <Tab key={9} value={'accounts'}>حسابات المستخدمين</Tab>
             </TabList>
           </div>

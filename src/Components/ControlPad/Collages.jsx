@@ -4,7 +4,7 @@ import ControlArea, { Row } from "./ControlArea";
 import { Button, Spinner } from "@fluentui/react-components";
 import { deleteCollage, getAllCollages } from "@root/src/services/collage";
 import { setCollages } from "@root/src/store/slices/collages.slice";
-import { setControlDialog } from "@root/src/store/slices/controlDialogs.slice";
+import { setControlDialog } from "@root/src/store/slices/controlDialog.slice";
 import Loading from "@PreMadeComponents/Loading";
 import EditCollageDialog from "@components/Dialogs/EditCollageDialog";
 import AddCollageDialog from "@components/Dialogs/AddCollageDialog";
