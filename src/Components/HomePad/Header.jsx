@@ -4,9 +4,9 @@ import LogoImg from "@resources/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { selectHeaderTab } from "@root/src/store/slices/selectedHeaderTab.slice";
 import { useNavigate } from "react-router-dom";
-import { Search16Regular, Search20Regular } from "@fluentui/react-icons";
+import { ArrowRight20Regular, Search20Regular } from "@fluentui/react-icons";
 
-export default function Header () {
+export default function Header ({ disableTabs, color, onBackClick }) {
 
     const navigate = useNavigate();
 
@@ -22,10 +22,18 @@ export default function Header () {
     return (
         <div className="header" style={{
             padding: '8px 5%',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            background: color?? 'white'
         }}>
+
             
             <div className="flex-row items-center justify-center gap-13px">
+                {onBackClick && <Button
+                    onClick={onBackClick}
+                    appearance="subtle"
+                    icon={<ArrowRight20Regular/>} 
+                    style={{ minWidth: '0', borderRadius: '50em' }}/>}
+
                 <img src={LogoImg} height={34}/>
                 <a onClick={() => navigate('/intro')}>
                     <h4>
@@ -34,7 +42,7 @@ export default function Header () {
                 </a>  
             </div>         
 
-            <TabList 
+            {!disableTabs && <TabList 
                 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0 2%' }} 
                 selectedValue={selectedHeaderTab} onTabSelect={handleTabSelect}>
                     
@@ -43,7 +51,7 @@ export default function Header () {
                 <Tab value='categories'>الفئات</Tab>
                 <Tab value='people'>الطلبة والمشرفين</Tab>
                 {isAdmin && <Tab value='control'>لوحة التحكم</Tab>}
-            </TabList>
+            </TabList>}
 
             <UserBtn/>
         </div>

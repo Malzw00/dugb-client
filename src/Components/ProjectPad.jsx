@@ -17,7 +17,8 @@ import {
     Comment24Regular,
     Grid24Regular,
     Book48Color,
-    BookOpen24Regular
+    BookOpen24Regular,
+    Star24Filled
 } from "@fluentui/react-icons";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -32,7 +33,9 @@ import { selectPeopleTab } from "../store/slices/selectedPeopleTab.slice";
 import Loading from "./PreMadeComponents/Loading";
 import '@styles/ProjectPad.css';
 import projectIcon from '@resources/book.svg';
-import { addProjectLike, amILikeProject, getMyProjectRating, getProjectLikesCount, rateProject } from "../services/project/social";
+import { addProjectLike, amILikeProject, getMyProjectRating, getProjectLikesCount, getProjectRatingAverage, rateProject } from "../services/project/social";
+import baseURL from "../config/baseURL.config";
+import Header from "./HomePad/Header";
 
 // كائن تخطيط لأنواع المستخدمين
 const PERSON_TYPE_CONFIG = {
@@ -86,8 +89,20 @@ const ProjectHeaderSection = ({ project }) => {
             })
             .catch(err => {
                 console.log(err);
+            });
+
+        getProjectRatingAverage(project.project_id)
+            .then(res => {
+                const result = res.data?.result || {};
+                setRating({
+                    rate: result.rating,
+                    total: result.total_ratings,
+                });
             })
-    }, [myLike, myRating ]);
+            .catch(err => {
+                console.log(err);
+            })
+    }, [myLike, myRating]);
 
     const handleLike = useCallback(() => {
         addProjectLike(project.project_id)
@@ -122,7 +137,9 @@ const ProjectHeaderSection = ({ project }) => {
                 </div>
                 <div className="project-title-content">
                     <h1>{project.project_title || 'عنوان المشروع'}</h1>
-
+                    <p className="project-update-date">
+                        آخر تحديث: {project.updatedAt ? new Date(project.updatedAt).toISOString().slice(0, 10) : '2023-10-25'}
+                    </p>
                     <div className="badge-group">
                         <div className="rating-container">
                             <Rating 
@@ -139,8 +156,9 @@ const ProjectHeaderSection = ({ project }) => {
             <div className="project-header-right">
                 <div className="project-stats">
                     <div className="stat-item">
-                        <Star24Regular className="stat-icon" />
-                        <span>{rating.toFixed(1)}/5</span>
+                        {rating?.rate > 0 && <Star24Filled className='stat-icon'/> || <Star24Regular className='star-icon'/>}
+                        <span>{rating.rate}/5</span>
+                        <span>({rating.total})</span>
                     </div>
                     <div className="stat-item">
                         <Button
@@ -154,9 +172,6 @@ const ProjectHeaderSection = ({ project }) => {
                         </Button>
                     </div>
                 </div>
-                <p className="project-update-date">
-                    آخر تحديث: {project.updatedAt ? new Date(project.updatedAt).toISOString().slice(0, 10) : '2023-10-25'}
-                </p>
             </div>
         </header>
     );
@@ -192,7 +207,7 @@ const ProjectDescriptionSection = ({ project, onCategoryClick }) => {
                 <span>وصف المشروع</span>
             </div>
             <div className="project-description">
-                {project.project_description || 'لا يوجد وصف للمشروع.'}
+                {project.project_description || <span className='empty-state'>'لا يوجد وصف للمشروع.'</span>}
             </div>
             <div className="keywords-section">
                 <div className="section-label">الكلمات المفتاحية</div>
@@ -214,11 +229,17 @@ const ReferencesSection = ({ project }) => (
             {project?.References?.map(ref => {
                 return (
                     ref.reference_link 
-                    && <Link href={ref.reference_link}>{ref.reference_title} - {ref.reference_author}</Link>
-                    || <span>{ref.reference_title} - {ref.reference_author}</span>
+                    && <Link key={ref.reference_id} href={ref.reference_link}>
+                        {ref.reference_title} 
+                        {ref.reference_author? ' - ' + ref.reference_author: ''}
+                    </Link>
+                    || <span key={ref.reference_id}>
+                        {ref.reference_title} 
+                        {ref.reference_author? ' - ' + ref.reference_author: ''}
+                    </span>
                 )
             })}
-            {project?.References?.length || <span className="placeholder-label">لم يتم إرفاق المراجع</span>}
+            {!project?.References?.length && <span className="empty-state">لم يتم إرفاق المراجع</span>}
         </ul>
     </section>
 );
@@ -241,6 +262,7 @@ const CategoriesSection = ({ project }) => {
                         {category.category_name}
                     </Badge>
                 ))}
+                {project?.Categories?.length < 1 && <span className='empty-state'>لم يتم تحديد أي فئة بعد</span>}
             </ul>
         </section>
     )
@@ -252,33 +274,58 @@ const CommentsSection = () => (
             <Comment24Regular />
             <span>التعليقات</span>
         </div>
-        <p className="comments-placeholder">
+        <p className="empty-state">
            لا توجد تعليقات
         </p>
     </section>
 );
 
-const FilesSection = () => (
+const FilesSection = ({ book, presentation }) => (
     <section className="project-card2">
         <div className="card-title">
             <ArrowDown24Regular />
             <span>ملفات المشروع</span>
         </div>
+        
         <div className="action-buttons">
-            <Button 
-                appearance="primary" 
-                size="medium"
-                className="action-btn"
-            >
-                كتاب المشروع
-            </Button>
-            <Button 
-                appearance="secondary" 
-                size="medium"
-                className="action-btn"
-            >
-                عرض تقديمي
-            </Button>
+            
+            {book ? (
+                <a
+                    href={`${baseURL}/${book.path}/${book.stored_name}`}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: "none" }}
+                >
+                    <Button appearance="primary" size="medium" className="action-btn">
+                        كتاب المشروع
+                    </Button>
+                </a>
+            ) : (
+                <div className="empty-state">
+                    لم يتم رفع الكتاب بعد
+                </div>
+            )}
+            
+            {presentation ? (
+                <a
+                    href={`${baseURL}/${presentation.path}/${presentation.stored_name}`}
+                    download
+                    style={{ textDecoration: "none" }}
+                >
+                    <Button
+                        appearance="secondary"
+                        size="medium"
+                        className="action-btn"
+                    >
+                        عرض تقديمي
+                    </Button>
+                </a>
+            ) : (
+                <div className="empty-state">
+                    لم يتم رفع العرض التقديمي بعد
+                </div>
+            )}
         </div>
     </section>
 );
@@ -288,7 +335,7 @@ const TeamSection = ({ project, onPersonClick }) => {
     const supervisorDisplayName = useMemo(() => {
         return project.Supervisor ? 
             PERSON_TYPE_CONFIG.supervisor.displayName(project.Supervisor) : 
-            'غير محدد';
+            (<span className="empty-state">لم يتم إرفاق بيانات المشرف بعد</span>);
     }, [project.Supervisor]);
 
     // const studentsDisplay = useMemo(() => {
@@ -323,6 +370,7 @@ const TeamSection = ({ project, onPersonClick }) => {
                                 {student.student_full_name}
                             </span>
                         ))}
+                        {project.Students?.length < 1 && <span className="empty-state">لم يتم إرفاق بيانات الطلبة بعد</span>}
                     </div>
                 </li>
             </ul>
@@ -470,10 +518,9 @@ export default function ProjectDisplay() {
 
     return (
         <div className="project-display-container">
-            <PlatformHeader
-                style={{ background: tokens.colorNeutralBackground1 }}
-                caption={`مشروع ${project.project_title || ''}`}
-                handleBackButtonClick={handleBackClick}
+            <Header
+                disableTabs
+                onBackClick={handleBackClick}
             />
 
             <div className="project-main-container">
@@ -496,7 +543,7 @@ export default function ProjectDisplay() {
                     </main>
 
                     <aside className="project-sidebar">
-                        <FilesSection />
+                        <FilesSection book={project.Book} presentation={project.Presentation}/>
                         <TeamSection 
                             project={project}
                             onPersonClick={handlePersonClick}

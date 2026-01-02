@@ -6,7 +6,7 @@ import { setAccessToken, clearUser } from '@store/slices/user.slice';
 
 // Create axios instance
 const api = axios.create({
-    baseURL,
+    baseURL: `${baseURL}/api/v1`,
     headers: { "Content-Type": "application/json" },
     withCredentials: true, // مهم للـ refresh_token cookie
     timeout: 5000,

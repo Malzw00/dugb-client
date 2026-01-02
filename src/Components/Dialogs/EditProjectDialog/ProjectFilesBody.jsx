@@ -1,21 +1,21 @@
-import { 
-  Dismiss16Regular, 
+import {
   Folder28Regular,
   Add16Regular, 
   Document16Regular,
   ArrowDownload16Regular,
-  Document20Regular,
-  MoreHorizontal16Regular
+  MoreHorizontal16Regular,
+  Book16Color,
+  Calendar16Color
 } from "@fluentui/react-icons";
 import Body from "./Body";
 import { useEffect, useState, useCallback } from "react";
 import { getFiles, uploadFile, deleteFile } from "@root/src/services/files";
 import { 
   getBookFile, 
-  uploadBookFile, 
+  setBook, 
   deleteBookFile,
   getPresentationFile,
-  uploadPresentationFile,
+  setPresentation,
   deletePresentationFile
 } from "@root/src/services/project/file";
 import { 
@@ -26,15 +26,7 @@ import {
   Text, 
   Badge, 
   Field, 
-  Tag, 
   tokens,
-  Input,
-  Dialog,
-  DialogSurface,
-  DialogTitle,
-  DialogBody,
-  DialogActions,
-  DialogContent,
   ProgressBar,
   Menu,
   MenuTrigger,
@@ -43,6 +35,7 @@ import {
   MenuItem,
   Tooltip
 } from "@fluentui/react-components";
+import baseURL from "@root/src/config/baseURL.config";
 
 export default function ProjectFilesBody({ currentProject }) {
   return (
@@ -108,13 +101,13 @@ function Content({ currentProject }) {
       const filteredFiles = files.filter(file => {
         if (type === 'book') {
           // يمكن إضافة منطق لتصفية ملفات الكتب
-          return file.file_name?.toLowerCase().includes('.pdf') || 
-                 file.file_name?.toLowerCase().includes('.doc') ||
+          return file.stored_name?.toLowerCase().includes('.pdf') || 
+                 file.stored_name?.toLowerCase().includes('.doc') ||
                  file.category === 'book';
         } else {
           // ملفات العروض التقديمية
-          return file.file_name?.toLowerCase().includes('.ppt') || 
-                 file.file_name?.toLowerCase().includes('.pptx') ||
+          return file.stored_name?.toLowerCase().includes('.ppt') || 
+                 file.stored_name?.toLowerCase().includes('.pptx') ||
                  file.category === 'presentation';
         }
       });
@@ -210,20 +203,14 @@ function Content({ currentProject }) {
   const handleAddFileToProject = async (type, fileId) => {
     try {
       if (type === 'book') {
-        await uploadBookFile({
+        await setBook({
           projectId: currentProject.project_id,
-          fileId, // ملاحظة: قد تحتاج إلى تعديل API ليقبل fileId بدلاً من File
-          onProgress: (percent) => {
-            setUploadProgress(prev => ({ ...prev, [type]: percent }));
-          }
+          fileId: fileId,
         });
       } else if (type === 'presentation') {
-        await uploadPresentationFile({
+        await setPresentation({
           projectId: currentProject.project_id,
-          fileId, // ملاحظة: قد تحتاج إلى تعديل API ليقبل fileId بدلاً من File
-          onProgress: (percent) => {
-            setUploadProgress(prev => ({ ...prev, [type]: percent }));
-          }
+          fileId: fileId,
         });
       }
       
@@ -306,13 +293,13 @@ function Content({ currentProject }) {
     const ext = fileName.toLowerCase().split('.').pop();
     switch (ext) {
       case 'pdf':
-        return <Document16Regular style={{ color: '#F40F02' }} />;
+        return <Book16Color/>;
       case 'doc':
       case 'docx':
-        return <Document16Regular style={{ color: '#2B579A' }} />;
+        return <Book16Color/>;
       case 'ppt':
       case 'pptx':
-        return <Document16Regular style={{ color: '#D24726' }} />;
+        return <Calendar16Color/>;
       default:
         return <Document16Regular />;
     }
@@ -354,7 +341,7 @@ function Content({ currentProject }) {
           marginBottom: '16px'
         }}>
           <div>
-            <Text size={500} weight="semibold">{title}</Text>
+            <div><Text size={500} weight="semibold">{title}</Text></div>
             <Text size={200} style={{ color: tokens.colorNeutralForeground3, marginTop: '4px' }}>
               {description}
             </Text>
@@ -377,10 +364,10 @@ function Content({ currentProject }) {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{ fontSize: '24px' }}>
-                {getFileIcon(file.file_name)}
+                {getFileIcon(file.stored_name)}
               </div>
               <div>
-                <Text weight="semibold">{file.file_name}</Text>
+                <Text weight="semibold">{file.stored_name}</Text>
                 <Text size={200} style={{ color: tokens.colorNeutralForeground3 }}>
                   {file.file_size ? `الحجم: ${formatFileSize(file.file_size)}` : ''}
                 </Text>
@@ -388,14 +375,12 @@ function Content({ currentProject }) {
             </div>
             
             <div style={{ display: 'flex', gap: '8px' }}>
-              <Tooltip content="تحميل الملف" relationship="label">
-                <Button
-                  icon={<ArrowDownload16Regular />}
-                  onClick={() => handleDownloadFile(file.file_url, file.file_name)}
-                  appearance="subtle"
-                  title="تحميل الملف"
-                />
-              </Tooltip>
+              <Button
+                icon={<ArrowDownload16Regular />}
+                onClick={() => handleDownloadFile(`${baseURL}/${file.path}/${file.stored_name}`, file.stored_name)}
+                appearance="subtle"
+                title="تحميل الملف"
+              />
               
               <Menu>
                 <MenuTrigger>
@@ -435,11 +420,18 @@ function Content({ currentProject }) {
             </div>
 
             {availableFiles[type]?.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '20px' }}>
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '20px', 
+                display: 'flex', 
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
                 <Text>لا توجد ملفات متاحة</Text>
                 <Button
-                  appearance="subtle"
-                  onClick={() => setShowUploadForm(prev => ({ ...prev, [type]: true }))}
+                  appearance="secondary"
+                  onClick={() => setShowAddFile(prev => ({ ...prev, [type]: false }))}
                   style={{ marginTop: '12px' }}
                 >
                   رفع ملف جديد
@@ -502,8 +494,8 @@ function Content({ currentProject }) {
                     إلغاء
                   </Button>
                   <Button
-                    appearance="outline"
-                    onClick={() => setShowUploadForm(prev => ({ ...prev, [type]: true }))}
+                    appearance="secondary"
+                    onClick={() => setShowAddFile(prev => ({ ...prev, [type]: false }))}
                   >
                     رفع ملف جديد
                   </Button>
@@ -527,7 +519,7 @@ function Content({ currentProject }) {
               required
               style={{ marginBottom: '16px' }}
             >
-              <Input
+              <input
                 type="file"
                 accept={type === 'book' ? ".pdf,.doc,.docx" : ".ppt,.pptx"}
                 onChange={(e) => {
@@ -536,7 +528,7 @@ function Content({ currentProject }) {
                     setUploadForm(prev => ({ ...prev, [type]: file }));
                   }
                 }}
-                style={{ padding: '8px' }}
+                style={{ padding: '8px', }}
               />
             </Field>
 
@@ -590,30 +582,34 @@ function Content({ currentProject }) {
           </div>
         ) : (
           <div style={{
+            display: 'flex',
+            flexDirection: 'column',
             textAlign: 'center',
             padding: '40px',
             backgroundColor: '#f3f2f1',
             borderRadius: '8px',
-            border: '1px dashed #e1dfdd'
+            border: '1px dashed #e1dfdd',
+            gap: '13px',
+            justifyContent: 'center',
+            alignItems: 'center'
           }}>
-            <Document20Regular style={{ color: '#8a8886', marginBottom: '12px', fontSize: '32px' }} />
             <Text style={{ marginBottom: '16px' }}>
               لم يتم {type === 'book' ? 'إضافة كتاب' : 'إضافة عرض تقديمي'} بعد
             </Text>
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-              <Button
-                onClick={() => setShowAddFile(prev => ({ ...prev, [type]: true }))}
-                appearance="secondary"
-                icon={<Add16Regular />}
-              >
-                اختر ملفاً
-              </Button>
               <Button
                 onClick={() => setShowUploadForm(prev => ({ ...prev, [type]: true }))}
                 appearance="primary"
                 icon={<Add16Regular />}
               >
                 رفع ملف جديد
+              </Button>
+              <Button
+                onClick={() => setShowAddFile(prev => ({ ...prev, [type]: true }))}
+                appearance="secondary"
+                icon={<Add16Regular />}
+              >
+                اختر ملفاً
               </Button>
             </div>
           </div>
@@ -677,7 +673,7 @@ function FileItem({ file, onDownload, onDelete, onDeleteFromSystem }) {
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '12px' }}>
         <div style={{ fontSize: '20px' }}>
           {(() => {
-            const fileName = file.file_name || file.name || '';
+            const fileName = file.stored_name || file.name || '';
             if (!fileName) return <Document16Regular />;
             
             const ext = fileName.toLowerCase().split('.').pop();
@@ -696,7 +692,7 @@ function FileItem({ file, onDownload, onDelete, onDeleteFromSystem }) {
           })()}
         </div>
         <div>
-          <Text weight="semibold">{file.file_name || file.name}</Text>
+          <Text weight="semibold">{file.stored_name || file.name}</Text>
           {file.file_size && (
             <Text size={200} style={{ color: tokens.colorNeutralForeground3 }}>
               {formatFileSize(file.file_size)}

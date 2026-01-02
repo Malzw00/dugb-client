@@ -39,13 +39,13 @@ export default function Students() {
             });
     }, []);
 
-    // جلب الطلاب حسب البحث
     const fetchStudentsBySearch = useCallback((searchText) => {
         setIsLoadingAll(true);
         setIsSearching(true);
         
         searchForStudents({ text: searchText })
             .then(res => {
+                console.log(res.data.result)
                 setStudents(res.data?.result || []);
             })
             .catch(err => {
@@ -206,7 +206,7 @@ export default function Students() {
                 />
             );
         });
-    }, [students, isLoadingAll, loadingStates, handleEdit, handleDelete, searchInputText]);
+    }, [students, isLoadingAll, loadingStates, handleEdit, handleDelete]);
 
     return (
         <ControlArea

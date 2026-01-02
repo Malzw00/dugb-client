@@ -1,19 +1,24 @@
 /* ProjectDisplay.css */
 
 .project-display-container {
+    display: flex;
+    flex-direction: column;
     direction: rtl;
     font-family: var(--fontFamilyBase);
     background-color: var(--colorNeutralBackground3);
     color: var(--colorNeutralForeground1);
     margin: 0;
+    min-height: 0;
     height: 100vh;
-    overflow: auto;
+    /* overflow: auto; */
 }
 
 .project-main-container {
-    max-width: 1100px;
+    /* max-width: 1100px; */
+    width: 100%;
     margin: 0 auto;
-    padding: var(--spacingHorizontalL) var(--spacingHorizontalL) 0;
+    padding: var(--spacingHorizontalL) 10%;
+    overflow: auto;
 }
 
 /* Header Section */
@@ -486,23 +491,4 @@
     .action-btn, .sidebar-btn {
         font-size: var(--fontSizeBase300);
     }
-}
-
-/* Custom Scrollbar */
-.project-display-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.project-display-container::-webkit-scrollbar-track {
-    background: var(--colorNeutralBackground2);
-    border-radius: var(--borderRadiusSmall);
-}
-
-.project-display-container::-webkit-scrollbar-thumb {
-    background: var(--colorNeutralStroke2);
-    border-radius: var(--borderRadiusSmall);
-}
-
-.project-display-container::-webkit-scrollbar-thumb:hover {
-    background: var(--colorNeutralStroke1);
 }

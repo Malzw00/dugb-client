@@ -27,35 +27,15 @@ import api from "@services/api";
  * @returns {Promise<AxiosResponse>}
  */
 export async function getBookFile(projectId) {
-    return api.get(`/projects/${projectId}/files/book`);
+    return api.get(`/projects/${projectId}/files/book`, {
+        params: { projectId }
+    });
 }
 
-/**
- * Upload a new Book.
- *
- * @function uploadBookFile
- * @param {Object} params
- * @param {string|number} params.projectId - Project ID
- * @param {File} params.file - File object from input[type=file]
- * @param {function} [params.onProgress] - Upload progress callback
- * @returns {Promise<AxiosResponse>}
- */
-export function uploadBookFile({ projectId, file, onProgress }) {
+export function setBook({ projectId, fileId }) {
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("category", 'book');
-
-    return api.post(`/projects/${projectId}/files/book`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: onProgress
-            ? (e) => {
-                const percent = Math.round((e.loaded * 100) / e.total);
-                onProgress(percent);
-            }
-            : undefined,
+    return api.post(`/projects/${projectId}/files/book`, {
+        projectId, fileId
     });
 }
 
@@ -67,7 +47,9 @@ export function uploadBookFile({ projectId, file, onProgress }) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function deleteBookFile(projectId) {
-    return api.delete(`/projects/${projectId}/files/book`);
+    return api.delete(`/projects/${projectId}/files/book`, {
+        params: { projectId }
+    });
 }
 
 /* ============================================================
@@ -82,7 +64,9 @@ export async function deleteBookFile(projectId) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function getPresentationFile(projectId) {
-    return api.get(`/projects/${projectId}/files/presentation`);
+    return api.get(`/projects/${projectId}/files/presentation`, {
+        params: { projectId }
+    });
 }
 
 
@@ -96,22 +80,10 @@ export async function getPresentationFile(projectId) {
  * @param {function} [params.onProgress] - Upload progress callback
  * @returns {Promise<AxiosResponse>}
  */
-export function uploadPresentationFile({ projectId, file, onProgress }) {
+export function setPresentation({ projectId, fileId }) {
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("category", 'presentation');
-
-    return api.post(`/projects/${projectId}/files/presentation`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: onProgress
-            ? (e) => {
-                const percent = Math.round((e.loaded * 100) / e.total);
-                onProgress(percent);
-            }
-            : undefined,
+    return api.post(`/projects/${projectId}/files/presentation`, {
+        projectId, fileId,
     });
 }
 
@@ -123,5 +95,7 @@ export function uploadPresentationFile({ projectId, file, onProgress }) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function deletePresentationFile(projectId) {
-    return api.delete(`/projects/${projectId}/files/presentation`);
+    return api.delete(`/projects/${projectId}/files/presentation`, {
+        params: { projectId }
+    });
 }

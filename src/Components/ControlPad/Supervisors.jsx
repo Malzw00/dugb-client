@@ -170,13 +170,10 @@ export default function Supervisors() {
                 <Row
                     key={supervisor.supervisor_id}
                     index={index + 1}
-                    name={<div style={{ display:'flex', gap:'13px', flexWrap: 'wrap' }}>
-                        {supervisor.supervisor_title|| null}
-                        <span style={{ fontWeight: 'bold' }}> 
-                            {supervisor.supervisor_name} <span> </span> 
-                            {supervisor.supervisor_father_name} <span> </span>
-                            {supervisor.supervisor_grandfather_name} <span> </span>
-                            {supervisor.supervisor_family_name}
+                    name={<div style={{ display:'flex', gap:'5px', flexWrap: 'wrap' }}>
+                        {supervisor.supervisor_title + ' . ' || null}
+                        <span> 
+                            {supervisor.supervisor_name} {supervisor.supervisor_father_name} {supervisor.supervisor_grandfather_name} {supervisor.supervisor_family_name}
                         </span>
                         
                         {supervisor.supervisor_email && (

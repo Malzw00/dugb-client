@@ -52,10 +52,16 @@ export default function SearchSupervisorContentArea({}) {
                 }`}>
                     {loading && <Spinner style={{margin:'13px'}}/>}
                     {searchedSupervisors.map((supervisor, index) => {
+                        const supervisorName = (
+                            supervisor.supervisor_name
+                            + ' ' + supervisor.supervisor_father_name
+                            + ' ' + supervisor.supervisor_grandfather_name
+                            + ' ' + supervisor.supervisor_family_name
+                        );
                         return <PersonCard
                             key={index}
                             index={index}
-                            name={supervisor.supervisor_full_name}
+                            name={supervisorName}
                             updated_at={supervisor.updated_at}
                         />
                     })}

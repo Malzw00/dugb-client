@@ -52,10 +52,16 @@ export default function SearchStudentContentArea({}) {
                 }`}>
                     {loading && <Spinner style={{margin:'13px'}}/>}
                     {searchedStudents.map((student, index) => {
+                        const studentName = (
+                            student.student_name
+                            + ' ' + student.student_father_name
+                            + ' ' + student.student_grandfather_name
+                            + ' ' + student.student_family_name
+                        );
                         return <PersonCard
                             key={index}
                             index={index}
-                            name={student.student_full_name}
+                            name={studentName}
                             updated_at={student.updated_at}
                         />
                     })}

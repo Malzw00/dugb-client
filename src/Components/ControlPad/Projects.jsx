@@ -246,7 +246,11 @@ export default function Projects() {
                             content: (isDeleting ? (
                                 <Spinner size="tiny"/>
                             ) : 'حذف'),
-                            onClick: handleDelete(project),
+                            onClick: (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleDelete(project)();
+                            },
                             disabled: isDeleting
                         },
                     ]}
