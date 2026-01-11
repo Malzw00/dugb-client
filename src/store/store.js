@@ -10,6 +10,7 @@ import departmentsReducer from '@slices/departments.slice';
 import selectedDepartmentReducer from '@slices/selectedDepartment.slice'; 
 import dateFilterReducer from '@slices/dateFilter.slice'; 
 import semesterReducer from '@slices/semester.slice'; 
+import yearReducer from '@root/src/store/slices/year.slice';
 import orderReducer from '@slices/order.slice'; 
 import personReducer from '@slices/person.slice'; 
 import sideBarContentReducer from '@slices/sideBarContent.slice'; 
@@ -23,7 +24,7 @@ import selectedSearchTabReducer from '@slices/selectedSearchTab.slice';
 import profileReducer from '@root/src/store/slices/profile.slice'
 import selectedControlPanelReducer from '@root/src/store/slices/selectedControlPanel.slice'
 import controlDialogReducer from '@root/src/store/slices/controlDialog.slice'
-import editReducer from '@root/src/store/slices/edit.slice'
+import editReducer from '@root/src/store/slices/edit.slice';
 
 const store = configureStore({
     reducer: {
@@ -52,6 +53,7 @@ const store = configureStore({
         selectedControlPanel: selectedControlPanelReducer,
         controlDialog: controlDialogReducer,
         edit: editReducer,
+        year: yearReducer,
     }
 });
 

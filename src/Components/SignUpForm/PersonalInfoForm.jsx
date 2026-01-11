@@ -99,7 +99,7 @@ export default function PersonalInfoForm() {
     };    
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="signup-form">
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <Button 
                     icon={<ArrowRight20Regular />} 

@@ -1,17 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value: 'latest'
+    value: localStorage['order'] || 'latest'
     
 }
 
 export const orderDict = {
     latest:      ['date', 'DESC' ], 
     oldest:      ['date', 'ASC'], 
-    topRated:   ['rate', 'ASC' ],
-    lowRated:   ['rate', 'DESC'],
-    topLiked:   ['likes', 'ASC'],
-    lowLiked:   ['likes', 'DESC'],
+    topRated:   ['rate', 'DESC' ],
+    lowRated:   ['rate', 'ASC'],
+    topLiked:   ['likes', 'DESC'],
+    lowLiked:   ['likes', 'ASC'],
 }
 
 const orderSlice = createSlice({
@@ -19,6 +19,7 @@ const orderSlice = createSlice({
     initialState,
     reducers: {
         setOrder(state, action) {
+            localStorage['order'] = action.payload
             state.value = action.payload
         },
     }

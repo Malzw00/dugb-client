@@ -30,6 +30,7 @@ export async function getProjects({
     semester,
     sortBy = "date",
     order = "DESC",
+    year,
 } = {}) {
     return api.get("/projects", {
         params: {
@@ -41,6 +42,7 @@ export async function getProjects({
             sortBy,
             order,
             semester,
+            year,
         },
     });
 }

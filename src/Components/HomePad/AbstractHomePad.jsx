@@ -50,7 +50,7 @@ export default function AbstractHomePad({ sideBar, contentArea }) {
                 <TabList 
                     vertical
                     className="sidebar-tablist" 
-                    selectedValue={sideBar.selectedValue ?? 0} 
+                    selectedValue={sideBar.selectedValue ?? 0}
                     onTabSelect={sideBar.onTabSelect}>
                         
                     {sideBar.tabs}

@@ -32,10 +32,11 @@ export default function Header ({ disableTabs, color, onBackClick }) {
                     onClick={onBackClick}
                     appearance="subtle"
                     icon={<ArrowRight20Regular/>} 
-                    style={{ minWidth: '0', borderRadius: '50em' }}/>}
+                    style={{ minWidth: '0', borderRadius: '50em' }}
+                    title="العودة"/>}
 
                 <img src={LogoImg} height={34}/>
-                <a onClick={() => navigate('/intro')}>
+                <a onClick={() => navigate('/home')}>
                     <h4>
                         منصة توثيق مشاريع التخرج الجامعية
                     </h4>

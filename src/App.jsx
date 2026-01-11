@@ -15,6 +15,7 @@ import LoginForm from '@components/LoginForm';
 import { useDispatch } from "react-redux";
 import { loadCurrentUser } from "@store/thunks/auth.thunk";
 import Signout from './Signout';
+import CategoryPad from './components/HomePad/CategoryPad';
 
 
 
@@ -58,6 +59,7 @@ function App() {
                     <Route path="/login" element={<LoginForm/>}/>
                     <Route path="/signup" element={<SignUpForm/>}/>
                     <Route path="/signout" element={<Signout/>}/>
+                    <Route path="/categories/:categoryId" element={<CategoryPad/>}/>
                 </Routes>
             </div>
         </FluentProvider>

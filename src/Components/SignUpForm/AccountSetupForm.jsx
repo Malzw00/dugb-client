@@ -109,7 +109,7 @@ export default function AccountSetupForm() {
     };
 
     return (
-        <>
+        <div className="signup-form">
 
             <EmailInput
                 className={fieldWarnings.email ? "invalid-input" : ""}
@@ -153,6 +153,6 @@ export default function AccountSetupForm() {
             <Button appearance="primary" onClick={handleSubmit}>
                 التالي
             </Button>
-        </>
+        </div>
     );
 }

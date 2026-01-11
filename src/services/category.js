@@ -82,8 +82,8 @@ export function deleteCategory(categoryId) {
  * @param {number} [params.limit]
  * @returns {Promise<AxiosResponse>}
  */
-export function getCategoryProjects(categoryId, params = {}) {
-    return api.get(`/categories/${categoryId}/projects`, { params });
+export function getCategoryProjects(categoryId) {
+    return api.get(`/categories/${categoryId}/projects`,);
 }
 
 /**

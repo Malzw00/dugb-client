@@ -72,8 +72,8 @@
     flex: 1;
     background-color: var(--colorNeutralBackground3);
     height: 100%;
-    padding: 13px;
     gap: 13px;
+    overflow-y: auto;
 }
   
 .filter-bar {
@@ -98,16 +98,18 @@
 }
   
 
-.content-area .projects-area, .content-area .people-area {
+.content-area .projects-area, .content-area .people-area, .content-area .categories-area {
 
     display: flex;
     flex-direction: column;
-    /* background-color: white;
-    border: 1px solid var(--colorNeutralStroke2);
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.06); */
     flex: 1;
     border-radius: 5px;
     min-height: 0;
+    padding: 13px;
+}
+
+.content-area  .projects-area {
+    padding-top: 0 !important;
 }
 
 .projects-area .ranks-bar {
@@ -130,7 +132,6 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow-y: auto;
     min-height: 0;
 }
 

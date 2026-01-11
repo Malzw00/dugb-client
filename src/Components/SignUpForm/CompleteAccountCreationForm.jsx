@@ -3,6 +3,7 @@ import { SignupContext } from "./SignUpForm";
 import { Button, Spinner } from "@fluentui/react-components";
 import { useNavigate } from "react-router-dom";
 import { register } from "@root/src/services/auth";
+import { CurrentSignupFormContext } from "./SignUpForm";
 
 
 
@@ -11,8 +12,10 @@ export default function CompleteAccountCreationForm() {
     const navigate = useNavigate();
 
     const { signupData } = React.useContext(SignupContext);
+    const { setCurrentForm } = useContext(CurrentSignupFormContext);
     const [isLoading, setLoading] = React.useState(true);
     const [success, setSuccess] = React.useState(false);
+    const [error, setError] = React.useState(false);
     
     React.useEffect(() => {
         register({
@@ -25,29 +28,44 @@ export default function CompleteAccountCreationForm() {
             setSuccess(res?.data?.success?? false)
         }).catch(err => {
             console.log(err);
+            if(err.status === 409)
+                setError(err?.data?.result?.message || 'البريد الإلكتروني موجود بالفعل')
         }).finally(() => {
             setLoading(false)
         });
     }, [])
 
-    const handleSubmit = () => {
+    const handleLoginBtn = () => {
         navigate('/login');
     };
 
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            
-            {success && <>
-                <h3>{signupData.fname} {signupData.lname}</h3>
-                <p>تم إنشاء حسابك على المنصة بنجاح</p>
-                <p>حسابك جاهز</p>
-            </>}
+    const RenderError = () => {
+        return <div className="flex-col gap-8px items-stretch">
+            <div className="error-text flex-row justify-center paddingB-34px">
+                {error || 'فشل إنشاء حساب'}
+            </div>
+            <Button appearance='primary' onClick={() => setCurrentForm('ASF')}>
+                إعادة المحاولة
+            </Button>
+        </div>
+    }
 
-            {(!success && !isLoading) && <p>فشل إنشاء حساب</p>}
+    return (
+        <div className="signup-form">
+            
+            {
+                success
+                ? <>
+                    <h3>{signupData.fname} {signupData.lname}</h3>
+                    <p>تم إنشاء حسابك على المنصة بنجاح</p>
+                    <p>حسابك جاهز</p>
+                </>
+                : (!isLoading) && <RenderError/>
+            }
 
             {isLoading && <Spinner className='spinner'/>}
 
-            {success && <Button appearance="primary" onClick={handleSubmit}>
+            {<Button appearance={error && 'secondary' || "primary"} onClick={handleLoginBtn}>
                 تسجيل الدخول
             </Button>}
         </div>

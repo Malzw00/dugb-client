@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getStudents, getSupervisors } from "@root/src/services/people";
 import PersonCard from "@root/src/components/PreMadeComponents/PersonCard";
 import { setPerson } from "@root/src/store/slices/person.slice";
+import Loading from "../../PreMadeComponents/Loading";
 
 // ثوابت للأنواع
 const PEOPLE_TYPES = {
@@ -94,7 +95,7 @@ export default function PeopleContentArea() {
   // عرض حالة التحميل
   const renderLoading = () => (
     <div className="loading-state">
-      <p>Loading people...</p>
+      <Loading />
     </div>
   );
 
@@ -132,7 +133,6 @@ export default function PeopleContentArea() {
             id={getPersonId(person)}
             name={getPersonName(person)}
             updated_at={person.updatedAt}
-            // يمكن إضافة بيانات إضافية إذا كانت موجودة
             email={person.email || person.student_email || person.supervisor_email}
             phone={person.phone || person.student_phone || person.supervisor_phone}
           />

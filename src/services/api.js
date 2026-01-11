@@ -31,6 +31,7 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+
 /* =========================
    Response Interceptor
 ========================= */
@@ -39,7 +40,12 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
         
-        // تحقق من شروط refresh
+        /* ===== 403 Forbidden ===== */
+        if (error.response?.status === 403) {
+            window.alert('ليس لديك الصلاحية لتنفيذ هذا الإجراء');
+            return Promise.reject(error);
+        }
+
         if (
             error.response?.status === 401 &&
             error.response?.data?.accessTokenExpired === true &&

@@ -456,3 +456,8 @@
 .cursor-ns-resize { cursor: ns-resize; }
 .cursor-nesw-resize { cursor: nesw-resize; }
 .cursor-nwse-resize { cursor: nwse-resize; }
+
+
+.error-text {
+    color: red;
+}

@@ -14,6 +14,7 @@ export default function ProjectsArea() {
     const projects = useSelector(state => state.projects.value);
     const order = useSelector(state => state.order.value);
     const semester = useSelector(state => state.semester.value);
+    const year     = useSelector(state => state.year.value);
     const selectedCollage = useSelector(state => state.selectedCollage.value);
     const selectedDepartment = useSelector(state => state.selectedDepartment.value);
     const [loading, setLoading] = useState(false);
@@ -29,12 +30,13 @@ export default function ProjectsArea() {
             departmentId: selectedDepartment[0],
             semester,
             offset: 0,
-            limit: 50
+            limit: 50,
+            year,
         }).then(res => {
             dispatch(setProjects(res.data.result.projects?? []));
             setLoading(false);
         });
-    }, [ selectedDepartment, semester, order, selectedCollage, ]);
+    }, [ selectedDepartment, semester, order, selectedCollage, year ]);
 
     return <div className='projects-area min-height-0'>
 

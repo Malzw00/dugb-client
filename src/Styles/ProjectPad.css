@@ -1,5 +1,3 @@
-/* ProjectDisplay.css */
-
 .project-display-container {
     display: flex;
     flex-direction: column;
@@ -490,5 +488,154 @@
     
     .action-btn, .sidebar-btn {
         font-size: var(--fontSizeBase300);
+    }
+}
+
+
+/*========================================================================
+    Comment Styles
+========================================================================*/
+
+.comments-section {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.add-comment-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.comment-input {
+    width: 100%;
+    border: 1px solid var(--colorNeutralStroke1);
+    border-radius: 6px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: var(--colorBrandBackground);
+    box-shadow: 0 0 0 2px var(--colorBrandBackground2);
+}
+
+.send-comment-btn {
+    align-self: flex-end;
+    min-width: 100px;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.comment-item {
+    background: var(--colorNeutralBackground2);
+    border-radius: 5px;
+    padding: 8px 13px;
+    border: 1px solid var(--colorNeutralStroke2);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.comment-author {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.author-name {
+    font-weight: 600;
+    color: var(--colorNeutralForeground1);
+}
+
+.comment-date, .comment-edited {
+    display: flex;
+    font-size: 11px !important;
+    color: var(--colorNeutralForeground4);
+    justify-content: end;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-comment-btn,
+.delete-comment-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+.delete-comment-btn {
+    color: var(--colorPaletteRedForeground1);
+}
+
+.delete-comment-btn:hover {
+    background: var(--colorPaletteRedBackground1);
+}
+
+.comment-content {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--colorNeutralForeground2);
+    margin-bottom: 8px;
+}
+
+.comment-edited {
+    font-size: 12px;
+    color: var(--colorNeutralForeground4);
+    font-style: italic;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 20px;
+    color: var(--colorNeutralForeground3);
+    font-style: italic;
+}
+
+.edit-comment-input {
+    width: 100%;
+    border: 1px solid var(--colorNeutralStroke1);
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 12px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.project-date {
+    display: flex;
+    border-radius: 5px;
+    color: black;
+    background-color: var(--colorNeutralBackground2);
+    border: 1px solid var(--colorNeutralStroke1);
+    padding: 0px 8px;
+}
+
+
+@media (max-width: 768px) {
+    .comment-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .comment-actions {
+        align-self: flex-end;
+    }
+    
+    .send-comment-btn {
+        align-self: stretch;
     }
 }

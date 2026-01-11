@@ -4,21 +4,28 @@ import { Chat16Regular, Heart16Regular, Star16Regular } from '@fluentui/react-ic
 
 
 const reactionDivStyle = (`
-    flex-row 
-    bg-3 
+    flex-row  
     paddingY-2px
     paddingX-5px
     justify-center
     items-center 
     text-center 
     border-radius-5px
-    gap-13px`
+    gap-13px
+    bg-2`
 );
 
 export default function ProjectCard({ 
-    project_id, project_title, project_description, stats, iconWidth=100,
+    project_id, 
+    project_title, 
+    project_description, 
+    stats, 
+    iconWidth=100,
     titleStyle='header', // | 'paragraph'
-    project_placeholder=''
+    project_placeholder='',
+    project_date,
+    project_semester,
+    style,
 }) {
 
     return (
@@ -26,7 +33,7 @@ export default function ProjectCard({
             key={project_id}
             className='flex-row project-card padding-13px gap-13px'
             href={`/home/projects/${project_id}`}
-            style={{textDecoration: 'none', color:'black'}}
+            style={{textDecoration: 'none', color:'black', ...(style?? {}) }}
         >
             <img 
                 className="project-card-cover border-radius-4px" 
@@ -37,13 +44,18 @@ export default function ProjectCard({
 
             <div className="flex-col project-details-div gap-8px">
                 
-                {titleStyle === 'header' && <h2 className='project-title-h2'>{project_title}</h2>}
-                {titleStyle === 'paragraph' && <div>
-                    <p>{project_title}</p>
-                    <p style={{color: 'gray'}}>{project_placeholder}</p>
-                </div>}
+                <div className='flex-row gap-8px'>
+                    {titleStyle === 'header' && <h2 className='project-title-h2'>{project_title}</h2>}
+                    {titleStyle === 'paragraph' && <>
+                        <p>{project_title}</p>
+                        <p style={{color: 'gray'}}>{project_placeholder}</p>
+                    </>}
+                    <span className='project-date' style={{ fontSize: '12px' }}>
+                        {project_semester === 'Spring'? 'ربيع': 'خريف'} {new Date(project_date).getFullYear()}
+                    </span>
+                </div>
                 
-                <p>{project_description}</p>
+                <p>{project_description}</p>               
 
                 {stats && <div className='flex-row gap-5px'>
                     <div className={reactionDivStyle} style={{ border: '1px solid silver' }}>

@@ -3,39 +3,38 @@ import {
     tokens,
     Rating,
     Badge,
-    Link
+    Link,
+    Spinner
 } from "@fluentui/react-components";
 import {
-    ArrowDown24Regular,
     Calendar24Regular,
     Heart24Regular,
     Heart24Filled,
     Star24Regular,
     People24Regular,
-    Building24Regular,
     Link24Regular,
-    Comment24Regular,
     Grid24Regular,
-    Book48Color,
-    BookOpen24Regular,
-    Star24Filled
+    Star24Filled,
+    List24Regular,
+    Book24Regular,
+    Bookmark24Regular
 } from "@fluentui/react-icons";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import PlatformHeader from "@components/PreMadeComponents/PlatformHeader";
 import { getProjectById } from "@services/project/project";
 import { useDispatch, useSelector } from "react-redux";
 import { selectHeaderTab } from "@slices/selectedHeaderTab.slice";
 import { selectCategory } from "@slices/selectedCategory.slice";
 import { selectCollage } from "@slices/selectedCollage.slice";
-import { setPerson } from "../store/slices/person.slice";
-import { selectPeopleTab } from "../store/slices/selectedPeopleTab.slice";
-import Loading from "./PreMadeComponents/Loading";
-import '@styles/ProjectPad.css';
+import { setPerson } from "@slices/person.slice";
+import { selectPeopleTab } from "@slices/selectedPeopleTab.slice";
+import Loading from "@PreMadeComponents/Loading";
 import projectIcon from '@resources/book.svg';
 import { addProjectLike, amILikeProject, getMyProjectRating, getProjectLikesCount, getProjectRatingAverage, rateProject } from "../services/project/social";
-import baseURL from "../config/baseURL.config";
+import baseURL from "@config/baseURL.config";
 import Header from "./HomePad/Header";
+import '@styles/ProjectPad.css';
+import CommentsSection from "./CommentsSection";
 
 // كائن تخطيط لأنواع المستخدمين
 const PERSON_TYPE_CONFIG = {
@@ -51,7 +50,7 @@ const PERSON_TYPE_CONFIG = {
     }
 };
 
-// مكونات فرعية
+
 const ProjectHeaderSection = ({ project }) => {
 
     const user = useSelector(state => state.user.value)
@@ -59,9 +58,11 @@ const ProjectHeaderSection = ({ project }) => {
     const [currentLikes, setCurrentLikes] = useState(0);
     const [rating, setRating] = useState(0);
     const [myRating, setMyRating] = useState(0);
+    const [loadingLike, setLoadingLike] = useState(false);
+    const [loadingRating, setLoadingRating] = useState(false);
 
     useEffect(() => {
-        if(user === 'loading' || !user) 
+        if(!user?.accessToken)
         return;
 
         amILikeProject(project.project_id)
@@ -105,6 +106,7 @@ const ProjectHeaderSection = ({ project }) => {
     }, [myLike, myRating]);
 
     const handleLike = useCallback(() => {
+        setLoadingLike(true)
         addProjectLike(project.project_id)
             .then(res => {
                 const result = res.data?.result || false;
@@ -112,11 +114,14 @@ const ProjectHeaderSection = ({ project }) => {
             })
             .catch(err => {
                 console.log(err)
+            })
+            .finally(_ => {
+                setLoadingLike(false);
             });
     }, []);
 
     const handleRatingChange = useCallback((e) => {
-        
+        setLoadingRating(true);
         rateProject({ projectId: project.project_id, rate: e.target.value })
             .then(res => {
                 const result = res.data?.result;
@@ -124,15 +129,16 @@ const ProjectHeaderSection = ({ project }) => {
             })
             .catch(err => {
                 console.log(err)
+            })
+            .finally(_ => {
+                setLoadingRating(false);
             });
     }, []);
-
 
     return (
         <header className="project-header">
             <div className="project-title-area">
                 <div className="project-icon">
-                    {/* <Book48Color style={{ width: '89px', height: '89px' }}/> */}
                     <img src={projectIcon} style={{ width: '80px', height: '80px' }}></img>
                 </div>
                 <div className="project-title-content">
@@ -141,14 +147,14 @@ const ProjectHeaderSection = ({ project }) => {
                         آخر تحديث: {project.updatedAt ? new Date(project.updatedAt).toISOString().slice(0, 10) : '2023-10-25'}
                     </p>
                     <div className="badge-group">
-                        <div className="rating-container">
-                            <Rating 
+                        <div className="rating-container flex-row justify-center" style={{ width: '120px' }}>
+                            {loadingRating && <Spinner size="tiny"/> || <Rating 
                                 value={myRating} 
                                 aria-label="تقييم المشروع"
                                 size="large"
                                 color='marigold'
                                 onChange={handleRatingChange}
-                            />
+                            />}
                         </div>
                     </div>
                 </div>
@@ -164,7 +170,11 @@ const ProjectHeaderSection = ({ project }) => {
                         <Button
                             size="small"
                             appearance="subtle"
-                            icon={myLike ? <Heart24Filled color="red" /> : <Heart24Regular />}
+                            icon={
+                                loadingLike && <Spinner size="tiny"/> || (myLike 
+                                ? <Heart24Filled color="red" /> 
+                                : <Heart24Regular />)
+                            }
                             onClick={handleLike}
                             className="like-button"
                         >
@@ -177,7 +187,7 @@ const ProjectHeaderSection = ({ project }) => {
     );
 };
 
-const ProjectDescriptionSection = ({ project, onCategoryClick }) => {
+const ProjectDescriptionSection = ({ project }) => {
     
     const keywordPills = useMemo(() => {
         if (!project.Keywords?.length) {
@@ -188,22 +198,22 @@ const ProjectDescriptionSection = ({ project, onCategoryClick }) => {
             );
         }
 
-        return project.Keywords.map((keyword, index) => (
-            <Badge
-                key={index}
-                appearance="tint"
-                size="medium"
-                className="keyword-pill"
-            >
+        return project.Keywords.map((keyword) => (
+            <div style={{
+                borderRadius: '5px',
+                background: tokens.colorNeutralBackground3,
+                padding: '0px 8px',
+                border: `1px solid ${tokens.colorNeutralStroke1}`
+            }}>
                 {keyword.keyword}
-            </Badge>
+            </div>
         ));
     }, [project.Keywords]);
 
     return (
         <section className="project-card2 description-card">
             <div className="card-title">
-                <BookOpen24Regular />
+                <List24Regular />
                 <span>وصف المشروع</span>
             </div>
             <div className="project-description">
@@ -245,6 +255,7 @@ const ReferencesSection = ({ project }) => (
 );
 
 const CategoriesSection = ({ project }) => {
+    
     return (
         <section className="project-card2">
             <div className="card-title">
@@ -252,15 +263,17 @@ const CategoriesSection = ({ project }) => {
                 <span>الفئات</span>
             </div>
             <ul className="pill-container">
-                {project?.Categories?.slice(0, 2).map((category, index) => (
-                    <Badge 
-                        key={index} 
-                        appearance="tint"
-                        size="medium"
-                        className="keyword-pill"
-                    >
-                        {category.category_name}
-                    </Badge>
+                {project?.Categories?.map((category) => (
+                    <div style={{
+                        borderRadius: '5px',
+                        background: tokens.colorNeutralBackground3,
+                        padding: '0px 8px',
+                        border: `1px solid ${tokens.colorNeutralStroke1}`
+                    }}>
+                        <Link href={`/categories/${category.category_id}?projectId=${project.project_idx}`}>
+                            {category.category_name}
+                        </Link>
+                    </div>
                 ))}
                 {project?.Categories?.length < 1 && <span className='empty-state'>لم يتم تحديد أي فئة بعد</span>}
             </ul>
@@ -268,22 +281,25 @@ const CategoriesSection = ({ project }) => {
     )
 };
 
-const CommentsSection = () => (
-    <section className="project-card2">
-        <div className="card-title">
-            <Comment24Regular />
-            <span>التعليقات</span>
-        </div>
-        <p className="empty-state">
-           لا توجد تعليقات
-        </p>
-    </section>
-);
+// const CommentsSection = () => {
+
+//     return (
+//         <section className="project-card2">
+//             <div className="card-title">
+//                 <Comment24Regular />
+//                 <span>التعليقات</span>
+//             </div>
+//             <p className="empty-state">
+//             لا توجد تعليقات
+//             </p>
+//         </section>
+//     );
+// }
 
 const FilesSection = ({ book, presentation }) => (
     <section className="project-card2">
         <div className="card-title">
-            <ArrowDown24Regular />
+            <Book24Regular />
             <span>ملفات المشروع</span>
         </div>
         
@@ -394,7 +410,7 @@ const AcademicInfoSection = ({ project }) => {
     return (
         <section className="project-card2" style={{marginBottom:'21px'}}>
             <div className="card-title">
-                <Building24Regular />
+                <Bookmark24Regular />
                 <span>معلومات الأكاديمية</span>
             </div>
             <ul className="info-list">
@@ -428,57 +444,40 @@ export default function ProjectDisplay() {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
     const { projectId } = useParams();
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [rating, setRating] = useState(0);
-    const [likes, setLikes] = useState(0);
+
+    const fetchProject = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            const response = await getProjectById(projectId);
+            
+            if (response?.data?.success && response.data.result) {
+                setProject(response.data.result);
+            } else {
+                setError('تعذر تحميل بيانات المشروع');
+            }
+        } catch (err) {
+            console.error('خطأ في جلب بيانات المشروع:', err);
+            setError('حدث خطأ أثناء تحميل البيانات');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchProject = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                
-                const response = await getProjectById(projectId);
-                
-                if (response?.data?.success && response.data.result) {
-                    setProject(response.data.result);
-                } else {
-                    setError('تعذر تحميل بيانات المشروع');
-                }
-            } catch (err) {
-                console.error('خطأ في جلب بيانات المشروع:', err);
-                setError('حدث خطأ أثناء تحميل البيانات');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchProject();
+
     }, [projectId]);
 
     const handleBackClick = useCallback(() => {
         navigate('/home');
     }, [navigate]);
-
-    const handleLikeClick = useCallback(() => {
-        // منطق الإعجاب
-    }, []);
-
-    const handleRatingChange = useCallback((_, data) => {
-        setRating(data.value);
-    }, []);
-
-    const handleCategoryClick = useCallback((category) => {
-        return () => {
-            dispatch(selectHeaderTab('categories'));
-            dispatch(selectCollage(category.collage_id));
-            dispatch(selectCategory(category.category_id));
-            navigate('/home');
-        };
-    }, [dispatch, navigate]);
 
     const handlePersonClick = useCallback((person, type) => {
         return () => {
@@ -487,10 +486,6 @@ export default function ProjectDisplay() {
             dispatch(setPerson(person[config.idField]));
         };
     }, [dispatch]);
-
-    const handleCommentClick = useCallback(() => {
-        // منطق التعليقات
-    }, []);
 
     if (loading) {
         return (
@@ -508,7 +503,10 @@ export default function ProjectDisplay() {
             <div className="project-error-container">
                 <div className="project-error-content">
                     <h2>{error || 'المشروع غير موجود'}</h2>
-                    <Button appearance="primary" onClick={handleBackClick}>
+                    <Button appearance="primary" onClick={fetchProject}>
+                        تحديث
+                    </Button>
+                    <Button appearance="secondary" onClick={() => navigate('/home')}>
                         العودة إلى الصفحة الرئيسية
                     </Button>
                 </div>
@@ -526,16 +524,12 @@ export default function ProjectDisplay() {
             <div className="project-main-container">
                 <ProjectHeaderSection 
                     project={project}
-                    rating={rating}
-                    likes={likes}
-                    onLikeClick={handleLikeClick}
                 />
 
                 <div className="project-grid-layout">
                     <main className="project-main-content">
                         <ProjectDescriptionSection 
                             project={project}
-                            onCategoryClick={handleCategoryClick}
                         />
                         <CategoriesSection project={project}/>
                         <ReferencesSection project={project}/>
