@@ -173,6 +173,11 @@ function Content({ currentProject }) {
 
       // رفع الملف إلى النظام
       const uploadRes = await uploadFile(file, type, onProgress);
+      
+      if (uploadRes.data?.result?.message === 'File already exists') {
+        return window.alert('الملف موجود بالفعل');
+      }
+
       const uploadedFile = uploadRes.data?.result;
 
       if (uploadedFile) {
@@ -447,7 +452,7 @@ function Content({ currentProject }) {
                     placeholder={`اختر ملفاً...`}
                     value={
                       selectedFile[type] ?
-                        availableFiles[type]?.find(f => f.file_id === selectedFile[type])?.file_name
+                        availableFiles[type]?.find(f => f.file_id === selectedFile[type])?.stored_name
                         : ''
                     }
                     selectedOptions={selectedFile[type] ? [selectedFile[type]] : []}

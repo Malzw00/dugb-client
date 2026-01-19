@@ -15,35 +15,38 @@
 .home-pad .sidebar {
     width: 260px;
     border-left: 1px solid var(--colorNeutralStroke2);
-    padding: 13px;
+    padding: 13px 8px;
     display: flex;
     flex-direction: column;
     gap: 13px;
     min-height: 0;
     background-color: var(--colorNeutralBackground2);
 }
-
 .sidebar-placeholder {
     color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
 }
-
 .sidebar-header {
     display: flex;
     flex-direction: column;
     gap: 13px;
+    padding: 8px 13px;
 }
-
 .sidebar-tablist {
     min-height: 0;
     flex: 1;
     overflow: auto;
+    animation: ease SideBarAnimation 300ms;
 }
-.sidebar-tablist > .collage-tab:hover {
-    background-color: rgba(0, 0, 0, 0.03) !important;
+.sidebar-tablist > *:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
+@keyframes SideBarAnimation {
+    0% { translate: 50% 0; }
+    100% { translate: 0 0; }
+}
 
 .user-menu-btn {
     display: flex !important; 
@@ -58,7 +61,7 @@
 }
 .user-menu-name { 
     margin-top: 0.5rem !important; 
-    font-weight: bold !important;
+    font-weight: normal !important;
 }
 
 .filter-bar .user-menu-btn {
@@ -239,4 +242,23 @@
     border-radius: 21px;
     background-color: var(--colorNeutralBackground3);
     border: 1px solid var(--colorNeutralStroke2);
+}
+
+.edit-profile-body {
+    animation: EditProfileBodyAnimation 500ms ease;
+}
+
+.profile-body {
+    animation: EditProfileBodyAnimation 300ms ease;
+}
+
+@keyframes EditProfileBodyAnimation {
+    0% { translate: 50px 0; opacity: 0; }
+    100% { translate: 0 0; opacity: 1; }
+}
+
+
+@keyframes ProfileBodyAnimation {
+    0% { translate: 50px 0; opacity: 0; }
+    100% { translate: 0; opacity: 1; }
 }

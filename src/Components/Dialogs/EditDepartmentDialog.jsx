@@ -98,12 +98,10 @@ export default function EditDepartmentDialog({ currentDepartment, collages, sele
             if (res.data?.success) {
                 alert(`تم تعديل القسم "${originalDepartmentName}" إلى "${departmentName.trim()}"`);
                 dispatch(clearControlDialog()); // إغلاق النافذة بعد النجاح
-            } else {
-                setError(res.data?.message || 'فشل تعديل القسم. يرجى المحاولة مرة أخرى');
             }
         } catch (err) {
             console.error('Error updating department:', err);
-            setError(err.response?.data?.message || 'فشل تعديل القسم. يرجى المحاولة مرة أخرى');
+            setError(err.response.data?.message || 'فشل تعديل القسم. يرجى المحاولة مرة أخرى');
         } finally {
             setIsLoading(false);
         }
@@ -284,7 +282,7 @@ function DialogBody({
                 </Dropdown>
                 {isCollageChanged && (
                     <div className="paddingY-5px">
-                        ⚠️ لاحظ: سيتم تغيير الكلية الخاصة بهذا القسم
+                        سيتم تغيير الكلية الخاصة بهذا القسم
                     </div>
                 )}
             </div>
@@ -314,7 +312,7 @@ function DialogBody({
             </div>
             
             {error && (
-                <div className="mt-2 text-center text-red-500 whitespace-pre-line">
+                <div className="error-text text-center">
                     {error}
                 </div>
             )}

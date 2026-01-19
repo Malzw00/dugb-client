@@ -13,8 +13,6 @@ import { selectControlPanel } from '@slices/selectedControlPanel.slice';
 export default function SideBar(props) {
 
     const dispatch = useDispatch();
-    
-    const navigate = useNavigate();
 
     const selectedControlPanel = useSelector(state => state.selectedControlPanel.value)
 

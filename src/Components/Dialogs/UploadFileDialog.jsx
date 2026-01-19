@@ -201,7 +201,6 @@ export function UploadFileDialogBody({ onFileExists, selectedCategory, setSelect
             isValid = false;
         }
 
-        // التحقق من نوع الملف - مطابق للباك إند
         if (selectedFile) {
             if (!allowedMimeTypes.includes(selectedFile.type)) {
                 setFileError(`نوع الملف غير مسموح به. الأنواع المسموحة:\n${getAllowedFileTypesText()}`);
@@ -209,7 +208,6 @@ export function UploadFileDialogBody({ onFileExists, selectedCategory, setSelect
             }
         }
 
-        // التحقق من التصنيف (مطلوب)
         if (!selectedCategory) {
             setCategoryError('يجب اختيار تصنيف للملف');
             isValid = false;
@@ -226,7 +224,7 @@ export function UploadFileDialogBody({ onFileExists, selectedCategory, setSelect
     const handleFileChange = useCallback((event) => {
         const file = event.target.files[0];
         if (file) {
-            // التحقق المبدئي من نوع الملف
+            // التحقق من نوع الملف
             if (!allowedMimeTypes.includes(file.type)) {
                 setFileError(`نوع الملف غير مسموح به. الأنواع المسموحة:\n${getAllowedFileTypesText()}`);
                 return;
@@ -240,7 +238,7 @@ export function UploadFileDialogBody({ onFileExists, selectedCategory, setSelect
             if (detectedCategory) {
                 setAutoDetectedCategory(detectedCategory);
                 setSelectedCategory(detectedCategory);
-                setCategoryError(''); // مسح خطأ التصنيف عند التحديد التلقائي
+                setCategoryError('');
             } else {
                 setAutoDetectedCategory(null);
                 setCategoryError('لم يتم التعرف على التصنيف تلقائياً، يرجى اختيار تصنيف');
@@ -257,22 +255,19 @@ export function UploadFileDialogBody({ onFileExists, selectedCategory, setSelect
         setIsUploading(true);
         setUploadProgress(0);
         
-        // دالة لمعالجة تقدم الرفع
         const handleProgress = (percent) => {
             setUploadProgress(percent);
         };
         
-        try {            
-            // استدعاء دالة uploadFile من service
+        try {
             const response = await uploadFile(
-                selectedFile,          // File object
-                selectedCategory,      // Category (مطلوب)
-                handleProgress         // Progress callback
+                selectedFile,
+                selectedCategory,
+                handleProgress
             );
             
-            console.log('Upload response:', response);
-            
             if (response.data?.success) {
+                
                 if (response.data.result?.message === 'File already exists') {
                     const existingFile = response.data.result?.file;
                     
@@ -287,14 +282,11 @@ export function UploadFileDialogBody({ onFileExists, selectedCategory, setSelect
                     if (userChoice && onFileExists) {
                         onFileExists(existingFile);
                     }
-                    
-                    // لا نعيد تعيين النموذج هنا، نتركه للمستخدم ليختار
-                    // يمكن للمستخدم تغيير الملف أو التصنيف أو الإغلاق
+
                     setFileError('الملف موجود بالفعل في النظام');
                     return;
                 }
                 
-                // النجاح في الرفع
                 alert(` تم رفع الملف "${selectedFile.name}" بنجاح`);
                 resetForm();
                 

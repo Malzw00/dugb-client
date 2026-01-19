@@ -3,6 +3,7 @@ import axios from "axios";
 import baseURL from "@config/baseURL.config";
 import { store } from '@store/store';
 import { setAccessToken, clearUser } from '@store/slices/user.slice';
+import { loadCurrentUser } from "../store/thunks/auth.thunk";
 
 // Create axios instance
 const api = axios.create({
@@ -57,18 +58,21 @@ api.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                // اطلب access token جديد باستخدام refresh token (cookie)
-                const res = await api.post('/auth/me');
+                // // اطلب access token جديد باستخدام refresh token (cookie)
+                // const res = await api.post('/auth/me');
 
-                const newAccessToken = res.data.result.accessToken;
+                // const newAccessToken = res.data.result.accessToken;
 
-                // خزّنه في redux
-                store.dispatch(setAccessToken(newAccessToken));
+                // // خزّنه في redux
+                // store.dispatch(setAccessToken(newAccessToken));
 
-                // أعد تعيين الهيدر وأعد الطلب
-                originalRequest.headers.Authorization =
-                    `Bearer ${newAccessToken}`;
+                // // أعد تعيين الهيدر وأعد الطلب
+                // originalRequest.headers.Authorization =
+                //     `Bearer ${newAccessToken}`;
 
+                // return api(originalRequest);
+                
+                loadCurrentUser();
                 return api(originalRequest);
 
             } catch (refreshError) {

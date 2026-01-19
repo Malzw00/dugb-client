@@ -35,9 +35,18 @@ export default function CompleteAccountCreationForm() {
         });
     }, [])
 
-    const handleLoginBtn = () => {
-        navigate('/login');
-    };
+    const RenderSuccess = () => {
+        return <div className="flex-col gap-8px items-stretch">
+            <div className="success-text flex-row justify-center paddingB-34px">
+                <div>
+                    <h3>{signupData.fname} {signupData.lname}</h3>
+                    <br/>
+                    <p>تم إنشاء حسابك على المنصة بنجاح</p>
+                    <p>حسابك جاهز</p>
+                </div>
+            </div>
+        </div>
+    }
 
     const RenderError = () => {
         return <div className="flex-col gap-8px items-stretch">
@@ -55,19 +64,11 @@ export default function CompleteAccountCreationForm() {
             
             {
                 success
-                ? <>
-                    <h3>{signupData.fname} {signupData.lname}</h3>
-                    <p>تم إنشاء حسابك على المنصة بنجاح</p>
-                    <p>حسابك جاهز</p>
-                </>
+                ? <RenderSuccess/>
                 : (!isLoading) && <RenderError/>
             }
 
             {isLoading && <Spinner className='spinner'/>}
-
-            {<Button appearance={error && 'secondary' || "primary"} onClick={handleLoginBtn}>
-                تسجيل الدخول
-            </Button>}
         </div>
     );
 }

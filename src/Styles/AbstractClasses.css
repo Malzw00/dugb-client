@@ -459,5 +459,22 @@
 
 
 .error-text {
-    color: red;
+    /* marginTop: 10px;  */
+    padding: 10px; 
+    background-color: #FFEBEE; 
+    color: #C62828;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: start !important;
+}
+.success-text {
+    /* marginTop: 10px;  */
+    padding: 10px; 
+    background-color: #d7ffd3; 
+    color: green;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: start !important;
 }

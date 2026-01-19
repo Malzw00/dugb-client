@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value: localStorage['selectedCategory']?? 0
+    value: parseInt(localStorage['selectedCategory'])?? 0
 }
 
 const selectedCategorySlice = createSlice({

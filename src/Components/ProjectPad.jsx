@@ -17,7 +17,11 @@ import {
     Star24Filled,
     List24Regular,
     Book24Regular,
-    Bookmark24Regular
+    Bookmark24Regular,
+    ArrowDownload16Regular,
+    ArrowDownload20Regular,
+    Book20Regular,
+    Calendar20Regular
 } from "@fluentui/react-icons";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -142,7 +146,7 @@ const ProjectHeaderSection = ({ project }) => {
                     <img src={projectIcon} style={{ width: '80px', height: '80px' }}></img>
                 </div>
                 <div className="project-title-content">
-                    <h1>{project.project_title || 'عنوان المشروع'}</h1>
+                    <h1 style={{ userSelect: 'text' }}>{project.project_title || 'عنوان المشروع'}</h1>
                     <p className="project-update-date">
                         آخر تحديث: {project.updatedAt ? new Date(project.updatedAt).toISOString().slice(0, 10) : '2023-10-25'}
                     </p>
@@ -216,7 +220,7 @@ const ProjectDescriptionSection = ({ project }) => {
                 <List24Regular />
                 <span>وصف المشروع</span>
             </div>
-            <div className="project-description">
+            <div className="project-description" style={{ userSelect: 'text' }}>
                 {project.project_description || <span className='empty-state'>'لا يوجد وصف للمشروع.'</span>}
             </div>
             <div className="keywords-section">
@@ -313,8 +317,15 @@ const FilesSection = ({ book, presentation }) => (
                     rel="noopener noreferrer"
                     style={{ textDecoration: "none" }}
                 >
-                    <Button appearance="primary" size="medium" className="action-btn">
+                    <Button 
+                        style={{ justifyContent: 'space-between' }}
+                        appearance="primary" 
+                        size="medium" 
+                        className="action-btn">
+
+                        <Book20Regular/>
                         كتاب المشروع
+                        <Book20Regular color="transparent"/>
                     </Button>
                 </a>
             ) : (
@@ -330,11 +341,14 @@ const FilesSection = ({ book, presentation }) => (
                     style={{ textDecoration: "none" }}
                 >
                     <Button
-                        appearance="secondary"
+                        style={{ justifyContent: 'space-between' }}
+                        appearance="primary"
                         size="medium"
-                        className="action-btn"
-                    >
-                        عرض تقديمي
+                        className="action-btn">
+                        
+                        <Calendar20Regular/>
+                        العرض التقديمي
+                        <Calendar20Regular color="transparent"/>
                     </Button>
                 </a>
             ) : (
@@ -440,7 +454,7 @@ const AcademicInfoSection = ({ project }) => {
 };
 
 // المكون الرئيسي
-export default function ProjectDisplay() {
+export default function ProjectPad() {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -494,6 +508,7 @@ export default function ProjectDisplay() {
                 vertical 
                 full={true} 
                 size="extra-large"
+                style={{ background: tokens.colorNeutralBackground3 }}
             />
         );
     }

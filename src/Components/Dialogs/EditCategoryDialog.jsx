@@ -97,12 +97,11 @@ export default function EditCategoryDialog({ currentCategory, collages, selected
             if (res.data?.success) {
                 alert(`تم تعديل الفئة "${originalCategoryName}" إلى "${categoryName.trim()}"`);
                 dispatch(clearControlDialog()); // إغلاق النافذة بعد النجاح
-            } else {
-                setError(res.data?.message || 'فشل تعديل الفئة. يرجى المحاولة مرة أخرى');
             }
         } catch (err) {
-            console.error('Error updating category:', err);
+            
             setError(err.response?.data?.message || 'فشل تعديل الفئة. يرجى المحاولة مرة أخرى');
+            
         } finally {
             setIsLoading(false);
         }
@@ -283,7 +282,7 @@ function DialogBody({
                 </Dropdown>
                 {isCollageChanged && (
                     <div className="mt-2 text-sm text-orange-600">
-                        ⚠️ لاحظ: سيتم تغيير الكلية الخاصة بهذه الفئة
+                        سيتم تغيير الكلية الخاصة بهذه الفئة
                     </div>
                 )}
             </div>
@@ -313,7 +312,7 @@ function DialogBody({
             </div>
             
             {error && (
-                <div className="mt-2 text-center text-red-500 whitespace-pre-line">
+                <div className="error-text text-center">
                     {error}
                 </div>
             )}

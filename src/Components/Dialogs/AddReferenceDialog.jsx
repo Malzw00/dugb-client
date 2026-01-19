@@ -64,12 +64,10 @@ export default function AddReferenceDialog() {
                 setAuthor('');
                 setError('');
                 dispatch(clearControlDialog()); // إغلاق الديالوج بعد النجاح
-            } else {
-                setError('فشل إضافة المرجع. يرجى المحاولة مرة أخرى');
             }
         } catch (err) {
             console.error('Error creating reference:', err);
-            setError('فشل إضافة المرجع. يرجى المحاولة مرة أخرى');
+            setError(err.response.data?.message || 'فشل إضافة المرجع. يرجى المحاولة مرة أخرى');
         } finally {
             setIsLoading(false);
         }

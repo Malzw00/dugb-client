@@ -31,7 +31,7 @@ export function Row({ index, name, actions=[], extraCells=[], active=true, onCli
                     {index}
                 </div>
 
-                <div className="name">
+                <div className="name" style={{ userSelect: 'text' }}>
                     <span>{name}</span>
                 </div>
                 

@@ -7,6 +7,8 @@ import logo from '@resources/logo.png';
 import '@styles/AuthPad.css';
 import PlatformHeader from '@PreMadeComponents/PlatformHeader';
 import { useNavigate } from 'react-router-dom';
+import { PersonAdd24Regular, PersonCircle20Regular } from '@fluentui/react-icons';
+import { Button } from '@fluentui/react-components';
 
 // إنشاء سياق بيانات التسجيل
 export const SignupContext = createContext({
@@ -70,6 +72,7 @@ export default function SignUpForm() {
                     <FormHead
                         caption="منصة توثيق مشاريع التخرج الجامعية"
                         title={lowerForm !== 'cacf' ? 'إنشاء حساب جديد' : ''}
+                        icon={<PersonAdd24Regular/>}
                         logo={logo}
                     />
 
@@ -77,6 +80,11 @@ export default function SignUpForm() {
                         <CurrentSignupFormContext.Provider value={{ currentForm, setCurrentForm }}>
                             {renderForm()}
                         </CurrentSignupFormContext.Provider>
+                        <Button 
+                            icon={<PersonCircle20Regular/>}
+                            onClick={() => navigate('/login')}>
+                            تسجيل الدخول
+                        </Button>
                     </div>
                 </div>
             </div>

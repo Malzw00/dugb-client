@@ -123,12 +123,12 @@ export default function AddProjectDialog({ selectedCollage, departments }) {
                     departmentId: departments?.[0]?.department_id || null
                 });
                 setError('');
-            } else {
-                setError(res.data?.message || 'فشل إنشاء المشروع. يرجى المحاولة مرة أخرى');
             }
+
         } catch (err) {
-            console.error('Error creating project:', err);
-            setError('فشل إنشاء المشروع. يرجى المحاولة مرة أخرى');
+            console.error(err);
+            setError(err.response?.data?.message || 'فشل إنشاء المشروع. يرجى المحاولة مرة أخرى');
+
         } finally {
             setIsLoading(false);
         }
@@ -259,7 +259,7 @@ function DialogBody({ formData, error, isLoading, departments, semesterOptions, 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', ...academicBoxStyle }}>
                     <label style={{ fontSize: '14px', fontWeight: '500' }}>القسم *</label>
                     <Dropdown
-                        style={{ width: '50%' }}
+                        style={{ width: '100%' }}
                         value={departments?.find(d => d.department_id === formData.departmentId)?.department_name || "اختر القسم"}
                         selectedOptions={formData.departmentId ? [formData.departmentId.toString()] : []}
                         onOptionSelect={(_, data) => {

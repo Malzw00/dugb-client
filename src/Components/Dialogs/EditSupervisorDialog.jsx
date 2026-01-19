@@ -190,7 +190,7 @@ export default function EditSupervisorDialog({ currentSupervisor, onSupervisorUp
         }
 
         // التحقق من صحة الأسماء (حروف عربية/إنجليزية فقط)
-        const nameRegex = /^[A-Za-z\u0600-\u06FF]+$/;
+        const nameRegex = /^[A-Za-z\u0600-\u06FF ]+$/;
         if (!nameRegex.test(supervisor_name.trim())) {
             setError("اسم المشرف يجب أن يحتوي على حروف فقط");
             return false;

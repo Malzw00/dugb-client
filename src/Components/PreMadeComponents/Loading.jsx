@@ -1,6 +1,6 @@
 import { Spinner } from "@fluentui/react-components";
 
-export default function Loading({ full, paddingless, size, text, vertical }) {
+export default function Loading({ full, paddingless, size, text, vertical, style }) {
 
     return (
         <div style={{
@@ -8,7 +8,8 @@ export default function Loading({ full, paddingless, size, text, vertical }) {
             width: full && '100%' || 'auto',
             display: 'grid',
             placeItems: 'center',
-            padding: paddingless && '0' || '13px'
+            padding: paddingless && '0' || '13px',
+            ...style
         }}>
             <div style={{
                 display: 'flex',

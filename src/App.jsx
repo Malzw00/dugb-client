@@ -4,7 +4,7 @@ import {
     Route,
     useNavigate,
 } from 'react-router-dom';
-import { FluentProvider, Spinner, tokens, webLightTheme } from '@fluentui/react-components';
+import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { createContext, useEffect } from 'react';
 import HomePad from '@components/HomePad/HomePad';
 import IntroRedirector from '@components/IntroRedirector';

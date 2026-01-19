@@ -33,7 +33,7 @@
     box-shadow: var(--shadow4);
     background-color: var(--colorNeutralBackground1);
     border-radius: 13px;
-    padding: 34px;
+    padding: 24px 44px;
 }
 
 .form-head {

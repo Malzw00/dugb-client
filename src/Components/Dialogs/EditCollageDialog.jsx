@@ -71,13 +71,10 @@ export default function EditCollageDialog({ currentCollage }) {
                 alert(`تم تعديل اسم الكلية إلى "${res.data?.result?.collage_name || collageName}"`);
                 setError('');
                 dispatch(clearControlDialog());
-            } else {
-                const serverError = res.data?.success || 'لم يتم تحديث اسم الكلية، تأكد من أن الإسم غير موجود مسبقا';
-                setError(serverError);
             }
         } catch (err) {
-            console.error('Error updating collage:', err);
-            setError('لم يتم تحديث اسم الكلية، تأكد من أن الإسم غير موجود مسبقا');
+            
+            setError(err.response.data?.message || 'حصل خطأ عند تحديث اسم الكلية');
             
         } finally {
             setIsLoading(false);
@@ -193,7 +190,7 @@ function DialogBody({ collageName, error, isLoading, onInputChange, onKeyUp, ori
             />
             
             {error && (
-                <div className="text-sm text-red-500 whitespace-pre-line">
+                <div className="text-center error-text">
                     {error}
                 </div>
             )}

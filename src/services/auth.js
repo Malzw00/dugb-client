@@ -96,6 +96,21 @@ export function resetPassword(data) {
 }
 
 /* ============================================================
+ * CHANGE PASSWORD
+ * ============================================================ */
+
+/**
+ * @function changePassword
+ * @param {Object} data
+ * @param {string} data.currentPassword
+ * @param {string} data.newPassword
+ * @returns {Promise<AxiosResponse>}
+ */
+export function changePassword(data) {
+    return api.post("/auth/change-password", data);
+}
+
+/* ============================================================
  * REFRESH ACCESS TOKEN
  * ============================================================ */
 

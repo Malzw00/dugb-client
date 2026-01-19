@@ -26,11 +26,12 @@ export default function CategoriesHomePad () {
         
         getCategories({ collageId: selectedCollage })
             .then(res => {
-                const categories = res?.data?.result?? []
-                dispatch(setCategories(categories))
+                const categories = res?.data?.result?? [];
 
-                if(!selectedCategory)
-                dispatch(selectCategory(categories[0]?.collage_id?? 0));
+                dispatch(setCategories(categories));
+
+                const category = categories.find(c => selectedCategory === c.category_id);
+                dispatch(selectCategory(category?.category_id?? categories[0]?.category_id));
             })
             .catch(err => {
                 console.log(err);
@@ -43,10 +44,11 @@ export default function CategoriesHomePad () {
         sideBar={{ 
             title: 'الفئات', 
             tabs: (
-                categories.length < 1 && <div className="sidebar-placeholder">
+                (categories.length < 1) 
+                ? <div className="sidebar-placeholder">
                     لا يوجد فئات في الكلية المحددة
                 </div> 
-                || categories.map((categories, index) => {
+                : categories.map((categories, index) => {
                     return <Tab key={index} value={categories.category_id}>
                         {categories.category_name}
                     </Tab>;
@@ -62,7 +64,7 @@ export default function CategoriesHomePad () {
 
 
 
-function CollagesDropdown ({}) {
+function CollagesDropdown () {
 
     const dispatch = useDispatch();
     const collages = useSelector(state => state.collages.value || []);

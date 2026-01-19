@@ -69,12 +69,10 @@ export default function AddCategoryDialog({ selectedCollage }) {
                 dispatch(setCategories([...categories, newCategory]));
                 setCategoryName('');
                 setError('');
-            } else {
-                setError('فشل إنشاء الفئة. قد يكون الاسم مكرر، يرجى المحاولة مرة أخرى');
-            }
+            } 
         } catch (err) {
             console.error('Error creating category:', err);
-            setError('فشل إنشاء الفئة. قد يكون الاسم مكرر، يرجى المحاولة مرة أخرى');
+            setError(err.response?.data.message || 'فشل إنشاء الفئة. يرجى المحاولة مرة أخرى');
         } finally {
             setIsLoading(false);
         }
@@ -183,7 +181,7 @@ function DialogBody({ categoryName, error, isLoading, onInputChange, onKeyUp, co
                 disabled={isLoading}
             />
             {error && (
-                <div className="mt-2 text-center text-red-500 whitespace-pre-line">
+                <div className="text-center error-text">
                     {error}
                 </div>
             )}

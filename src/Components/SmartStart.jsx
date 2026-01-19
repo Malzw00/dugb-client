@@ -1,19 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-/**
- * تحويل ذكي عند أول فتح للتطبيق:
- * - إذا أول مرة → إلى /intro
- * - غير ذلك → إلى /home
- */
 function SmartStart() {
     
     const navigate = useNavigate();
 
     useEffect(() => {
-        const firstTime = sessionStorage['FstLoad'] === 'true';
+        const firstTime = sessionStorage['FstLoad'];
 
-        if (!firstTime || firstTime === 'false')
+        if (!firstTime)
         navigate('/intro', { replace: true });
     
         else 

@@ -50,9 +50,9 @@ export default function ProjectCard({
                         <p>{project_title}</p>
                         <p style={{color: 'gray'}}>{project_placeholder}</p>
                     </>}
-                    <span className='project-date' style={{ fontSize: '12px' }}>
+                    {(project_date && project_semester) && <span className='project-date' style={{ fontSize: '12px' }}>
                         {project_semester === 'Spring'? 'ربيع': 'خريف'} {new Date(project_date).getFullYear()}
-                    </span>
+                    </span>}
                 </div>
                 
                 <p>{project_description}</p>               

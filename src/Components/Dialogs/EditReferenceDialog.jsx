@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Dialog from "./AbstractDialog";
 import { clearControlDialog } from "@root/src/store/slices/controlDialog.slice";
-import { Button, Input } from "@fluentui/react-components";
+import { Button, Input, tokens } from "@fluentui/react-components";
 import { updateReference } from "@root/src/services/reference";
 import Loading from "@PreMadeComponents/Loading";
 
@@ -14,6 +14,8 @@ export default function EditReferenceDialog({ currentReference }) {
     const [link, setLink] = useState('');
     const [author, setAuthor] = useState('');
     const [originalTitle, setOriginalTitle] = useState('');
+    const [originalLink, setOriginalLink] = useState('');
+    const [originalAuthor, setOriginalAuthor] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -24,6 +26,8 @@ export default function EditReferenceDialog({ currentReference }) {
             setLink(currentReference.reference_link || '');
             setAuthor(currentReference.reference_author || '');
             setOriginalTitle(currentReference.reference_title || '');
+            setOriginalLink(currentReference.reference_link || '');
+            setOriginalAuthor(currentReference.reference_author || '');
         }
     }, [currentReference]);
 
@@ -35,22 +39,14 @@ export default function EditReferenceDialog({ currentReference }) {
             return false;
         }
 
-        // التحقق إذا لم يتغير شيء
-        const isTitleSame = trimmedTitle === originalTitle;
-        const isLinkSame = link === (currentReference?.link || '');
-        const isAuthorSame = author === (currentReference?.author || '');
-        
-        if (isTitleSame && isLinkSame && isAuthorSame) {
-            setError("لم تقم بإجراء أي تغييرات");
-            return false;
-        }
-
-        // التحقق من صحة الرابط (إذا تم إدخاله)
+        // التحقق من صحة الرابط (إذا تم إدخاله وكان غير فارغ)
         const trimmedLink = link.trim();
         if (trimmedLink.length > 0) {
-            const linkRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-            if (!linkRegex.test(trimmedLink)) {
-                setError("الرجاء إدخال رابط صحيح");
+            try {
+                // استخدام URL للتحقق من صحة الرابط
+                new URL(trimmedLink.includes('://') ? trimmedLink : `https://${trimmedLink}`);
+            } catch (err) {
+                setError("الرجاء إدخال رابط صحيح (مثال: https://example.com)");
                 return false;
             }
         }
@@ -63,11 +59,31 @@ export default function EditReferenceDialog({ currentReference }) {
 
         setError('');
         return true;
-    }, [title, link, author, originalTitle, currentReference]);
+    }, [title, link]);
+
+    // التحقق إذا تم تغيير أي حقل
+    const hasChanges = useCallback(() => {
+        const trimmedTitle = title.trim();
+        const trimmedLink = link.trim();
+        const trimmedAuthor = author.trim();
+        
+        // مقارنة القيم بعد التقطيع مع القيم الأصلية
+        return (
+            trimmedTitle !== originalTitle.trim() ||
+            trimmedLink !== originalLink.trim() ||
+            trimmedAuthor !== originalAuthor.trim()
+        );
+    }, [title, link, author, originalTitle, originalLink, originalAuthor]);
 
     const handleUpdate = useCallback(async () => {
         if (!currentReference || !currentReference.reference_id) {
             setError("لم يتم تحديد مرجع للتعديل");
+            return;
+        }
+
+        // التحقق أولاً إذا كان هناك تغييرات
+        if (!hasChanges()) {
+            setError("لم تقم بإجراء أي تغييرات");
             return;
         }
 
@@ -79,14 +95,19 @@ export default function EditReferenceDialog({ currentReference }) {
         try {
             const referenceData = {
                 title: title.trim(),
-                ...(link.trim() && { link: link.trim() }),
-                ...(author.trim() && { author: author.trim() }),
+                link: link.trim() || null, // إرسال null إذا كان فارغاً
+                author: author.trim() || null, // إرسال null إذا كان فارغاً
             };
 
             const res = await updateReference(currentReference.reference_id, referenceData);
             
             if (res.data?.success) {
-                alert(`تم تعديل المرجع "${originalTitle}" إلى "${title.trim()}"`);
+                const newTitle = title.trim();
+                const successMessage = originalTitle.trim() === newTitle 
+                    ? `تم تعديل المرجع "${originalTitle}"`
+                    : `تم تعديل المرجع "${originalTitle}" إلى "${newTitle}"`;
+                
+                alert(successMessage);
                 setError('');
                 dispatch(clearControlDialog()); // إغلاق الديالوج بعد النجاح
             } else {
@@ -94,11 +115,12 @@ export default function EditReferenceDialog({ currentReference }) {
             }
         } catch (err) {
             console.error('Error updating reference:', err);
-            setError('فشل تعديل المرجع. يرجى المحاولة مرة أخرى');
+            const errorMessage = err.response?.data?.message || 'فشل تعديل المرجع. يرجى المحاولة مرة أخرى';
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
-    }, [title, link, author, currentReference, validateReference, dispatch, originalTitle]);
+    }, [title, link, author, currentReference, validateReference, hasChanges, dispatch, originalTitle]);
 
     const handleClose = useCallback(() => {
         if (!isLoading) {
@@ -153,9 +175,7 @@ export default function EditReferenceDialog({ currentReference }) {
         );
     }
 
-    const isChanged = title.trim() !== originalTitle || 
-                     link !== (currentReference?.reference_link || '') || 
-                     author !== (currentReference?.reference_author || '');
+    const isChanged = hasChanges();
 
     return (
         <Dialog
@@ -169,6 +189,9 @@ export default function EditReferenceDialog({ currentReference }) {
                     error={error}
                     isLoading={isLoading}
                     originalTitle={originalTitle}
+                    originalLink={originalLink}
+                    originalAuthor={originalAuthor}
+                    hasChanges={isChanged}
                     onTitleChange={handleTitleChange}
                     onLinkChange={handleLinkChange}
                     onAuthorChange={handleAuthorChange}
@@ -206,6 +229,9 @@ function DialogBody({
     error, 
     isLoading, 
     originalTitle,
+    originalLink,
+    originalAuthor,
+    hasChanges,
     onTitleChange, 
     onLinkChange, 
     onAuthorChange, 
@@ -215,22 +241,29 @@ function DialogBody({
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '13px' }}>
             <div style={{ textAlign: 'center', marginBottom: '10px' }}>تعديل معلومات المرجع</div>
             
-            {/* عرض العنوان الأصلي */}
-            {originalTitle && (
-                <div style={{ 
-                    padding: '8px 13px', 
-                    border: '1px solid #ccc', 
-                    borderRadius: '5px', 
-                    backgroundColor: '#f3f2f1',
-                    marginBottom: '10px'
-                }}>
-                    المرجع الأصلي: <span style={{ fontWeight: 'bold' }}>{originalTitle}</span>
-                </div>
-            )}
+            {/* عرض القيم الأصلية */}
+            <div style={{ 
+                padding: '8px 13px', 
+                border: `1px solid ${tokens.colorNeutralStroke1}`, 
+                borderRadius: '5px', 
+                backgroundColor: tokens.colorNeutralBackground2,
+                marginBottom: '10px'
+            }}>
+                <div style={{ marginBottom: '5px', fontWeight: 'bold', fontSize: '14px' }}>القيم الأصلية:</div>
+                <div>العنوان: <span style={{ fontWeight: '500' }}>{originalTitle}</span></div>
+                <div>الرابط: <span style={{ fontWeight: '500', color: originalLink ? '#0078d4' : '#666' }}>
+                    {originalLink || '(غير محدد)'}
+                </span></div>
+                <div>المؤلف: <span style={{ fontWeight: '500', color: originalAuthor ? '#0078d4' : '#666' }}>
+                    {originalAuthor || '(غير محدد)'}
+                </span></div>
+            </div>
             
             {/* حقل العنوان */}
             <div style={{ width: '100%' }}>
-                <div style={{ marginBottom: '5px', fontSize: '14px' }}>عنوان المرجع الجديد:</div>
+                <div style={{ marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>
+                    عنوان المرجع الجديد <span style={{ color: 'red' }}>*</span>:
+                </div>
                 <Input
                     style={{ width: '100%' }}
                     placeholder="أدخل عنوان المرجع"
@@ -243,37 +276,38 @@ function DialogBody({
 
             {/* حقل الرابط */}
             <div style={{ width: '100%' }}>
-                <div style={{ marginBottom: '5px', fontSize: '14px' }}>رابط المرجع:</div>
+                <div style={{ marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>رابط المرجع:</div>
                 <Input
                     style={{ width: '100%' }}
-                    placeholder="http://example.com"
+                    placeholder="https://example.com (اختياري)"
                     value={link}
                     onChange={onLinkChange}
                     onKeyUp={onKeyUp}
                     disabled={isLoading}
                 />
+                <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                    {link.trim() === originalLink.trim() && '(سيتم حذف الرابط إذا تركته فارغاً)'}
+                </div>
             </div>
 
             {/* حقل المؤلف */}
             <div style={{ width: '100%' }}>
-                <div style={{ marginBottom: '5px', fontSize: '14px' }}>المؤلف:</div>
+                <div style={{ marginBottom: '5px', fontSize: '14px', fontWeight: '500' }}>المؤلف:</div>
                 <Input
                     style={{ width: '100%' }}
-                    placeholder="اسم المؤلف"
+                    placeholder="اسم المؤلف (اختياري)"
                     value={author}
                     onChange={onAuthorChange}
                     onKeyUp={onKeyUp}
                     disabled={isLoading}
                 />
+                <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                    {author.trim() === originalAuthor.trim() && '(سيتم حذف المؤلف إذا تركته فارغاً)'}
+                </div>
             </div>
             
             {error && (
-                <div style={{ 
-                    marginTop: '10px', 
-                    textAlign: 'center', 
-                    color: 'red',
-                    whiteSpace: 'pre-line'
-                }}>
+                <div className="error-text">
                     {error}
                 </div>
             )}
@@ -285,6 +319,7 @@ function DialogBody({
                     gap: '8px',
                     marginTop: '10px'
                 }}>
+                    <Loading size="tiny" />
                     <span>جاري تعديل المرجع...</span>
                 </div>
             )}

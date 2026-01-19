@@ -9,7 +9,9 @@ export default function Dialog({ style, className, title, onCloseBtnClick, body,
             <div className={`dialog ${className || ''}`} style={style?? {}}>
             
                 <div className="header">
-                    <div className="title">{title}</div>
+                    <div className="title" style={{ userSelect: 'text' }}>
+                        {title}
+                    </div>
                     <Button appearance="primary" className="close-btn" onClick={onCloseBtnClick}>
                         <Dismiss16Regular/>
                     </Button>

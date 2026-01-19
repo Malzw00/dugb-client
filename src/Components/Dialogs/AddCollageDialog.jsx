@@ -48,7 +48,7 @@ export default function AddCollageDialog() {
             setError('');
         } catch (err) {
             console.error('Error creating collage:', err);
-            setError('فشل إنشاء كلية. يرجى المحاولة مرة أخرى');
+            setError(err.response.data?.message || 'فشل إنشاء كلية. يرجى المحاولة مرة أخرى');
         } finally {
             setIsLoading(false);
         }
@@ -125,7 +125,7 @@ function DialogBody({ collageName, error, isLoading, onInputChange, onKeyUp }) {
                 disabled={isLoading}
             />
             {error && (
-                <div >
+                <div className="error-text text-center">
                     {error}
                 </div>
             )}

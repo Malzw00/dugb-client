@@ -1,20 +1,16 @@
 import { Routes, Route, useLocation, useParams, useNavigate } from 'react-router-dom';
 import '@styles/HomePad.css';
-import ProjectPad from '@components/ProjectPad';
-import ProfilePad from '@components/ProfilePad';
 import DocumentationPad from '@components/DocumentationPad/DocumentationPad';
 import ControlPad from '@components/ControlPad/ControlPad';
 import Header from './Header';
 import ProjectsHomePad from '@components/HomePad/ProjectsHomePad/ProjectsHomePad';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import CategoriesHomePad from '@components/HomePad/CategoriesHomePad/CategoriesHomePad';
 import PeopleHomePad from '@components/HomePad/PeopleHomePad/PeopleHomePad';
 import PersonDialog from '@root/src/components/Dialogs/PersonDialog';
 import SearchHomePad from './SearchHomePad/SearchHomePad';
 import ProfileDialog from '../Dialogs/ProfileDialog';
-import { selectCategory } from '@root/src/store/slices/selectedCategory.slice';
-import { selectHeaderTab } from '@root/src/store/slices/selectedHeaderTab.slice';
-import CategoryPad from './CategoryPad';
+import ProjectPad from '@components/ProjectPad';
 
 
 

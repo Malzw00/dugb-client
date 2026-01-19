@@ -1,11 +1,12 @@
 import Dialog from "@components/Dialogs/AbstractDialog";
-import { Person48Regular } from "@fluentui/react-icons";
+import { Key16Regular, Key20Regular, Keyboard16Regular, Person48Regular } from "@fluentui/react-icons";
 import { getAccountById, updateMyAccount } from "@root/src/services/account";
 import { setProfile } from "@root/src/store/slices/profile.slice";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "@PreMadeComponents/Loading";
 import { Button, Input, tokens } from "@fluentui/react-components";
+import { changePassword } from "@root/src/services/auth";
 
 export default function ProfileDialog({ style }) {
     
@@ -13,8 +14,8 @@ export default function ProfileDialog({ style }) {
     const profile = useSelector(state => state.profile.value);
     const [profileData, setProfileData] = useState({});
     const [loading, setLoading] = useState(true);
-    const [isEditing, setIsEditing] = useState(false); // حالة لتحديد وضع التحرير
-    const [editData, setEditData] = useState({}); // بيانات التحرير المؤقتة
+    const [isEditing, setIsEditing] = useState(false);
+    const [editData, setEditData] = useState({});
 
     useEffect(() => {
         if (!profile) return;
@@ -34,7 +35,7 @@ export default function ProfileDialog({ style }) {
                 lastName: user.lst_name
             };
             setProfileData(newProfileData);
-            setEditData(newProfileData); // تعيين بيانات التحرير
+            setEditData(newProfileData);
             setLoading(false);
         };
 
@@ -68,7 +69,7 @@ export default function ProfileDialog({ style }) {
             setProfileData(updatedProfileData);
             setIsEditing(false);
             
-            alert('تم تعديل ابيانات بنجاح')
+            alert('تم تعديل البيانات بنجاح')
             
         } catch (error) {
             console.error("فشل تحديث البيانات:", error);
@@ -127,7 +128,7 @@ export default function ProfileDialog({ style }) {
 function ProfileDialogBody ({ profile }) {
 
     return (
-        <div className="rows-div " style={{flexDirection: 'row', gap:'8%'}}>
+        <div className="rows-div profile-body" style={{flexDirection: 'row', gap:'8%'}}>
             <div className="profile-image-div">
                 {profile?.profile_image_id ? 
                     <img className="profile-image" alt="صورة الملف الشخصي" /> : 
@@ -167,8 +168,11 @@ function ProfileDialogBody ({ profile }) {
 }
 
 function ProfileEditBody ({ editData, onInputChange, profile }) {
+    
+    const [changePasswordDialog, setChangePasswordDialog] = useState(false);
+
     return (
-        <div className="rows-div " style={{ flexDirection: 'row', gap:'8%', }}>
+        <div className="rows-div edit-profile-body" style={{ flexDirection: 'row', gap:'8%', }}>
             <div className="profile-image-div" >
                 {profile?.profile_image_id ? 
                     <img className="profile-image" alt="صورة الملف الشخصي" /> : 
@@ -208,6 +212,14 @@ function ProfileEditBody ({ editData, onInputChange, profile }) {
                     placeholder="أدخل البريد الإلكتروني"
                     style={{ width: '100%' }}
                 />
+
+                <Button 
+                    className="self-end"
+                    appearance="subtle" 
+                    icon={<Key20Regular/>}
+                    onClick={() => setChangePasswordDialog(true)}>
+                    تغيير كلمة السر
+                </Button>
                 
                 {editData?.role && editData.role.toLowerCase() !== 'user' && (
                     <div className="row" style={{ alignItems:'center' }}>
@@ -227,9 +239,167 @@ function ProfileEditBody ({ editData, onInputChange, profile }) {
                     </div>
                 )}
             </div>
+
+            {changePasswordDialog && <ChangePasswordDialog
+                onClose={() => setChangePasswordDialog(false)}
+            />}
         </div>
     );
 }
+
+
+function ChangePasswordDialog({ onClose }) {
+    const [data, setData] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    });
+    
+    const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const validate = () => {
+        const newErrors = {};
+        
+        if (!data.currentPassword.trim()) {
+            newErrors.submit = 'كلمة السر الحالية مطلوبة';
+            return newErrors;
+        }
+        
+        if (!data.newPassword.trim()) {
+            newErrors.submit = 'كلمة السر الجديدة مطلوبة';
+            return newErrors;
+        } else if (data.newPassword.length < 6) {
+            newErrors.submit = 'كلمة السر يجب أن تكون 6 أحرف على الأقل';
+            return newErrors;
+        }
+        
+        if (data.newPassword !== data.confirmPassword) {
+            newErrors.submit = 'كلمات السر غير متطابقة';
+            return newErrors;
+        }
+        
+        if (data.currentPassword === data.newPassword) {
+            newErrors.submit = 'كلمة السر الجديدة يجب أن تختلف عن الحالية';
+            return newErrors;
+        }
+        
+        return newErrors;
+    };
+
+    const handleDone = useCallback(async () => {
+        const validationErrors = validate();
+        
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+        
+        setErrors({});
+        setIsSubmitting(true);
+        
+        try {
+            await changePassword({
+                currentPassword: data.currentPassword,
+                newPassword: data.newPassword
+            });
+            
+            setData({
+                currentPassword: '',
+                newPassword: '',
+                confirmPassword: ''
+            });
+            
+            onClose();
+
+            window.alert('تم تغيير كلمة المرور بنجاح!')
+        } catch (error) {
+            setErrors({ submit: error.response.data?.message || error.message || 'مشكلة في تغيير كلمة السر' });
+            console.log(error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    }, [data, onClose]);
+
+    const handleChange = (field) => (e) => {
+        setData(prev => ({
+            ...prev,
+            [field]: e.target.value
+        }));
+        // مسح الخطأ عند البدء بالكتابة
+        if (errors[field]) {
+            setErrors(prev => ({ ...prev, [field]: '' }));
+        }
+    };
+
+    return (
+        <Dialog
+            title="تغيير كلمة السر"
+            onCloseBtnClick={onClose}
+            body={
+                <div className="flex-col gap-13px">
+                    <h3>كلمة السر الحالية</h3>
+                    <Input
+                        type="password"
+                        onChange={handleChange('currentPassword')}
+                        value={data.currentPassword}
+                        placeholder="أدخل كلمة السر الحالية"
+                        error={errors.currentPassword}
+                        disabled={isSubmitting}
+                    />
+
+                    
+                    <h3>كلمة السر الجديدة</h3>
+                    <Input
+                        type="password"
+                        onChange={handleChange('newPassword')}
+                        value={data.newPassword}
+                        placeholder="أدخل كلمة السر الجديدة"
+                        error={errors.newPassword}
+                        disabled={isSubmitting}
+                    />
+
+                    <Input
+                        type="password"
+                        onChange={handleChange('confirmPassword')}
+                        value={data.confirmPassword}
+                        placeholder="تأكيد كلمة السر الجديدة"
+                        error={errors.confirmPassword}
+                        disabled={isSubmitting}
+                    />
+
+                    {errors.submit && (
+                        <div className="error-text">
+                            {errors.submit}
+                        </div>
+                    )}
+
+                    <br />
+
+                    <div className="flex gap-8px mt-20px">
+                        <Button 
+                            appearance="primary" 
+                            onClick={handleDone}
+                            disabled={isSubmitting}
+                            loading={isSubmitting}
+                        >
+                            {isSubmitting ? 'جاري التغيير...' : 'تغيير كلمة السر'}
+                        </Button>
+
+                        <Button 
+                            onClick={onClose}
+                            disabled={isSubmitting}
+                        >
+                            إلغاء
+                        </Button>
+                    </div>
+                </div>
+            }
+        />
+    );
+}
+
+
 
 function ProfileDialogFooter ({ isEditing, onEditClick, onSaveClick, onCancelClick }) {
     return (

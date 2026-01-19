@@ -108,6 +108,7 @@ const useStyles = makeStyles({
 });
 
 export default function IntroUI({ onContinue }) {
+    
     const styles = useStyles();
 
     return (

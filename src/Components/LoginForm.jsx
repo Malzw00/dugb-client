@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Mention20Regular } from "@fluentui/react-icons";
+import { ArrowEnter16Regular, ArrowEnter20Regular, Mention20Regular, PersonAccounts24Regular, PersonAdd20Regular, PersonCircle24Regular } from "@fluentui/react-icons";
 import { Button, Spinner } from "@fluentui/react-components";
 
 import EmailInput from "@PreMadeComponents/EmailInput";
@@ -110,8 +110,7 @@ export default function LoginForm() {
                navigate('/home');
                
           } catch (error) {
-               console.error('Login error:', error);
-               setSubmitError(error.message || 'فشلت عملية تسجيل الدخول. الرجاء المحاولة مرة أخرى.');
+               setSubmitError(error.response.data?.message || 'فشلت عملية تسجيل الدخول. الرجاء المحاولة مرة أخرى.');
           } finally {
                setLoading(false);
           }
@@ -133,6 +132,7 @@ export default function LoginForm() {
                          <FormHead
                               caption="منصة توثيق مشاريع التخرج الجامعية"
                               title="تسجيل الدخول"
+                              icon={<PersonCircle24Regular/>}
                               logo={logo}
                          />
 
@@ -176,6 +176,7 @@ export default function LoginForm() {
                               appearance='secondary'
                               disabled={loading}
                               type='button'
+                              icon={<PersonAdd20Regular/>}
                               onClick={() => navigate('/signup')}
                          >
                               إنشاء حساب جديد

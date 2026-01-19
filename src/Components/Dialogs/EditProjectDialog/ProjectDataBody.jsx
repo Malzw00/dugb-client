@@ -155,12 +155,12 @@ export default function ProjectDataBody({ currentProject, departments, selectedC
             if (res.data?.success) {
                 alert(`تم تحديث مشروع "${res.data?.result?.project_title || formData.title}"`);
                 setError('');
-            } else {
-                setError(res.data?.message || 'فشل تحديث المشروع. يرجى المحاولة مرة أخرى');
-            }
+            } 
+            
         } catch (err) {
-            console.error('Error updating project:', err);
-            setError('فشل تحديث المشروع. يرجى المحاولة مرة أخرى');
+            
+            setError(err.response.data?.message || 'فشل تحديث المشروع. يرجى المحاولة مرة أخرى');
+        
         } finally {
             setIsLoading(false);
         }
@@ -220,6 +220,7 @@ function Content({
         padding: '15px',
         border: '1px solid #e5e7eb',
         borderRadius: '8px',
+        gap: '13px',
         backgroundColor: tokens.colorNeutralBackground2,
         flex: '1'
     };

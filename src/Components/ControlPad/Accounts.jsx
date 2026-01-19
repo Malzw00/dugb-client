@@ -372,11 +372,11 @@ function PermissionsDialog({ isOpen, onOpenChange, selectedAccount }) {
             name: 'إدارة الملفات', 
             description: 'إدارة الصور والكتب والعروض التقديمية والمراجع',
         },
-        { 
-            id: 'delete_comment', 
-            name: 'حذف التعليقات', 
-            description: 'القدرة على حذف تعليقات المستخدمين',
-        },
+        // { 
+        //     id: 'delete_comment', 
+        //     name: 'حذف التعليقات', 
+        //     description: 'القدرة على حذف تعليقات المستخدمين',
+        // },
     ];
 
     const loadAccountPermissions = async (accountId) => {

@@ -59,12 +59,10 @@ export default function AddDepartmentDialog({ selectedCollage }) {
                 alert(`تم إنشاء قسم بإسم "${res.data?.result?.department_name || departmentName}"`);                
                 setDepartmentName('');
                 setError('');
-            } else {
-                setError('فشل إنشاء القسم. قد يكون الاسم مكرر، يرجى المحاولة مرة أخرى');
-            }
+            } 
         } catch (err) {
             console.error('Error creating department:', err);
-            setError('فشل إنشاء القسم. قد يكون الاسم مكرر، يرجى المحاولة مرة أخرى');
+            setError(err.response.data?.message || 'فشل إنشاء القسم. يرجى المحاولة مرة أخرى');
         } finally {
             setIsLoading(false);
         }
