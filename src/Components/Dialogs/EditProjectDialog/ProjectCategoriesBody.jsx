@@ -1,4 +1,4 @@
-import { Dismiss16Regular, Grid28Regular, MailInbox20Regular, Add16Regular, Add16Filled, MailInbox16Regular } from "@fluentui/react-icons";
+import { Dismiss16Regular, Grid28Regular, MailInbox20Regular, Add16Regular, Add16Filled, MailInbox16Regular, Grid20Regular } from "@fluentui/react-icons";
 import Body from "./Body";
 import { useEffect, useState, useCallback } from "react";
 import { getCategories } from "@root/src/services/category";
@@ -260,7 +260,6 @@ function Content({ currentProject, selectedCollage }) {
                         borderRadius: '8px',
                         border: '1px dashed #e1dfdd'
                     }}>
-                        <Grid28Regular style={{ color: '#8a8886', marginBottom: '12px' }} />
                         <Text>لا يوجد فئات مضافة للمشروع</Text>
                     </div>
                 ) : (

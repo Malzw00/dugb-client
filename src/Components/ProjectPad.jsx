@@ -203,13 +203,15 @@ const ProjectDescriptionSection = ({ project }) => {
         }
 
         return project.Keywords.map((keyword) => (
-            <div style={{
+            <div key={keyword.keyword} style={{
                 borderRadius: '5px',
                 background: tokens.colorNeutralBackground3,
                 padding: '0px 8px',
                 border: `1px solid ${tokens.colorNeutralStroke1}`
             }}>
-                {keyword.keyword}
+                <Link href={`/home/search/projects?keyword=${keyword.keyword}`}>
+                    {keyword.keyword}
+                </Link>
             </div>
         ));
     }, [project.Keywords]);
@@ -268,13 +270,13 @@ const CategoriesSection = ({ project }) => {
             </div>
             <ul className="pill-container">
                 {project?.Categories?.map((category) => (
-                    <div style={{
+                    <div key={category.category_id} style={{
                         borderRadius: '5px',
                         background: tokens.colorNeutralBackground3,
                         padding: '0px 8px',
                         border: `1px solid ${tokens.colorNeutralStroke1}`
                     }}>
-                        <Link href={`/categories/${category.category_id}?projectId=${project.project_idx}`}>
+                        <Link href={`/home/categories/${category.category_id}?projectId=${project.project_id}`}>
                             {category.category_name}
                         </Link>
                     </div>
@@ -284,21 +286,6 @@ const CategoriesSection = ({ project }) => {
         </section>
     )
 };
-
-// const CommentsSection = () => {
-
-//     return (
-//         <section className="project-card2">
-//             <div className="card-title">
-//                 <Comment24Regular />
-//                 <span>التعليقات</span>
-//             </div>
-//             <p className="empty-state">
-//             لا توجد تعليقات
-//             </p>
-//         </section>
-//     );
-// }
 
 const FilesSection = ({ book, presentation }) => (
     <section className="project-card2">
@@ -341,7 +328,7 @@ const FilesSection = ({ book, presentation }) => (
                     style={{ textDecoration: "none" }}
                 >
                     <Button
-                        style={{ justifyContent: 'space-between' }}
+                        style={{ justifyContent: 'space-between', background: tokens.colorPaletteRedBackground3 }}
                         appearance="primary"
                         size="medium"
                         className="action-btn">

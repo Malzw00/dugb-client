@@ -9,10 +9,16 @@ import { getCategories } from "@root/src/services/category";
 import { getAllCollages } from "@root/src/services/collage";
 import { setCategories } from "@root/src/store/slices/categories.slice";
 import CategoriesContentArea from "./CategoriesContentArea";
+import { useParams, useSearchParams } from "react-router-dom";
+import { selectHeaderTab } from "@root/src/store/slices/selectedHeaderTab.slice";
 
 
 
 export default function CategoriesHomePad () {
+
+    const { categoryId } = useParams();
+    const [searchParams]  = useSearchParams();
+    const projectId = searchParams.get('projectId');
 
     const dispatch = useDispatch();
 
@@ -21,16 +27,22 @@ export default function CategoriesHomePad () {
     const selectedCollage = useSelector(state => state.selectedCollage.value);
 
     const handleTabSelect = (_, data) => dispatch(selectCategory(data.value)); 
+    
+    React.useEffect(() => {
+        dispatch(selectHeaderTab('categories'));
+    }, []);
 
     React.useEffect(() => {
-        
         getCategories({ collageId: selectedCollage })
             .then(res => {
                 const categories = res?.data?.result?? [];
 
                 dispatch(setCategories(categories));
 
-                const category = categories.find(c => selectedCategory === c.category_id);
+                const category = categories.find(c => 
+                    ((parseInt(categoryId) || selectedCategory) === c.category_id)
+                );
+
                 dispatch(selectCategory(category?.category_id?? categories[0]?.category_id));
             })
             .catch(err => {
@@ -58,7 +70,7 @@ export default function CategoriesHomePad () {
             onTabSelect: handleTabSelect,
             selectedValue: selectedCategory,
         }}
-        contentArea={<CategoriesContentArea/>}
+        contentArea={<CategoriesContentArea selectedProjectId={projectId}/>}
     />
 }
 

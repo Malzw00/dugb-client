@@ -358,6 +358,7 @@ function DialogBody({
                         selectedOptions={selectedCollage ? [selectedCollage] : []}
                         onOptionSelect={onCollageChange}
                         disabled={isLoading || isLoadingCollages}
+                        value={selectedCollage && selectedCollage.collage_name}
                         style={{ width: '100%' }}
                     >
                         {collages.map(collage => (
@@ -370,15 +371,6 @@ function DialogBody({
                             </Option>
                         ))}
                     </Dropdown>
-                    {selectedCollage && (
-                        <div style={{ 
-                            fontSize: '12px', 
-                            color: '#666', 
-                            marginTop: '4px'
-                        }}>
-                            الكلية المحددة: {selectedCollage.collage_name}
-                        </div>
-                    )}
                 </div>
                 
                 <div style={{ flex: '1', minWidth: '200px' }}>
@@ -398,6 +390,7 @@ function DialogBody({
                         selectedOptions={selectedDepartment ? [selectedDepartment] : []}
                         onOptionSelect={onDepartmentChange}
                         disabled={isLoading || !selectedCollage || isLoadingDepartments}
+                        value={selectedDepartment && selectedDepartment.department_name}
                         style={{ width: '100%' }}
                     >
                         {departments.map(dept => (
@@ -410,15 +403,6 @@ function DialogBody({
                             </Option>
                         ))}
                     </Dropdown>
-                    {selectedDepartment && (
-                        <div style={{ 
-                            fontSize: '12px', 
-                            color: '#666', 
-                            marginTop: '4px'
-                        }}>
-                            القسم المحدد: {selectedDepartment.department_name}
-                        </div>
-                    )}
                 </div>
             </div>
 

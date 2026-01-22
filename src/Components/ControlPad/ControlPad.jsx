@@ -1,6 +1,6 @@
 import SideBar from "./SideBar";
 import '@styles/ControlPad.css';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Projects from "./Projects";
 import Permissions from "./Permissions";
 import Accounts from "./Accounts";
@@ -11,13 +11,21 @@ import References from "./References";
 import Files from "./Files";
 import Collages from "./Collages";
 import Departments from "./Departments";
+import { selectHeaderTab } from "@root/src/store/slices/selectedHeaderTab.slice";
+import { useEffect } from "react";
 
 
 
 export default function ControlPad() {
     
+    const dispatch = useDispatch();
+
     const selectedControlPanel = useSelector(state => state.selectedControlPanel.value);
     
+    useEffect(() => {
+        dispatch(selectHeaderTab('control'));
+    }, []);
+
     return <div className='flex-row control-pad height-100 width-100'>
 
         <SideBar />

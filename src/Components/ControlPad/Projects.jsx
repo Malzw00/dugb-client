@@ -82,7 +82,7 @@ export default function Projects() {
             .finally(() => {
                 setIsLoadingAll(false);
             });
-    }, [dispatch, selectedCollage, filters]);
+    }, [dispatch, selectedCollage, filters, controlDialog]);
 
     useEffect(() => {
         if (collages.length === 0) {

@@ -6,6 +6,7 @@ import React from "react";
 import { getAllCollages } from "@root/src/services/collage";
 import { setCollages } from "@root/src/store/slices/collages.slice";
 import ProjectsContentArea from "./ProjectsContentArea";
+import { selectHeaderTab } from "@root/src/store/slices/selectedHeaderTab.slice";
 
 
 
@@ -19,7 +20,10 @@ export default function ProjectsHomePad () {
     const handleTabSelect = (_, data) => dispatch(selectCollage(data.value)); 
 
     React.useEffect(() => {
-        
+        dispatch(selectHeaderTab('projects'));
+    }, []);
+    
+    React.useEffect(() => {        
         getAllCollages()
             .then(res => {
                 const collages = res?.data?.result?? []

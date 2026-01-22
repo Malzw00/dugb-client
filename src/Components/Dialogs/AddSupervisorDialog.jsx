@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Dialog from "./AbstractDialog";
 import { clearControlDialog } from "@root/src/store/slices/controlDialog.slice";
-import { Button, Input, Dropdown, Option } from "@fluentui/react-components";
+import { Button, Input, Dropdown, Option, tokens } from "@fluentui/react-components";
 import { createSupervisor } from "@root/src/services/people";
 import Loading from "@PreMadeComponents/Loading";
 import { academicRanks } from "@components/ControlPad/Supervisors";
@@ -121,7 +121,7 @@ export default function AddSupervisorDialog({ onSupervisorAdded }) {
         }
 
         // التحقق من صحة الأسماء (حروف عربية/إنجليزية فقط)
-        const nameRegex = /^[A-Za-z\u0600-\u06FF]+$/;
+        const nameRegex = /^[A-Za-z\u0600-\u06FF]+(?:\s[A-Za-z\u0600-\u06FF]+)*$/;
         if (!nameRegex.test(supervisorName.trim())) {
             setError("اسم المشرف يجب أن يحتوي على حروف فقط");
             return false;
@@ -397,7 +397,10 @@ function DialogBody({
                             color: '#666', 
                             marginTop: '4px'
                         }}>
-                            الكلية المحددة: {selectedCollage.collage_name}
+                            الكلية المحددة: &nbsp;
+                            <span style={{ color: tokens.colorBrandBackground }}>
+                                {selectedCollage.collage_name}
+                            </span>
                         </div>
                     )}
                 </div>
@@ -437,7 +440,10 @@ function DialogBody({
                             color: '#666', 
                             marginTop: '4px'
                         }}>
-                            القسم المحدد: {selectedDepartment.department_name}
+                            القسم المحدد: &nbsp;
+                            <span style={{ color: tokens.colorBrandBackground }}>
+                                {selectedDepartment.department_name}
+                            </span>
                         </div>
                     )}
                 </div>
@@ -482,7 +488,10 @@ function DialogBody({
                             color: '#666', 
                             marginTop: '4px'
                         }}>
-                            الرتبة المحددة: {academicRank}
+                            الرتبة المحددة: &nbsp;
+                            <span style={{ color: tokens.colorBrandBackground }}>
+                                {academicRank}
+                            </span>
                         </div>
                     )}
                 </div>

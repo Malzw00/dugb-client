@@ -458,6 +458,7 @@ function DialogBody({
                         selectedOptions={selectedCollage ? [selectedCollage] : []}
                         onOptionSelect={onCollageChange}
                         disabled={isLoading || isLoadingCollages}
+                        value={selectedCollageName}
                         style={{ width: '100%' }}
                     >
                         {collages.map(collage => (
@@ -469,17 +470,7 @@ function DialogBody({
                             </Option>
                         ))}
                     </Dropdown>
-                    {selectedCollageName && (
-                        <div style={{ 
-                            fontSize: '12px', 
-                            color: '#666', 
-                            marginTop: '4px'
-                        }}>
-                            الكلية المحددة: <span style={{ color: tokens.colorBrandBackground }}>
-                                {selectedCollageName}
-                            </span>
-                        </div>
-                    )}
+                    
                 </div>
                 
                 <div style={{ flex: '1', minWidth: '200px' }}>
@@ -499,6 +490,7 @@ function DialogBody({
                         selectedOptions={selectedDepartment ? [selectedDepartment] : []}
                         onOptionSelect={onDepartmentChange}
                         disabled={isLoading || !selectedCollage || isLoadingDepartments}
+                        value={selectedDepartmentName}
                         style={{ width: '100%' }}
                     >
                         {departments.map(dept => (
@@ -510,17 +502,6 @@ function DialogBody({
                             </Option>
                         ))}
                     </Dropdown>
-                    {selectedDepartmentName && (
-                        <div style={{ 
-                            fontSize: '12px', 
-                            color: '#666', 
-                            marginTop: '4px'
-                        }}>
-                            القسم المحدد: <span style={{ color: tokens.colorBrandBackground }}>
-                                {selectedDepartmentName}
-                            </span>
-                        </div>
-                    )}
                 </div>
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SearchInput from "@components/PreMadeComponents/searchInput";
 import { setSearchText } from "@root/src/store/slices/searchText.slice";
@@ -6,12 +6,19 @@ import { Spinner } from "@fluentui/react-components";
 import { searchForStudents } from "@root/src/services/people";
 import { setSearchedStudents } from "@root/src/store/slices/searchedStudents.slice";
 import PersonCard from "@PreMadeComponents/PersonCard";
+import { selectPeopleTab } from "@root/src/store/slices/selectedPeopleTab.slice";
+import { selectSearchTab } from "@root/src/store/slices/selectedSearchTab.slice";
+import { useSearchParams } from "react-router-dom";
+import { setPerson } from "@root/src/store/slices/person.slice";
 
 
 
-export default function SearchStudentContentArea({}) {
+export default function SearchStudentContentArea() {
 
     const dispatch = useDispatch();
+    
+    const [searchParams] = useSearchParams();
+    const keyword = searchParams.get('keyword')
 
     const searchText = useSelector(state => state.searchText.value);
     const searchedStudents = useSelector(state => state.searchedStudents.value);
@@ -21,7 +28,7 @@ export default function SearchStudentContentArea({}) {
         
         setLoading(true);
         
-        searchForStudents({ text: searchText })
+        searchForStudents({ text: keyword ?? searchText })
         .then(res => {
 
             const students = res?.data?.result || []
@@ -32,6 +39,15 @@ export default function SearchStudentContentArea({}) {
         })
         .catch(err => console.log(err))
     }
+
+    useEffect(() => {
+        dispatch(setSearchText(keyword?? ''));
+        searchAction();
+    }, [keyword]);
+
+    useEffect(() => {
+        dispatch(selectSearchTab('students'));
+    }, []);
 
     return (
         <div className="content-area">
@@ -63,13 +79,15 @@ export default function SearchStudentContentArea({}) {
                             index={index}
                             name={studentName}
                             updated_at={student.updated_at}
+                            onClick={() => {
+                                dispatch(selectPeopleTab('students'));
+                                dispatch(setPerson(student.student_id));
+                            }}
                         />
                     })}
                     
                     {(searchedStudents.length < 1) && <p className="placeholder-label">
-                        {
-                            (searchText.trim() === '') && 'أكتب شيئاً في مربع البحث'
-                        }
+                        {(searchText.trim() === '') && 'أكتب شيئاً في مربع البحث'}
                     </p>}
                 </div>
             </div>

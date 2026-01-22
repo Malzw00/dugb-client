@@ -12,8 +12,8 @@ export default function SearchInput ({
     const style = {
         display: 'flex',
         width: '100%', 
-        padding: '2px', 
-        gap: '2px', 
+        padding: '13px', 
+        gap: '8px', 
         height: 'fit-content',
         justifyContent: 'center',
     }
@@ -25,7 +25,7 @@ export default function SearchInput ({
             contentAfter={<Button icon={<Dismiss16Regular/>} appearance="subtle" onClick={handleClearAction} title='مسح'/>}
             placeholder={placeholder} 
             value={searchText}
-            style={{ flex: '1' }}
+            style={{ width: '50%' }}
             onChange={onChange}
             onKeyUp={(e) => {
                 if(e.key === 'Enter')
@@ -35,7 +35,7 @@ export default function SearchInput ({
         <Button 
             title='بحث'
             icon={<Search20Regular/>} 
-            style={{minWidth: '44px', height: '100%'}} 
+            style={{minWidth: '89px', height: '100%'}} 
             appearance='primary' 
             onClick={handleSearchAction} 
         />

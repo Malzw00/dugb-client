@@ -17,7 +17,9 @@ export default function Header ({ disableTabs, color, onBackClick }) {
     const user = useSelector(state => state.user.value);
     const isAdmin = user?.role === 'admin' || user?.role === 'manager';
 
-    const handleTabSelect = (_, data) => dispatch(selectHeaderTab(data.value));
+    const handleTabSelect = (_, data) => {
+        navigate(`/home/${data.value}`);
+    };
 
     return (
         <div className="header" style={{

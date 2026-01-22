@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchText } from "@root/src/store/slices/searchText.slice";
 import { searchForSupervisors } from "@root/src/services/people";
@@ -6,12 +6,19 @@ import { setSearchedSupervisors } from "@root/src/store/slices/searchedSuperviso
 import { Spinner } from "@fluentui/react-components";
 import SearchInput from "@components/PreMadeComponents/searchInput";
 import PersonCard from "@PreMadeComponents/PersonCard";
+import { selectSearchTab } from "@root/src/store/slices/selectedSearchTab.slice";
+import { useSearchParams } from "react-router-dom";
+import { setPerson } from "@root/src/store/slices/person.slice";
+import { selectPeopleTab } from "@root/src/store/slices/selectedPeopleTab.slice";
 
 
 
-export default function SearchSupervisorContentArea({}) {
+export default function SearchSupervisorContentArea() {
 
     const dispatch = useDispatch();
+    
+    const [searchParams] = useSearchParams();
+    const keyword = searchParams.get('keyword')
 
     const searchText = useSelector(state => state.searchText.value);
     const searchedSupervisors = useSelector(state => state.searchedSupervisors.value);
@@ -32,6 +39,15 @@ export default function SearchSupervisorContentArea({}) {
         })
         .catch(err => console.log(err))
     }
+
+    useEffect(() => {
+        dispatch(selectSearchTab('supervisors'));
+    }, []);
+
+    useEffect(() => {
+        dispatch(setSearchText(keyword?? ''));
+        searchAction();
+    }, [keyword]);
 
     return (
         <div className="content-area">
@@ -63,6 +79,10 @@ export default function SearchSupervisorContentArea({}) {
                             index={index}
                             name={supervisorName}
                             updated_at={supervisor.updated_at}
+                            onClick={() => {
+                                dispatch(selectPeopleTab('supervisors'))
+                                dispatch(setPerson(supervisor.supervisor_id))
+                            }}
                         />
                     })}
                     

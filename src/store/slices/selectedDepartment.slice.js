@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value: [0],
+    value: [parseInt(localStorage['selectedDepartment'])?? 0],
 }
 
 const selectedDepartmentSlice = createSlice({
@@ -9,6 +9,7 @@ const selectedDepartmentSlice = createSlice({
     initialState,
     reducers: {
         selectDepartment(state, action) {
+            localStorage['selectedDepartment'] = action.payload; 
             state.value = action.payload;
         }
     }

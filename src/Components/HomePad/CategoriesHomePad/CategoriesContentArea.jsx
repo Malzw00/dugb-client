@@ -3,9 +3,9 @@ import { setProjects } from "@root/src/store/slices/projects.slice";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProjectCard from "@PreMadeComponents/ProjectCard";
-import { Display, Title1, Title3, tokens } from "@fluentui/react-components";
+import { Title1, tokens } from "@fluentui/react-components";
 
-export default function CategoriesContentArea({}) {
+export default function CategoriesContentArea({ selectedProjectId }) {
 
     const dispatch = useDispatch();
 
@@ -38,7 +38,13 @@ export default function CategoriesContentArea({}) {
             <div className="categories-area">
                 <div className="projects-list">
                     {projects.map((project, index) => {
-                        return <ProjectCard key={index} {...project}/>
+                        return <ProjectCard 
+                            key={index} 
+                            {...project}
+                            style={(parseInt(selectedProjectId) == parseInt(project.project_id)) && {
+                                border: `1px solid ${tokens.colorBrandBackground}`
+                            }}
+                        />
                     })}
                 </div>
             </div>

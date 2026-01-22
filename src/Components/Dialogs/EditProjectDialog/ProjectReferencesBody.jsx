@@ -160,7 +160,7 @@ function Content({ currentProject }) {
       
       // إعادة تعيين الحقول
       setSelectedReference(null);
-      setShowAddReference(false);
+      // setShowAddReference(false);
       
       alert('تم إضافة المرجع للمشروع بنجاح!');
       
@@ -527,9 +527,11 @@ function Content({ currentProject }) {
             padding: '32px',
             backgroundColor: '#faf9f8',
             borderRadius: '8px',
-            border: '1px dashed #e1dfdd'
+            border: '1px dashed #e1dfdd',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
           }}>
-            <Bookmark28Regular style={{ color: '#8a8886', marginBottom: '12px' }} />
             <Text>لا يوجد مراجع مضافة للمشروع</Text>
             <Button
               appearance="primary"

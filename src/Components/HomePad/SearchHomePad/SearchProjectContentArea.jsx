@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SearchInput from "@components/PreMadeComponents/searchInput";
 import { setSearchText } from "@root/src/store/slices/searchText.slice";
@@ -7,12 +7,17 @@ import ProjectCard from "@PreMadeComponents/ProjectCard";
 import { searchProjects } from "@root/src/services/project/project";
 import { setSearchedProjects } from "@root/src/store/slices/searchedProjects.slice";
 import { Spinner } from "@fluentui/react-components";
+import { selectSearchTab } from "@root/src/store/slices/selectedSearchTab.slice";
+import { useSearchParams } from "react-router-dom";
 
 
 
-export default function SearchProjectContentArea({}) {
+export default function SearchProjectContentArea() {
 
     const dispatch = useDispatch();
+    
+    const [searchParams] = useSearchParams();
+    const keyword = searchParams.get('keyword')
 
     const searchText = useSelector(state => state.searchText.value);
     const searchedProjects = useSelector(state => state.searchedProjects.value);
@@ -22,7 +27,7 @@ export default function SearchProjectContentArea({}) {
         
         setLoading(true);
         
-        searchProjects({ text: searchText })
+        searchProjects({ text: keyword ?? searchText })
         .then(res => {
 
             const projects = res?.data?.result || []
@@ -33,6 +38,15 @@ export default function SearchProjectContentArea({}) {
         })
         .catch(err => console.log(err))
     }
+
+    useEffect(() => {
+        dispatch(selectSearchTab('projects'));
+    }, []);
+
+    useEffect(() => {
+        dispatch(setSearchText(keyword?? ''));
+        searchAction();
+    }, [keyword]);
 
     return (
         <div className="content-area">
@@ -66,9 +80,7 @@ export default function SearchProjectContentArea({}) {
                     })}
                     
                     {(searchedProjects.length < 1) && <p className="placeholder-label">
-                        {
-                            (searchText.trim() === '') && 'أكتب شيئاً في مربع البحث'
-                        }
+                        {(searchText.trim() === '') && 'أكتب شيئاً في مربع البحث'}
                     </p>}
                 </div>
             </div>

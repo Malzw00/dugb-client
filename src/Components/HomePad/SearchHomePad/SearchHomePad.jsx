@@ -2,19 +2,27 @@ import React from "react";
 import AbstractHomePad from "@components/HomePad/AbstractHomePad";
 import { useDispatch, useSelector } from "react-redux";
 import { Tab } from "@fluentui/react-components";
-import { selectSearchTab } from "@root/src/store/slices/selectedSearchTab.slice";
-import SearchProjectContentArea from "./SearchProjectContentArea";
-import SearchStudentContentArea from "./SearchStudentContentArea";
-import SearchSupervisorContentArea from "./SearchSupervisorContentArea";
+import { selectHeaderTab } from "@root/src/store/slices/selectedHeaderTab.slice";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 
-export default function SearchHomePad () {
+export default function SearchHomePad ({ contentarea }) {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [searchParams] = useSearchParams();
+    const keyword = searchParams.get('keyword');
 
     const selectedSearchTab = useSelector(state => state.selectedSearchTab.value);
 
-    const handleTabSelect = (_, data) => dispatch(selectSearchTab(data.value)); 
+    React.useEffect(() => {
+        dispatch(selectHeaderTab('search'));
+    }, []);
+
+    const handleTabSelect = (_, data) => {
+        navigate(`/home/search/${data.value}${(keyword && `?keyword=${keyword}`)?? ''}`);
+    }
 
     return <AbstractHomePad
         sideBar={{ 
@@ -27,14 +35,6 @@ export default function SearchHomePad () {
             onTabSelect: handleTabSelect,
             selectedValue: selectedSearchTab,
         }}
-        contentArea={
-            selectedSearchTab === 'projects'
-            ? <SearchProjectContentArea/>
-            : selectedSearchTab === 'students'
-            ? <SearchStudentContentArea/>
-            : selectedSearchTab === 'supervisors'
-            ? <SearchSupervisorContentArea/>
-            : null
-        }
+        contentArea={contentarea}
     />
 }

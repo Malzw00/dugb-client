@@ -255,7 +255,8 @@ function KeywordTag({ keyword, onDelete, disabled }) {
                 padding: '6px 10px',
                 fontSize: '14px',
                 cursor: disabled ? 'not-allowed' : 'pointer',
-                opacity: disabled ? 0.6 : 1
+                opacity: disabled ? 0.6 : 1,
+                border: '1px solid rgba(0, 0, 0, 0.1)'
             }}
         >
             {keyword.keyword}

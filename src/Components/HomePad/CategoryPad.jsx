@@ -11,7 +11,7 @@ export default function CategoryPad({}) {
 
     const { categoryId } = useParams();
     const [searchParams]  = useSearchParams();
-    const projectId = searchParams.get('projectId')
+    const projectId = searchParams.get('projectId');
 
     const [projects, setProjects] = useState([]);
     const [category, setCategory] = useState('');

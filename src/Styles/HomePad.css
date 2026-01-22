@@ -96,7 +96,7 @@
 
 .search-input {
     height: 32px !important;
-    width: 30% !important;
+    /* width: 30% !important; */
     min-width: 144px;
 }
   
@@ -140,11 +140,11 @@
 
 .project-card {
     border-radius: 13px;
-    animation: cardIn 200ms ease;
+    animation: cardIn 400ms ease;
 }
 @keyframes cardIn {
-    0% { scale: .5; }
-    100% { scale: 1; }
+    0% { opacity: 0; scale: .92; }
+    100% { opacity: 1; scale: 1; }
 }
 .project-card:hover {
     cursor: pointer;
